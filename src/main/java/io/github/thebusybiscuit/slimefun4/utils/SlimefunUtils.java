@@ -340,20 +340,24 @@ public final class SlimefunUtils {
             return false;
         } else if (checkAmount && item.getAmount() < sfitem.getAmount()) {
             return false;
-        } else if (sfitem instanceof SlimefunItemStack stackOne && item instanceof SlimefunItemStack stackTwo) {
-            if (stackOne.getItemId().equals(stackTwo.getItemId())) {
-                /*
-                 * PR #3417
-                 *
-                 * Some items can't rely on just IDs matching and will implement {@link DistinctiveItem}
-                 * in which case we want to use the method provided to compare
-                 */
-                if (checkDistinction && stackOne instanceof DistinctiveItem distinctive && stackTwo instanceof DistinctiveItem) {
-                    return distinctive.canStack(stackOne.getItemMeta(), stackTwo.getItemMeta());
-                }
-                return true;
+        }
+        SlimefunItem sfItemSI = SlimefunItem.getByItem(sfitem);
+        SlimefunItem itemSI = SlimefunItem.getByItem(item);
+
+        if (sfItemSI != null && itemSI != null) {
+            if (!sfItemSI.getId().equals(itemSI.getId())) {
+                return false;
             }
-            return false;
+            /*
+             * PR #3417
+             *
+             * Some items can't rely on just IDs matching and will implement {@link DistinctiveItem}
+             * in which case we want to use the method provided to compare
+             */
+            if (checkDistinction && sfItemSI instanceof DistinctiveItem distinctive && itemSI instanceof DistinctiveItem) {
+                return distinctive.canStack(item.getItemMeta(), sfitem.getItemMeta());
+            }
+            return true;
         } else if (item.hasItemMeta()) {
             Debug.log(TestCase.CARGO_INPUT_TESTING, "SlimefunUtils#isItemSimilar - item.hasItemMeta()");
             ItemMeta itemMeta = item.getItemMeta();
