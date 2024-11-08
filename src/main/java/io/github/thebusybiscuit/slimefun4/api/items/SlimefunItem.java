@@ -153,7 +153,7 @@ public class SlimefunItem implements Placeable {
         Validate.notNull(recipeType, "'recipeType' is not allowed to be null!");
 
         this.itemGroup = itemGroup;
-        this.itemStackTemplate = item;
+        this.itemStackTemplate = item.item();
         this.id = item.getItemId();
         this.recipeType = recipeType;
         this.recipe = recipe;
@@ -774,8 +774,9 @@ public class SlimefunItem implements Placeable {
         }
 
         // If the given item is a SlimefunitemStack, simply compare the id
-        if (item instanceof SlimefunItemStack stack) {
-            return getId().equals(stack.getItemId());
+        SlimefunItem sfItem = getByItem(item);
+        if (sfItem != null) {
+            return getId().equals(sfItem.getId());
         }
 
         if (item.hasItemMeta()) {
@@ -912,8 +913,10 @@ public class SlimefunItem implements Placeable {
      * @return This item's name in {@link ItemStack} form
      */
     public final @Nonnull String getItemName() {
-        if (itemStackTemplate instanceof SlimefunItemStack) {
-            Optional<String> name = ((SlimefunItemStack) itemStackTemplate).getItemMetaSnapshot().getDisplayName();
+        SlimefunItem sfItem = getByItem(itemStackTemplate);
+        if (sfItem != null) {
+            SlimefunItemStack sfStack = new SlimefunItemStack(sfItem.getId(), itemStackTemplate);
+            Optional<String> name = sfStack.getItemMetaSnapshot().getDisplayName();
 
             if (name.isPresent()) {
                 return name.get();
@@ -1185,6 +1188,19 @@ public class SlimefunItem implements Placeable {
         return Optional.ofNullable(getById(id));
     }
 
+    public static @Nullable SlimefunItem getByItem(@Nullable SlimefunItemStack slimefunItemStack) {
+        if (slimefunItemStack == null) {
+            return null;
+        }
+
+        var delegate = slimefunItemStack.item();
+        if (delegate.getType() == Material.AIR) {
+            return null;
+        }
+
+        return getById(slimefunItemStack.getItemId());
+    }
+
     /**
      * Retrieve a {@link SlimefunItem} from an {@link ItemStack}.
      *
@@ -1197,14 +1213,8 @@ public class SlimefunItem implements Placeable {
             return null;
         }
 
-        if (item instanceof SlimefunItemStack stack) {
-            return getById(stack.getItemId());
-        }
-
         Optional<String> itemID = Slimefun.getItemDataService().getItemData(item);
-
         return itemID.map(SlimefunItem::getById).orElse(null);
-
     }
 
     /**

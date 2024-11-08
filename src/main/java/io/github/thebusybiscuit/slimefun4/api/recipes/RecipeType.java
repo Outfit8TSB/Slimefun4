@@ -47,7 +47,7 @@ public class RecipeType implements Keyed {
     public static final RecipeType ENHANCED_CRAFTING_TABLE = new RecipeType(new NamespacedKey(Slimefun.instance(), "enhanced_crafting_table"), SlimefunItems.ENHANCED_CRAFTING_TABLE, "", "&a&oA regular Crafting Table cannot", "&a&ohold this massive Amount of Power...");
     public static final RecipeType JUICER = new RecipeType(new NamespacedKey(Slimefun.instance(), "juicer"), SlimefunItems.JUICER, "", "&a&oUsed for Juice Creation");
 
-    public static final RecipeType ANCIENT_ALTAR = new RecipeType(new NamespacedKey(Slimefun.instance(), "ancient_altar"), SlimefunItems.ANCIENT_ALTAR, (recipe, output) -> {
+    public static final RecipeType ANCIENT_ALTAR = new RecipeType(new NamespacedKey(Slimefun.instance(), "ancient_altar"), SlimefunItems.ANCIENT_ALTAR.item(), (recipe, output) -> {
         AltarRecipe altarRecipe = new AltarRecipe(Arrays.asList(recipe), output);
         AncientAltar altar = ((AncientAltar) SlimefunItems.ANCIENT_ALTAR.getItem());
         altar.getRecipes().add(altarRecipe);
@@ -91,7 +91,7 @@ public class RecipeType implements Keyed {
     }
 
     public RecipeType(NamespacedKey key, SlimefunItemStack slimefunItem, String... lore) {
-        this(key, slimefunItem, null, lore);
+        this(key, slimefunItem.item(), null, lore);
     }
 
     public RecipeType(NamespacedKey key, ItemStack item, BiConsumer<ItemStack[], ItemStack> callback, String... lore) {
@@ -99,8 +99,9 @@ public class RecipeType implements Keyed {
         this.key = key;
         this.consumer = callback;
 
-        if (item instanceof SlimefunItemStack slimefunItemStack) {
-            this.machine = slimefunItemStack.getItemId();
+        SlimefunItem machineItem = SlimefunItem.getByItem(item);
+        if (machineItem != null) {
+            this.machine = machineItem.getId();
         } else {
             this.machine = "";
         }
@@ -109,7 +110,8 @@ public class RecipeType implements Keyed {
     public RecipeType(NamespacedKey key, ItemStack item) {
         this.key = key;
         this.item = item;
-        this.machine = item instanceof SlimefunItemStack slimefunItemStack ? slimefunItemStack.getItemId() : "";
+        SlimefunItem machineItem = SlimefunItem.getByItem(item);
+        this.machine = machineItem != null ? machineItem.getId() : "";
     }
 
     public RecipeType(MinecraftRecipe<?> recipe) {
