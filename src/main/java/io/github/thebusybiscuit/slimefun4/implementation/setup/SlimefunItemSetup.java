@@ -425,7 +425,7 @@ public final class SlimefunItemSetup {
         new PressureChamber(itemGroups.basicMachines, SlimefunItems.PRESSURE_CHAMBER).register(plugin);
 
         new UnplaceableBlock(itemGroups.technicalComponents, SlimefunItems.BATTERY, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {null, new ItemStack(Material.REDSTONE), null, SlimefunItems.ZINC_INGOT.item(), SlimefunItems.SULFATE.item(), new ItemStack(Material.COPPER_INGOT).item(), SlimefunItems.ZINC_INGOT.item(), SlimefunItems.SULFATE.item(), new ItemStack(Material.COPPER_INGOT).item()})
+                new ItemStack[] {null, new ItemStack(Material.REDSTONE), null, SlimefunItems.ZINC_INGOT.item(), SlimefunItems.SULFATE.item(), new ItemStack(Material.COPPER_INGOT), SlimefunItems.ZINC_INGOT.item(), SlimefunItems.SULFATE.item(), new ItemStack(Material.COPPER_INGOT)})
                 .register(plugin);
 
         registerArmorSet(itemGroups.magicalArmor, new ItemStack(Material.GLOWSTONE), new ItemStack[] {SlimefunItems.GLOWSTONE_HELMET.item(), SlimefunItems.GLOWSTONE_CHESTPLATE.item(), SlimefunItems.GLOWSTONE_LEGGINGS.item(), SlimefunItems.GLOWSTONE_BOOTS.item()}, "GLOWSTONE", false,
@@ -490,7 +490,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new AlloyIngot(itemGroups.resources, SlimefunItems.BRONZE_INGOT,
-                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), SlimefunItems.TIN_DUST.item(), new ItemStack(Material.COPPER_INGOT).item(), null, null, null, null, null, null})
+                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), SlimefunItems.TIN_DUST.item(), new ItemStack(Material.COPPER_INGOT), null, null, null, null, null, null})
                 .register(plugin);
 
         new AlloyIngot(itemGroups.resources, SlimefunItems.DURALUMIN_INGOT,
@@ -502,7 +502,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new AlloyIngot(itemGroups.resources, SlimefunItems.BRASS_INGOT,
-                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), SlimefunItems.ZINC_DUST.item(), new ItemStack(Material.COPPER_INGOT).item(), null, null, null, null, null, null})
+                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), SlimefunItems.ZINC_DUST.item(), new ItemStack(Material.COPPER_INGOT), null, null, null, null, null, null})
                 .register(plugin);
 
         new AlloyIngot(itemGroups.resources, SlimefunItems.ALUMINUM_BRASS_INGOT,
@@ -1389,7 +1389,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new UnplaceableBlock(itemGroups.technicalComponents, SlimefunItems.COPPER_WIRE, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {null, null, null, new ItemStack(Material.COPPER_INGOT).item(), new ItemStack(Material.COPPER_INGOT).item(), new ItemStack(Material.COPPER_INGOT).item(), null, null, null},
+                new ItemStack[] {null, null, null, new ItemStack(Material.COPPER_INGOT), new ItemStack(Material.COPPER_INGOT), new ItemStack(Material.COPPER_INGOT), null, null, null},
                 new SlimefunItemStack(SlimefunItems.COPPER_WIRE, 8).item())
                 .register(plugin);
 
@@ -1660,7 +1660,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new ElectricDustWasher(itemGroups.electricity, SlimefunItems.ELECTRIC_DUST_WASHER, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {null, new ItemStack(Material.WATER_BUCKET), null, SlimefunItems.ELECTRO_MAGNET.item(), SlimefunItems.ELECTRIC_GOLD_PAN.item(), SlimefunItems.ELECTRO_MAGNET.item(), new ItemStack(Material.COPPER_INGOT).item(), new ItemStack(Material.COPPER_INGOT).item(), new ItemStack(Material.COPPER_INGOT).item()})
+                new ItemStack[] {null, new ItemStack(Material.WATER_BUCKET), null, SlimefunItems.ELECTRO_MAGNET.item(), SlimefunItems.ELECTRIC_GOLD_PAN.item(), SlimefunItems.ELECTRO_MAGNET.item(), new ItemStack(Material.COPPER_INGOT), new ItemStack(Material.COPPER_INGOT), new ItemStack(Material.COPPER_INGOT)})
                 .setCapacity(128)
                 .setEnergyConsumption(3)
                 .setProcessingSpeed(1)
@@ -1870,7 +1870,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new Multimeter(itemGroups.technicalGadgets, SlimefunItems.MULTIMETER, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {new ItemStack(Material.COPPER_INGOT).item(), null, new ItemStack(Material.COPPER_INGOT).item(), null, SlimefunItems.REDSTONE_ALLOY.item(), null, null, SlimefunItems.GOLD_6K.item(), null})
+                new ItemStack[] {new ItemStack(Material.COPPER_INGOT), null, new ItemStack(Material.COPPER_INGOT), null, SlimefunItems.REDSTONE_ALLOY.item(), null, null, SlimefunItems.GOLD_6K.item(), null})
                 .register(plugin);
 
         new SlimefunItem(itemGroups.technicalComponents, SlimefunItems.PLASTIC_SHEET, RecipeType.HEATED_PRESSURE_CHAMBER,
