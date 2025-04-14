@@ -555,6 +555,11 @@ public final class SlimefunItemSetup {
                 new ItemStack[] {new ItemStack(Material.IRON_ORE), null, null, null, null, null, null, null, null},
                 new SlimefunItemStack(SlimefunItems.IRON_DUST, oreCrusher.isOreDoublingEnabled() ? 2 : 1).item())
                 .register(plugin);
+        
+        new SlimefunItem(itemGroups.resources, SlimefunItems.COPPER_DUST, RecipeType.ORE_CRUSHER,
+                new ItemStack[] {new ItemStack(Material.COPPER_ORE), null, null, null, null, null, null, null, null},
+                new SlimefunItemStack(SlimefunItems.COPPER_DUST, oreCrusher.isOreDoublingEnabled() ? 2 : 1).item())
+                .register(plugin);
 
         new SlimefunItem(itemGroups.resources, SlimefunItems.GOLD_DUST, RecipeType.ORE_CRUSHER,
                 new ItemStack[] {new ItemStack(Material.GOLD_ORE), null, null, null, null, null, null, null, null},
@@ -587,10 +592,6 @@ public final class SlimefunItemSetup {
 
         new SlimefunItem(itemGroups.resources, SlimefunItems.MAGNESIUM_DUST, RecipeType.ORE_WASHER,
                 new ItemStack[] {SlimefunItems.SIFTED_ORE.item(), null, null, null, null, null, null, null, null})
-                .register(plugin);
-
-        new SlimefunItem(itemGroups.resources, new ItemStack(Material.COPPER_INGOT), RecipeType.SMELTERY,
-                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), null, null, null, null, null, null, null, null})
                 .register(plugin);
 
         new SlimefunItem(itemGroups.resources, SlimefunItems.TIN_INGOT, RecipeType.SMELTERY,
