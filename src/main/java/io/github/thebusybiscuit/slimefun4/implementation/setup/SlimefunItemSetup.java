@@ -551,14 +551,14 @@ public final class SlimefunItemSetup {
                 new ItemStack[] {new ItemStack(Material.IRON_INGOT), SlimefunItems.IRON_DUST.item(), SlimefunItems.SILICON.item(), null, null, null, null, null, null})
                 .register(plugin);
 
-        new SlimefunItem(itemGroups.resources, SlimefunItems.IRON_DUST, RecipeType.ORE_CRUSHER,
-                new ItemStack[] {new ItemStack(Material.IRON_ORE), null, null, null, null, null, null, null, null},
-                new SlimefunItemStack(SlimefunItems.IRON_DUST, oreCrusher.isOreDoublingEnabled() ? 2 : 1).item())
-                .register(plugin);
-        
         new SlimefunItem(itemGroups.resources, SlimefunItems.COPPER_DUST, RecipeType.ORE_CRUSHER,
                 new ItemStack[] {new ItemStack(Material.COPPER_ORE), null, null, null, null, null, null, null, null},
                 new SlimefunItemStack(SlimefunItems.COPPER_DUST, oreCrusher.isOreDoublingEnabled() ? 2 : 1).item())
+                .register(plugin);
+        
+        new SlimefunItem(itemGroups.resources, SlimefunItems.IRON_DUST, RecipeType.ORE_CRUSHER,
+                new ItemStack[] {new ItemStack(Material.IRON_ORE), null, null, null, null, null, null, null, null},
+                new SlimefunItemStack(SlimefunItems.IRON_DUST, oreCrusher.isOreDoublingEnabled() ? 2 : 1).item())
                 .register(plugin);
 
         new SlimefunItem(itemGroups.resources, SlimefunItems.GOLD_DUST, RecipeType.ORE_CRUSHER,
