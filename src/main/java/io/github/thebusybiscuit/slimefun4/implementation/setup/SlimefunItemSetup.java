@@ -802,12 +802,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new GoldIngot(itemGroups.resources, 6, SlimefunItems.GOLD_6K, RecipeType.SMELTERY,
-                new ItemStack[] {SlimefunItems.GOLD_DUST.item(), SlimefunItems.GOLD_4K.item(), null, null, null, null, null, null, null})
-                .register(plugin);
-
-        new GoldIngot(itemGroups.resources, 4, SlimefunItems.GOLD_4K, RecipeType.SMELTERY,
-                new ItemStack[] {SlimefunItems.GOLD_DUST.item(), null, null, null, null, null, null, null, null})
-                .setUseableInWorkbench(true)
+                new ItemStack[] {SlimefunItems.GOLD_DUST.item(), new ItemStack(Material.GOLD_INGOT), null, null, null, null, null, null, null})
                 .register(plugin);
 
         new SlimefunItem(itemGroups.misc, SlimefunItems.STONE_CHUNK, RecipeType.ORE_WASHER,
@@ -1391,7 +1386,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new BlockPlacer(itemGroups.basicMachines, SlimefunItems.BLOCK_PLACER, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {SlimefunItems.GOLD_4K.item(), new ItemStack(Material.PISTON), SlimefunItems.GOLD_4K.item(), new ItemStack(Material.IRON_INGOT), SlimefunItems.ELECTRIC_MOTOR.item(), new ItemStack(Material.IRON_INGOT), SlimefunItems.GOLD_4K.item(), new ItemStack(Material.PISTON), SlimefunItems.GOLD_4K.item()})
+                new ItemStack[] {new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.PISTON), new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.IRON_INGOT), SlimefunItems.ELECTRIC_MOTOR.item(), new ItemStack(Material.IRON_INGOT), new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.PISTON), new ItemStack(Material.GOLD_INGOT)})
                 .register(plugin);
 
         new TelepositionScroll(itemGroups.magicalGadgets, SlimefunItems.SCROLL_OF_DIMENSIONAL_TELEPOSITION, RecipeType.MAGIC_WORKBENCH,
