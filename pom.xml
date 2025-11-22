@@ -356,17 +356,10 @@
         <!-- Shaded packages -->
 
         <dependency>
-            <groupId>com.github.GAME-CLI-SRV-DEV.dough</groupId>
-            <artifactId>dough-api</artifactId>
-            <version></version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.Slimefun.dough</groupId>
             <artifactId>dough-api</artifactId>
-            <version>dough2.0-2328234eae-1</version>
+            <version>cb22e71335</version>
             <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>io.papermc</groupId>
             <artifactId>paperlib</artifactId>
