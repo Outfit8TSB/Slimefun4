@@ -229,7 +229,10 @@ public class Slimefun extends JavaPlugin implements SlimefunAddon {
     @Override
     public void onEnable() {
         setInstance(this);
-
+        logger.log(Level.ERROR, "WARNING! SLIMEFUN IV FOR 1.21 IS NOT SUPPORTED ON 1.21.9/10 DUE TO THE GAMEPROFILE CLASS ISSUE! IF YOU ARE USING 1.21.9/10, AND SAW THIS GAMEPROFILE ERROR OCCURRED WHILE ENABLING THE PLUGIN");
+        logger.log(Level.ERROR, "java.lang.IncompatibleClassChangeError: class io.github.thebusybiscuit.slimefun4.libraries.dough.skins.CustomGameProfile cannot inherit from final class com.mojang.authlib.GameProfile [?:?]");
+        logger.log(Level.ERROR, "DO NOT REPORT THIS ERROR TO APPROXIMASTER! WE ARE CURRENTLY GOING ON FIX FOR CS-CoreLib!! DO NOT PANIC, STAY ON 1.21.8! WE CANNOT GUARANTEE THE SUPPORT OF THE 1.21.9! WAIT FOR 1.21.9 SUPPORT");
+        logger.log(Level.ERROR, "IF YOU RUN THIS JAR, DO NOT ASK SLIMEFUN TEAM FOR SUPPORT AS IT WAS ARCHIVED! MAINTAINED BY APPROXIMASTER STUDIOS 2004/GAME-CLI-SRV-DEV. ");
         if (isUnitTest()) {
             // We handle Unit Tests seperately.
             onUnitTestStart();
