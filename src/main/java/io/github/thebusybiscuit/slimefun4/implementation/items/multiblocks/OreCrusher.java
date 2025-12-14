@@ -58,7 +58,7 @@ public class OreCrusher extends MultiBlockMachine {
         recipes.add(new ItemStack(Material.COBBLESTONE, 8));
         recipes.add(new ItemStack(Material.SAND, 1));
 
-        recipes.add(SlimefunItems.GOLD_4K.item());
+        recipes.add(new ItemStack(Material.GOLD_INGOT, 1));
         recipes.add(SlimefunItems.GOLD_DUST.item());
 
         recipes.add(SlimefunItems.GOLD_6K.item());
