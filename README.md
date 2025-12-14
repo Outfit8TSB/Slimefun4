@@ -1,4 +1,4 @@
-# Slimefun 4 (1.21-1.21.8)
+# Slimefun 4X (1.21.9)
 *Looking for the download link? [**Click here**](https://github.com/Slimefun/Slimefun4/blob/master/README.md#floppy_disk-download-slimefun-4)*
 
 > [!CAUTION]
