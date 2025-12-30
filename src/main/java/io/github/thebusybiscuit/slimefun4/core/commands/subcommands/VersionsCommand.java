@@ -14,6 +14,7 @@ import org.bukkit.plugin.Plugin;
 import io.papermc.lib.PaperLib;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -65,7 +66,7 @@ class VersionsCommand extends SubCommand {
              */
             String serverSoftware = PaperLib.isSpigot() && !PaperLib.isPaper() ? "Spigot" : Bukkit.getName();
 
-            net.kyori.adventure.text.TextComponent.Builder builder = Component.text();
+            TextComponent.Builder builder = Component.text();
 
             builder.append(Component.text("Slimefun server environment:\n", Style.style(NamedTextColor.GRAY)))
                 .append(Component.text(serverSoftware, Style.style(NamedTextColor.GREEN))
