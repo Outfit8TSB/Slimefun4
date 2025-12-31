@@ -208,7 +208,7 @@
                             </excludes>
                         </filter>
                         <filter>
-                            <artifact>io.github.baked-libs:dough-api</artifact>
+                            <artifact>com.github.Slimefun.dough:dough-api</artifact>
                             <excludes>
                                 <exclude>io/github/bakedlibs/dough/skins/CustomGameProfile.class</exclude>
                                 <exclude>io/github/bakedlibs/dough/skins/PlayerHead.class</exclude>
@@ -335,9 +335,9 @@
         
         <!-- Shaded packages -->
         <dependency>
-            <groupId>io.github.baked-libs</groupId>
+            <groupId>com.github.Slimefun.dough</groupId>
             <artifactId>dough-api</artifactId>
-            <version>1.3.0</version>
+            <version>cb22e71335</version>
             <scope>compile</scope>
         </dependency>
         
