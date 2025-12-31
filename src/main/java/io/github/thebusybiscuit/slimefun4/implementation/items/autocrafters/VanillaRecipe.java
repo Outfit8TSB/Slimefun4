@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Keyed;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;

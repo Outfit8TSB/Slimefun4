@@ -15,7 +15,7 @@ import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 

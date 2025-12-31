@@ -217,7 +217,7 @@
                             <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.unirest</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>org.apache.commons.lang3</pattern>
+                            <pattern>org.apache.commons.lang</pattern>
                             <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.commons.lang</shadedPattern>
                         </relocation>
                         <relocation>
@@ -250,7 +250,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.43.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <java>
                         <palantirJavaFormat>
@@ -436,6 +436,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.34</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.24.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -627,9 +634,9 @@
         </dependency>
         <!-- TODO: Remove this dependency -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.20.0</version>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
             <scope>compile</scope>
         </dependency>
         <!-- Slimefun Compatibility Lib -->

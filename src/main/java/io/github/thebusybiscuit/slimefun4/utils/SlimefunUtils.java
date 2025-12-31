@@ -10,7 +10,7 @@ import java.util.OptionalInt;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

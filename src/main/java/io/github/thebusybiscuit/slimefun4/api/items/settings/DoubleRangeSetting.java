@@ -3,7 +3,7 @@ package io.github.thebusybiscuit.slimefun4.api.items.settings;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;

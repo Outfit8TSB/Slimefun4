@@ -4,7 +4,7 @@ import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 
 import io.github.bakedlibs.dough.blocks.BlockPosition;
@@ -127,18 +127,18 @@ public interface EnergyNetComponent extends ItemAttribute {
         return getCharge(l, blockData);
     }
 
-    @Deprecated
     default int getCharge(@Nonnull Location l, @Nonnull ASlimefunDataContainer data) {
         return (int) NumberUtils.longToInt(getChargeLong(l, data));
     }
 
+    @Deprecated
     default int getCharge(@Nonnull Location l, @Nonnull SlimefunBlockData data) {
         return (int) NumberUtils.longToInt(getChargeLong(l, data));
     }
 
     @Deprecated(forRemoval = true)
     default long getChargeLong(@Nonnull Location l, @Nonnull SlimefunBlockData data) {
-        return getChargeLong(l, data);
+        return getChargeLong(l, (ASlimefunDataContainer) data);
     }
 
     /**
