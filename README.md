@@ -1,9 +1,9 @@
 # Slimefun United
-:warning: The whole of this readme is still not updated! some information may be outdated or incorrect!
+:warning: The whole of this README is still not updated! Some information may be outdated or incorrect!
 
 :warning: IMPORTANT: **For now no downloads are available!** You can compile it yourself using Dough United though.
 
-A modern and organised continuation of Slimefun’s legacy with full support for community translations and add-ons.
+A modern and organised continuation of Slimefun's legacy with full support for community translations and add-ons.
 
 Compatible with saves, which used both [the official version of Slimefun](https://github.com/Slimefun/Slimefun4)
 and [Gugu Project's Simplified Chinese translation fork](https://github.com/SlimefunGuguProject/Slimefun4).
@@ -19,11 +19,6 @@ This project treats the following Slimefun forks as its upstreams:
 - [Slimefun Gugu Project](https://github.com/SlimefunGuguProject/Slimefun4)
 - [SaanPrasanna's fork](https://github.com/SaanPrasanna/Slimefun4)
 - Slimefun Lab's fork - repo not available anymore
-
-![Current Version](https://img.shields.io/github/v/release/Slimefun-United/Slimefun-United?include_prereleases)
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-[![Issues](https://img.shields.io/github/issues/Slimefun-United/Slimefun-United.svg?style=popout)](https://github.com/Slimefun-United/Slimefun-United/issues)
-![Downloads](https://img.shields.io/github/downloads/Slimefun-United/Slimefun-United/total)
 
 **Note:** Please report issues specific to this fork here in the [issues tab](https://github.com/Slimefun-United/Slimefun-United/issues).
 
