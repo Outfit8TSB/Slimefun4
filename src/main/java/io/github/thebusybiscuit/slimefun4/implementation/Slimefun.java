@@ -480,7 +480,7 @@ public final class Slimefun extends JavaPlugin implements SlimefunAddon, ICompat
 
     @Override
     public String getBugTrackerURL() {
-        return "https://github.com/womzil/Slimefun4/issues";
+        return "https://github.com/Slimefun-United/Slimefun-United/issues";
     }
 
     // TODO: Create a new wiki
