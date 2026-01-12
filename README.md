@@ -58,13 +58,13 @@ Here are the differences between the two types of versions:
 
 |                       | Development builds                                                                               | Releases                                                                                      |
 |-----------------------|--------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| **Minecraft Version** | :video_game: 1.19.X - 1.21.X                                                                     | :video_game: 1.19.X - 1.21.X                                                                  |
+| **Minecraft Version** | :video_game: 1.19.X - 1.21.11                                                                    | :video_game: 1.19.X - 1.21.11                                                                 |
 | **Java Version**      | :computer: **Java 17+**                                                                          | :computer: **Java 17+**                                                                       |
 | **Auto-Updates**      | :heavy_check_mark:                                                                               | :heavy_check_mark:                                                                            |
 | **Frequent Updates**  | :heavy_check_mark:                                                                               | :heavy_check_mark:                                                                            |
 | **Latest Content**    | :heavy_check_mark:                                                                               | :x:                                                                                           |
 | **Bug Reports**       | :heavy_check_mark:                                                                               | :heavy_check_mark:                                                                            |
-| **Branch**            | [main](https://github.com/Slimefun-United/Slimefun-United/tree/main)                             | [release](https://github.com/Slimefun-United/Slimefun-United/tree/release)                    |
+| **Branch**            | [dev](https://github.com/Slimefun-United/Slimefun-United/tree/dev)                               | [master](https://github.com/Slimefun-United/Slimefun-United/tree/master)                      |
 | **Download Link**     | :package: **[Download dev](https://github.com/Slimefun-United/Slimefun-United/releases/latest)** | :package: **[Download release](https://github.com/Slimefun-United/Slimefun-United/releases)** |
 
 
