@@ -7,11 +7,14 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import lombok.Getter;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+
+import io.github.bakedlibs.dough.blocks.ChunkPosition;
 
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.LocationUtils;
 import io.github.thebusybiscuit.slimefun4.core.debug.Debug;
@@ -35,6 +38,9 @@ public abstract class Network {
      * Our {@link NetworkManager} instance.
      */
     private final NetworkManager manager;
+
+    @Getter
+    private final ChunkPosition chunk;
 
     /**
      * The {@link Location} of the regulator of this {@link Network}.
@@ -61,6 +67,7 @@ public abstract class Network {
 
         this.manager = manager;
         this.regulator = regulator;
+        this.chunk = new ChunkPosition(regulator);
 
         connectedLocations.add(regulator);
         nodeQueue.add(regulator.clone());

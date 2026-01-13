@@ -13,8 +13,6 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -40,9 +38,6 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.AdvancedMenuClickHandler;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces.InventoryBlock;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -52,11 +47,26 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 public abstract class AContainer extends SlimefunItem
         implements InventoryBlock, EnergyNetComponent, MachineProcessHolder<CraftingOperation> {
 
+    /**
+     * The border slots for the menu layout.
+     */
     private static final int[] BORDER = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 13, 31, 36, 37, 38, 39, 40, 41, 42, 43, 44 };
+
+    /**
+     * The input border slots for the menu layout.
+     */
     private static final int[] BORDER_IN = { 9, 10, 11, 12, 18, 21, 27, 28, 29, 30 };
+
+    /**
+     * The output border slots for the menu layout.
+     */
     private static final int[] BORDER_OUT = { 14, 15, 16, 17, 23, 26, 32, 33, 34, 35 };
 
+    /**
+     * The list of registered machine recipes.
+     */
     protected final List<MachineRecipe> recipes = new ArrayList<>();
+
     private final MachineProcessor<CraftingOperation> processor = new MachineProcessor<>(this);
 
     private int energyConsumedPerTick = -1;

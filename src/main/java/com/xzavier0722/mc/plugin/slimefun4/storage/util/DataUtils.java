@@ -7,30 +7,37 @@ import io.github.thebusybiscuit.slimefun4.core.debug.TestCase;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Level;
+import javax.annotation.Nullable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 public class DataUtils {
-    public static String itemStack2String(ItemStack itemStack) {
+    /**
+     * Serializes an {@link ItemStack} using {@link BukkitObjectOutputStream}
+     * into a Base64 string for database storage.
+     *
+     * @param itemStack the {@link ItemStack} to serialize
+     * @return the serialized Base64 string
+     */
+    public static String serializeItemStack(ItemStack itemStack) {
         Debug.log(TestCase.BACKPACK, "Serializing itemstack: " + itemStack);
 
         if (itemStack == null) {
             return "";
         }
 
-        var stream = new ByteArrayOutputStream();
-        try (var bs = new BukkitObjectOutputStream(stream)) {
+        try (var stream = new ByteArrayOutputStream();
+                var bs = new BukkitObjectOutputStream(stream)) {
             bs.writeObject(itemStack);
             var itemStr = Base64Coder.encodeLines(stream.toByteArray());
 
             if (!Slimefun.getConfigManager().isBypassItemLengthCheck()
-                    && Slimefun.getDatabaseManager().getBlockDataStorageType() != StorageType.SQLITE
+                    && Slimefun.getDatabaseManager().getBlockDataStorageType() == StorageType.MYSQL
                     && itemStr.length() > 65535) {
         throw new IllegalArgumentException("Detected an oversized item. Please contact the plugin developer responsible for that item: " + StringUtil.itemStackToString(itemStack)
                         + ", size = " + itemStr.length());
@@ -38,32 +45,38 @@ public class DataUtils {
 
             return itemStr;
         } catch (Throwable e) {
-            e.printStackTrace();
+            Slimefun.logger().log(Level.SEVERE, "An error occurred during serialisation of the item; an empty value will be stored.", e);
             return "";
         }
     }
 
-    public static ItemStack string2ItemStack(String base64Str) {
+    /**
+     * 使用 {@link BukkitObjectInputStream} 反序列化 Base64 字符串
+     * 为 {@link ItemStack} 对象.
+     *
+     * @param base64Str 要反序列化的 Base64 字符串
+     * @return 反序列化后的 {@link ItemStack} 对象
+     */
+    @Nullable public static ItemStack deserializeItemStack(String base64Str) {
         if (base64Str == null || base64Str.isEmpty() || base64Str.isBlank()) {
             return null;
         }
 
         Debug.log(TestCase.BACKPACK, "Deserializing itemstack: " + base64Str);
 
-        var stream = new ByteArrayInputStream(Base64Coder.decodeLines(base64Str));
-        try (var bs = new BukkitObjectInputStream(stream)) {
+        try (var stream = new ByteArrayInputStream(Base64Coder.decodeLines(base64Str));
+                var bs = new BukkitObjectInputStream(stream)) {
             var result = (ItemStack) bs.readObject();
 
             Debug.log(TestCase.BACKPACK, "Deserialized itemstack: " + result);
 
             if (result.getType().isAir()) {
-                Slimefun.logger().log(Level.WARNING, "Failed to deserialize item from the database! The corresponding item cannot be displayed.");
+                Slimefun.logger().log(Level.SEVERE, "Failed to deserialize item from the database! The corresponding item cannot be displayed.");
             }
 
             return result;
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
+        } catch (Exception ex) {
+            throw new RuntimeException("An error occurred during deserialisation of the item; the corresponding item cannot be displayed.", ex);
         }
     }
 

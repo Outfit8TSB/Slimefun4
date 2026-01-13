@@ -17,12 +17,12 @@ dataLoadMode: LOAD_WITH_CHUNK
 
 #########################################################################
 # Database read/write thread count
-# When using MySQL, it is recommended to set **max connections = read + write threads**, 
+# When using MySQL, it is recommended to set **max connections = read + write threads**,
 # and **read threads should be greater than write threads**.
 # Note: More threads ≠ better performance. Too many can degrade performance. Allocate appropriately.
 
 # Number of read threads
-readExecutorThread: 15
+readExecutorThread: 10
 # Number of write threads
 writeExecutorThread: 5
 #########################################################################
@@ -30,7 +30,7 @@ writeExecutorThread: 5
 #########################################################################
 # Delayed writing feature
 # This feature prevents excessive meaningless write requests caused by frequent data updates.
-# When enabled, after data changes, it waits for **delayedSecond** seconds before writing to the database 
+# When enabled, after data changes, it waits for **delayedSecond** seconds before writing to the database
 # if no further changes occur.
 # Forced saves will immediately push pending data into the write queue.
 delayedWriting:
@@ -66,7 +66,7 @@ mysql:
   # Use SSL encrypted connection
   useSSL: false
   # Maximum connection pool size
-  maxConnection: 10
+  maxConnection: 15
 #########################################################################
 
 #########################################################################
@@ -87,5 +87,5 @@ postgresql:
   # Use SSL encrypted connection
   useSSL: false
   # Maximum connection pool size
-  maxConnection: 10
+  maxConnection: 15
 #########################################################################

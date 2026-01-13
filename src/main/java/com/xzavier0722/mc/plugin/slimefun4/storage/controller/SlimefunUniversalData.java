@@ -7,11 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,9 +20,6 @@ import org.bukkit.inventory.ItemStack;
 public class SlimefunUniversalData extends ASlimefunDataContainer {
     @Setter
     private volatile UniversalMenu menu;
-
-    @Setter
-    private volatile boolean pendingRemove = false;
 
     private final Set<UniversalDataTrait> traits = new HashSet<>();
 
@@ -38,13 +35,16 @@ public class SlimefunUniversalData extends ASlimefunDataContainer {
     }
 
     @ParametersAreNonnullByDefault
+    @SneakyThrows
     public void setData(String key, String val) {
         checkData();
 
+        if (isPendingRemove()) {
+            throw new IllegalStateException("Block data that is about to be deleted cannot be modified.");
+        }
+
         if (UniversalDataTrait.isReservedKey(key)) {
-            Slimefun.logger()
-                    .log(Level.WARNING, "Warning: An addon attempted to modify protected block data. The change was cancelled.");
-            return;
+            throw new IllegalAccessException("The current protected block data key-value pairs cannot be modified.");
         }
 
         setCacheInternal(key, val, true);
@@ -103,6 +103,6 @@ public class SlimefunUniversalData extends ASlimefunDataContainer {
     @Override
     public String toString() {
         return "SlimefunUniversalData [uuid= " + getUUID() + ", sfId=" + getSfId() + ", isPendingRemove="
-                + pendingRemove + "]";
+                + isPendingRemove() + "]";
     }
 }
