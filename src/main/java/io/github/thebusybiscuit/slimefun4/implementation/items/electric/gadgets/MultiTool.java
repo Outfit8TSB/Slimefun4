@@ -36,6 +36,7 @@ import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedEntityTyp
 public class MultiTool extends SlimefunItem implements Rechargeable {
 
     private static final float COST = 0.3F;
+    private static final float SPECIAL_COST = 20F;
 
     private final List<MultiToolMode> modes = new ArrayList<>();
     private final float capacity;
@@ -51,11 +52,11 @@ public class MultiTool extends SlimefunItem implements Rechargeable {
             RecipeType recipeType,
             ItemStack[] recipe,
             float capacity,
-            String... items) {
+            List<String> items) {
         super(itemGroup, item, recipeType, recipe);
 
-        for (int i = 0; i < items.length; i++) {
-            modes.add(new MultiToolMode(this, i, items[i]));
+        for (int i = 0; i < items.size(); i++) {
+            modes.add(new MultiToolMode(this, i, items.get(i)));
         }
 
         this.capacity = capacity;
@@ -105,8 +106,14 @@ public class MultiTool extends SlimefunItem implements Rechargeable {
             SlimefunItem sfItem = modes.get(index).getItem();
 
             if (!p.isSneaking()) {
-                if (sfItem != null && removeItemCharge(item, COST)) {
-                    sfItem.callItemHandler(ItemUseHandler.class, handler -> handler.onRightClick(e));
+                if (sfItem != null) {
+                    // Elemental Staff - Storm should take the special energy cost
+                    boolean isElementalStaffStorm = sfItem.getId().equals("STAFF_ELEMENTAL_STORM");
+                    float cost = isElementalStaffStorm ? SPECIAL_COST : COST;
+
+                    if (removeItemCharge(item, cost)) {
+                        sfItem.callItemHandler(ItemUseHandler.class, handler -> handler.onRightClick(e));
+                    }
                 }
             } else {
                 index = nextIndex(index);

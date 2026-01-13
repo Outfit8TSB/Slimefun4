@@ -2,6 +2,7 @@ package io.github.thebusybiscuit.slimefun4.implementation.setup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -730,7 +731,13 @@ public final class SlimefunItemSetup {
                 new ItemStack[] {null, null, SlimefunItems.LAVA_CRYSTAL.item(), null, SlimefunItems.STAFF_ELEMENTAL.item(), null, SlimefunItems.STAFF_ELEMENTAL.item(), null, null})
                 .register(plugin);
 
-        String[] multiToolItems = new String[] {"PORTABLE_CRAFTER", "MAGIC_EYE_OF_ENDER", "STAFF_ELEMENTAL_WIND", "GRAPPLING_HOOK"};
+        List<String> multiToolItems = new ArrayList<>(
+            List.of("PORTABLE_CRAFTER", "MAGIC_EYE_OF_ENDER", "STAFF_ELEMENTAL_WIND", "GRAPPLING_HOOK")
+        );
+
+        List<String> additionalMultiToolItems = new ArrayList<>(
+            List.of("GOLD_PAN", "NETHER_GOLD_PAN", "STAFF_ELEMENTAL_WATER", "STAFF_ELEMENTAL_STORM")
+        );
 
         new MultiTool(itemGroups.technicalGadgets, SlimefunItems.DURALUMIN_MULTI_TOOL, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[] {SlimefunItems.DURALUMIN_INGOT.item(), null, SlimefunItems.DURALUMIN_INGOT.item(), SlimefunItems.DURALUMIN_INGOT.item(), SlimefunItems.SMALL_CAPACITOR.item(), SlimefunItems.DURALUMIN_INGOT.item(), null, SlimefunItems.DURALUMIN_INGOT.item(), null},
@@ -764,7 +771,7 @@ public final class SlimefunItemSetup {
 
         new MultiTool(itemGroups.technicalGadgets, SlimefunItems.CARBONADO_MULTI_TOOL, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[] {SlimefunItems.CARBONADO.item(), null, SlimefunItems.CARBONADO.item(), SlimefunItems.CARBONADO.item(), SlimefunItems.LARGE_CAPACITOR.item(), SlimefunItems.CARBONADO.item(), null, SlimefunItems.CARBONADO.item(), null},
-                100, "PORTABLE_CRAFTER", "MAGIC_EYE_OF_ENDER", "STAFF_ELEMENTAL_WIND", "GRAPPLING_HOOK", "GOLD_PAN", "NETHER_GOLD_PAN")
+                100, Stream.concat(multiToolItems.stream(), additionalMultiToolItems.stream()).toList())
                 .register(plugin);
 
         new OreWasher(itemGroups.basicMachines, SlimefunItems.ORE_WASHER).register(plugin);
