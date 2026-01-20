@@ -179,7 +179,7 @@ We have our own Discord server related to our project, which you can use to get 
 
 <p align="center">
   <a href="https://discord.gg/C8M6nPyDu6">
-    <img src="https://discord.com/api/guilds/588806119544061968/widget.json?style=banner3" alt="Discord invite to Slimefun United server"/>
+    <img src="https://discord.com/api/guilds/588806119544061968/widget.png?style=banner3" alt="Discord invite to Slimefun United server"/>
   </a>
 </p>
 
