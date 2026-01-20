@@ -20,7 +20,7 @@ This project treats the following Slimefun forks as its upstreams:
 - [SaanPrasanna's fork](https://github.com/SaanPrasanna/Slimefun4)
 - Slimefun Lab's fork - repo not available anymore
 
-**Note:** Please report issues specific to this fork here in the [issues tab](https://github.com/Slimefun-United/Slimefun-United/issues).
+**Note:** Please report issues specific to this project here in the [issues tab](https://github.com/Slimefun-United/Slimefun-United/issues).
 
 Slimefun is a plugin that aims to provide a modding-like experience. It offers everything you can imagine, from jetpacks to magic altars!
 
@@ -50,17 +50,13 @@ Check out the [Addon List](https://github.com/Slimefun/Slimefun4/wiki/Addons) to
 
 (See also: [How to install Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Installing-Slimefun))
 
-This English fork of Slimefun 4 can be downloaded from the [Releases page](https://github.com/SaanPrasanna/Slimefun4/releases).
-
-For the original Chinese version with auto-updates, visit [GuizhanBuild](https://builds.guizhanss.com/SlimefunGuguProject/Slimefun4).
-
 Here are the differences between the two types of versions:
 
-|                       | Development builds                                                                               | Releases                                                                                      |
+|                       | Development builds (alpha)                                                                       | Releases                                                                                      |
 |-----------------------|--------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 | **Minecraft Version** | :video_game: 1.19.X - 1.21.11                                                                    | :video_game: 1.19.X - 1.21.11                                                                 |
 | **Java Version**      | :computer: **Java 17+**                                                                          | :computer: **Java 17+**                                                                       |
-| **Stability**         | :x: **DO NOT USE IN PRODUCTION!** :warning:                                                      | :heavy_check_mark:                                                                                              |
+| **Stability**         | :x: **DO NOT USE IN PRODUCTION!**                                                                | :heavy_check_mark:                                                                            |
 | **Auto-Updates**      | :heavy_check_mark:                                                                               | :heavy_check_mark:                                                                            |
 | **Frequent Updates**  | :heavy_check_mark:                                                                               | :heavy_check_mark:                                                                            |
 | **Latest Content**    | :heavy_check_mark:                                                                               | :x:                                                                                           |
@@ -122,7 +118,7 @@ repositories {
 }
 ```
 
-Then add Slimefun 4 as a dependency:
+Then add Slimefun United as a dependency:
 
 Maven:
 
@@ -176,18 +172,28 @@ We asked some people from our [Discord server](#discord) to send us some screens
 
 ## :headphones: Community
 
-### Community Channels
+### Our Discord server
+
+We have our own Discord server related to our project, which you can use to get help, meet new people, share ideas and much more!
+**Note**: You should report bugs in the [issues tab](https://github.com/Slimefun-United/Slimefun-United/issues).
+
+<p align="center">
+  <a href="https://discord.gg/C8M6nPyDu6">
+    <img src="https://discord.com/api/guilds/588806119544061968/widget.json?style=banner3" alt="Discord invite to Slimefun United server"/>
+  </a>
+</p>
+
+### Other community channels
 
 For Chinese community (regarding Gugu Project):
 - KOOK [Slimefun Simplified Chinese Community](https://kook.top/oqZwh8) server
 - QQ Group: 807302496 (Slimefun Chinese Version)
 - Addon Discussion QQ Group: 205679802 (Slimefun Addon Discussion and translation group plugin update notifications)
 
-### Old Official Discord
+#### Old Official Discord
 
 You can find Slimefun's community server on Discord and communicate with **over 7000** users from around the world.
-Click the image below to join the Discord server to report issues, make suggestions, or discuss the plugin.
-The official Slimefun community often holds community events, join to learn more.
+As original Slimefun has been abandoned, the server is going to be archived in some future, so keep that in mind.
 **Note**: The official Slimefun Discord server does **not** accept any form of issue reports. Please use the [issue tracker](https://github.com/Slimefun-United/Slimefun-United/issues) to report issues!
 
 Please familiarize yourself with the [important rules](https://github.com/Slimefun/Slimefun4/wiki/Discord-Rules) of the official Discord server before joining.
@@ -204,7 +210,7 @@ People who do not follow the above rules may be kicked or even banned from the s
 Slimefun has a (detailed and frequently maintained - *ahem*) Wiki for new players,
 and you can also consider contributing to the Wiki.
 
-Official Wiki: https://github.com/Slimefun/Slimefun4/wiki
+Old official Wiki: https://github.com/Slimefun/Slimefun4/wiki
 Unofficial Chinese Wiki: https://slimefun-wiki.guizhanss.cn/
 
 #### :star: Useful Documentation
@@ -289,7 +295,7 @@ Please note: Slimefun is not affiliated with `Mojang Studios` or Minecraft.
 
 ---
 
-## Credits
+## :green_heart: Credits
 
 - Many thanks to TheBusyBiscuit and **countless contributors** and an **amazing community**, which made original Slimefun possible!
 - Slimefun Gugu Project for many new features, bug fixes and updates

@@ -1,49 +1,57 @@
-name: 汉化反馈
-description: 反馈 Slimefun 4 汉化版的汉化问题
+name: Translation Feedback
+description: Report translation issues
 labels:
-- "📜 Translation | 汉化问题"
+  - "📜 Translation | Translation Issue"
 
 body:
-- type: markdown
-  attributes:
-    value: |
-      感谢你使用 Slimefun 问题反馈系统！
-      
-      在反馈前, 请确认
-      - 你已经查看 [最新版本](https://github.com/SlimefunGuguProject/Slimefun4/releases) 是否已修复你所遇到的问题
-      - 你已经搜索了已有的 [问题](https://github.com/SlimefunGuguProject/Slimefun4/issues) 是否发现了相似的问题
-      
-      如果你的反馈含糊不清或不符合模板，将会被我们直接关闭。
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for using the Slimefun issue reporting system!
+        
+        Before submitting feedback, please make sure:
+        - You have checked whether the [latest version](https://github.com/Slimefun-United/Slimefun-United/releases) has already fixed the issue you encountered
+        - You have searched existing [issues](https://github.com/Slimefun-United/Slimefun-United/issues) to see if a similar problem has been reported
+        
+        If your feedback is unclear or does not follow the template, it will be closed immediately.
 
-- type: textarea
-  id: issue-description
-  attributes:
-    label: 汉化问题描述
-    description: 在此详细描述你遇到的问题
-  validations:
-    required: true
+  - type: textarea
+    id: language
+    attributes:
+      label: Language in which the issue is present
+      description: Just type the name of the language in English
+    validations:
+      required: true
 
-- type: textarea
-  id: reproduce
-  attributes:
-    label: 汉化错误/缺失的位置
-    description: 在这里简略说明汉化错误/缺失的位置
-  validations:
-    required: true
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Description of the Translation Issue
+      description: Describe the issue you encountered in detail
+    validations:
+      required: true
 
-- type: textarea
-  id: slimefun-version
-  validations:
-    required: true
-  attributes:
-    label: Slimefun 版本
-    description: |
-      **不要填写 "最新版本"，否则你的反馈会被立即关闭**
-      请你截图或复制执行命令 "/sf versions" 后的输出内容。
-    placeholder: Slimefun 2025.1
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Location of the Translation Error/Missing Text
+      description: Briefly describe where the translation error or missing text appears
+    validations:
+      required: true
 
-- type: textarea
-  id: additional
-  attributes:
-    label: 补充信息
-    description: 如有必要，你可以在下文继续添加其他信息
+  - type: textarea
+    id: slimefun-version
+    attributes:
+      label: Slimefun Version
+      description: |
+        **Do NOT write "latest version", or your feedback will be closed immediately**
+        Please screenshot or copy the output of the command "/sf versions".
+      placeholder: Slimefun United 4.10
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Add any extra information here if necessary

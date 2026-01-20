@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-  - name: 没有 Github 账号? 不会使用 Github?
+  - name: No GitHub account? Not sure how to use GitHub?
     url: https://docs.qq.com/form/page/DSlFOZmpTQ1JsZ2FD
-    about: 单击此处使用腾讯文档填写 Bug 反馈
+    about: Click here to submit a bug report using Tencent Docs

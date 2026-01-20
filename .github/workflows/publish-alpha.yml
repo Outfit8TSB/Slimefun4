@@ -1,0 +1,64 @@
+name: Publish an alpha (dev) build to Hangar and Modrinth
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.repository_owner == 'Slimefun-United'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Get commit hash
+        id: commit
+        uses: prompt/actions-commit-hash@v3
+
+      - name: Get Maven project version
+        id: maven_version
+        run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+
+      - name: Generate alpha version number
+        id: version
+        run: echo "VERSION=4.10-alpha-${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+      - name: Compute jar filename
+        id: jar
+        run: echo "JAR_FILE=target/slimefun-united-${{ steps.maven_version.outputs.VERSION }}.jar" >> $GITHUB_OUTPUT
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: 21
+          distribution: terumin
+          java-package: jdk
+          architecture: x64
+          cache: maven
+
+      - name: Build and package with Maven
+        run: mvn clean package
+
+      - name: Upload to Modrinth
+        uses: cloudnode-pro/modrinth-publish@v2
+        with:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+          project: EOlkO9GO
+          name: Slimefun United \#${{ steps.commit.outputs.short }}
+          version: ${{ steps.maven_version.outputs.VERSION }}
+          changelog: "${{ github.event.head_commit.message }} (commit: ${{ steps.commit.outputs.short }})"
+          channel: alpha
+          status: draft
+          loaders: |-
+            paper
+            purpur
+          game-versions: |-
+            1.19.x
+            1.20.x
+            1.21.x
+          files: ${{ steps.jar.outputs.JAR_FILE }}

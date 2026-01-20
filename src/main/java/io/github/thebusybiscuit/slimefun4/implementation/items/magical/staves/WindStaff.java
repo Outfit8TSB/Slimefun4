@@ -19,7 +19,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * The {@link WindStaff} is a powerful staff which launches the {@link Player} forward when right clicked.
+ * The {@link WindStaff} is a powerful staff which launches the {@link Player} forward when right-clicked.
  *
  * @author TheBusyBiscuit
  *

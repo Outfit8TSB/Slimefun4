@@ -1,6 +1,4 @@
 PRIORITY
-Generators do not work!
-Elemental staffs do not work (Multitool does)
 Data conversion gives warnings
 
 MINOR

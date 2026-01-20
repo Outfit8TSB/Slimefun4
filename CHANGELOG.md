@@ -1,5 +1,8 @@
 # Table of contents
-- [Release Candidate 38 (TBD)](#release-candidate-38-tbd)
+## Slimefun United:
+- [Release 4.10 (12 Jan 2026)](#release-410-12-jan-2026)
+
+## Legacy Slimefun:
 - [Release Candidate 37 (25 Feb 2024)](#release-candidate-37-25-feb-2024)
 - [Release Candidate 36 (20 Dec 2023)](#release-candidate-36-20-dec-2023)
 - [Release Candidate 35 (07 Jul 2023)](#release-candidate-35-07-jul-2023)
@@ -38,7 +41,13 @@
 - [Release Candidate 2 (29 Sep 2019)](#release-candidate-2-29-sep-2019)
 - [Release Candidate 1 (26 Sep 2019)](#release-candidate-1-26-sep-2019)
 
-## Release Candidate 38 (TBD)
+## Release 4.10 (12 Jan 2026)
+
+#### Additions
+* New multitool modes - elemental staves of water and storm (the latter has a special energy cost)
+
+#### Fixes
+* Fix versioning
 
 ## Release Candidate 37 (25 Feb 2024)
 

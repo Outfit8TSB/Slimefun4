@@ -8,4 +8,4 @@ install:
   - ./mvnw -s .mvn/settings.xml install -DskipTests
 
 jdk:
-  - openjdk17
+  - openjdk21
