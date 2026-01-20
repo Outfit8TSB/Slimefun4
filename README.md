@@ -201,7 +201,7 @@ People who do not follow the above rules may be kicked or even banned from the s
 
 <p align="center">
   <a href="https://discord.gg/slimefun">
-    <img src="https://discordapp.com/api/guilds/565557184348422174/widget.png?style=banner3" alt="Discord Invite"/>
+    <img src="https://discordapp.com/api/guilds/565557184348422174/widget.png?style=banner3" alt="Discord invite to old Slimefun server"/>
   </a>
 </p>
 
