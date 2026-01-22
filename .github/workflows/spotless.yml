@@ -14,13 +14,13 @@ on:
   workflow_dispatch:
 
 env:
-  TZ: 'Asia/Shanghai'
+  TZ: UTC
 
 jobs:
   spotless:
     runs-on: ubuntu-latest
     outputs:
-        spotless-status: ${{ steps.spotless-check.outputs.status }}
+      spotless-status: ${{ steps.spotless-check.outputs.status }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,8 +28,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
-          distribution: 'zulu'
           java-version: ${{ vars.JAVA_CI_VERSION || 21 }}
+          distribution: adopt
           java-package: jdk
           architecture: x64
           cache: maven

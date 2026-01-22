@@ -1,6 +1,4 @@
 # Slimefun United
-:warning: The whole of this README is still not updated! Some information may be outdated or incorrect!
-
 :warning: IMPORTANT: **For now no downloads are available!** You can compile it yourself using Dough United though.
 
 A modern and organised continuation of Slimefun's legacy with full support for community translations and add-ons.
@@ -8,12 +6,12 @@ A modern and organised continuation of Slimefun's legacy with full support for c
 Compatible with saves, which used both [the official version of Slimefun](https://github.com/Slimefun/Slimefun4)
 and [Gugu Project's Simplified Chinese translation fork](https://github.com/SlimefunGuguProject/Slimefun4).
 
-Download [SlimeGlue](https://github.com/Xzavier0722/SlimeGlue/) to ensure compatibility between Slimefun and other protection plugins
+Download [SlimeGlue](https://github.com/Xzavier0722/SlimeGlue/) to ensure compatibility between Slimefun United and other protection plugins
 
 ### About this project
 
 This project is focused on bringing all the best features of every Slimefun fork and the official, discontinued version together,
-while also offering **full localization support**, simple release cycle, frequent updates and bug fixes.
+while also offering **full localisation support**, simple release cycle, frequent updates and bug fixes.
 
 This project treats the following Slimefun forks as its upstreams:
 - [Slimefun Gugu Project](https://github.com/SlimefunGuguProject/Slimefun4)
@@ -65,11 +63,12 @@ Here are the differences between the two types of versions:
 | **Download Link**     | :package: **[Download dev](https://github.com/Slimefun-United/Slimefun-United/releases/latest)** | :package: **[Download release](https://github.com/Slimefun-United/Slimefun-United/releases)** |
 
 
-**Note: The supported Minecraft versions listed above do not represent the full range of available versions. They may refer to certain historical versions. The version markings are for reference only.**
+**Note: The supported Minecraft versions listed above do not represent the full range of available versions. Older builds may support older versions of Minecraft.**
 
-**! It is recommended to use the latest development builds to get the latest content updates and bug fixes!**
+## :computer: Development
 
-## :computer: (Development) Adding as a Dependency
+### :trackball: Adding as a Dependency
+:warning: This section still hasn't been updated! Some pieces of information may be outdated or incorrect!
 
 <details>
 
@@ -78,25 +77,6 @@ Here are the differences between the two types of versions:
 First add our repository:
 
 Maven:
-
-Release version:
-```xml
-<repository>
-    <id>gugu-maven-repo</id>
-    <url>https://maven.norain.city/releases</url>
-</repository>
-```
-
-Development version (Slimefun Insider / DEV branch):
-```xml
-<repository>
-    <id>gugu-maven-repo</id>
-    <url>https://maven.norain.city/snapshots</url>
-    <snapshots>
-        <enabled>true</enabled>
-    </snapshots>
-</repository>
-```
 
 Gradle: Add the following to your `build.gradle`:
 
@@ -124,7 +104,7 @@ Maven:
 
 ```xml
 <dependency>
-    <groupId>com.github.slimefun_united</groupId>
+    <groupId>io.github.slimefun_united</groupId>
     <artifactId>slimefun-united</artifactId>
     <version>4.10-SNAPSHOT</version>
     <scope>provided</scope>
@@ -135,13 +115,13 @@ Gradle:
 
 ```groovy
 dependencies {
-    compileOnly 'com.github.slimefun_united:slimefun-united:4.10-SNAPSHOT'
+    compileOnly 'io.github.slimefun_united:slimefun-united:4.10-SNAPSHOT'
 }
 ```
 </details>
 
 
-## :computer: Compiling Slimefun United
+### :bricks: Compiling Slimefun United
 
 To compile Slimefun United, you must first install [Git](https://git-scm.com/)
 
@@ -150,7 +130,7 @@ Open a terminal or command prompt in the location where you want to store the co
 ```bash
 git clone https://github.com/Slimefun-United/Slimefun-United.git --depth=1
 ```
-This will pull Slimefun's code to your local machine.
+This will pull Slimefun United's code to your local machine.
 
 Finally, open the `Slimefun-United` folder, and open a terminal or command prompt in that folder and enter the following command to compile:
 - If you are on Windows: `.\mvnw.cmd package`
@@ -185,9 +165,14 @@ We have our own Discord server related to our project, which you can use to get 
 
 ### Other community channels
 
-For Chinese community (regarding Gugu Project):
-- KOOK [Slimefun Simplified Chinese Community](https://kook.top/oqZwh8) server
-- QQ Group: 807302496 (Slimefun Chinese Version)
+For the international community:
+- [Slimefun Addon Community Discord sever](https://discord.gg/SqD3gg5SAU)
+- [dough Discord server](https://discord.gg/c8tk8rP8Wb) (for developers)
+**Note**: These servers can be abandoned fully in the near future.
+
+For the Chinese community (only regarding Gugu Project's Simplified Chinese version):
+- [KOOK server](https://kook.top/oqZwh8)
+- QQ Group: 807302496
 - Addon Discussion QQ Group: 205679802 (Slimefun Addon Discussion and translation group plugin update notifications)
 
 #### Old Official Discord
@@ -196,7 +181,7 @@ You can find Slimefun's community server on Discord and communicate with **over 
 As original Slimefun has been abandoned, the server is going to be archived in some future, so keep that in mind.
 **Note**: The official Slimefun Discord server does **not** accept any form of issue reports. Please use the [issue tracker](https://github.com/Slimefun-United/Slimefun-United/issues) to report issues!
 
-Please familiarize yourself with the [important rules](https://github.com/Slimefun/Slimefun4/wiki/Discord-Rules) of the official Discord server before joining.
+Please familiarise yourself with the [important rules](https://github.com/Slimefun/Slimefun4/wiki/Discord-Rules) of the official Discord server before joining.
 People who do not follow the above rules may be kicked or even banned from the server.
 
 <p align="center">
@@ -236,7 +221,7 @@ You can also propose forks with interesting features to be merged with this proj
 
 ## :exclamation: Disclaimer
 
-Slimefun4 uses multiple systems to collect plugin usage data and has auto-update functionality to push new versions to you.
+Slimefun United uses multiple systems to collect plugin usage data and has auto-update functionality to push new versions to you.
 The plugin does not collect personal information stored in any form. The types of information collected can be seen below.
 
 Of course, you can disable data telemetry and auto-updates at any time.
@@ -244,15 +229,15 @@ Of course, you can disable data telemetry and auto-updates at any time.
 <details>
   <summary>Auto-Updates</summary>
 
-The English fork of Slimefun uses GitHub API to check for and download updates.
+Slimefun United uses GitHub API to check for and download updates.
 Auto-updates are enabled by default, but you can choose to disable them in `/plugins/Slimefun/config.yml`.
 We strongly recommend keeping auto-updates enabled to ensure you get the latest features/fixes.
 
-The original Chinese version uses Github API + GuizhanBuild API for updates.
+The Gugu Project's version uses GitHub API + GuizhanBuild API for updates.
 
 ---
 
-Slimefun also uses its own analytics system to collect anonymous information about the performance of this plugin.<br>
+Slimefun United also uses its own analytics system to collect anonymous information about the performance of this plugin.<br>
 This is solely for statistical purposes, as we are interested in how it's performing for all servers.<br>
 All available data is anonymous and aggregated, at no point can we see individual server information.<br>
 
@@ -263,7 +248,7 @@ You can also disable this behaviour under `/plugins/Slimefun/config.yml`.<br>
 <details>
   <summary>Anonymous Server Data</summary>
 
-Slimefun4 uses [bStats](https://bstats.org/plugin/bukkit/Slimefun/4574) to collect anonymous information about the plugin because we are interested in how server players use the plugin.
+Slimefun United uses [bStats](https://bstats.org/plugin/bukkit/Slimefun/4574) to collect anonymous information about the plugin because we are interested in how server players use the plugin.
 However, all data published on bStats is anonymous, and we absolutely cannot trace back to specific servers or players based on the reported data.
 All collected data is publicly accessible: https://bstats.org/plugin/bukkit/Slimefun/4574
 
@@ -275,7 +260,7 @@ Learn more by checking out [bStats Privacy Policy](https://bstats.org/privacy-po
 <details>
   <summary>GitHub Data</summary>
 
-Slimefun4 uses the [GitHub API](https://api.github.com/) to collect usage data about this open-source project.
+Slimefun United uses the [GitHub API](https://api.github.com/) to collect usage data about this open-source project.
 Rest assured, your Minecraft server information will not be sent to GitHub.
 
 This information includes but is not limited to:
@@ -291,7 +276,7 @@ This information includes but is not limited to:
 </details>
 
 Additionally, the plugin also uses [textures.minecraft.net](https://www.minecraft.net/en-us) to obtain collaborators' Minecraft skins.
-Please note: Slimefun is not affiliated with `Mojang Studios` or Minecraft.
+Please note: Slimefun United is not affiliated with Mojang Studios or Minecraft.
 
 ---
 

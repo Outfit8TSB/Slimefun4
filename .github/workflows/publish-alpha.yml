@@ -26,7 +26,7 @@ jobs:
 
       - name: Generate alpha version number
         id: version
-        run: echo "VERSION=4.10-alpha-${{ github.run_number }}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=${{ steps.maven_version.outputs.VERSION }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
 
       - name: Compute jar filename
         id: jar
@@ -51,7 +51,7 @@ jobs:
           project: EOlkO9GO
           name: Slimefun United \#${{ steps.commit.outputs.short }}
           version: ${{ steps.maven_version.outputs.VERSION }}
-          changelog: "${{ github.event.head_commit.message }} (commit: ${{ steps.commit.outputs.short }})"
+          changelog: "${{ github.event.head_commit.message }}"
           channel: alpha
           status: draft
           loaders: |-

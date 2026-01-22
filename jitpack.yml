@@ -1,11 +1,8 @@
+# Tests require Java 21, but JitPack skips them anyway
 before_install:
-  - sdk install java 21.0.2-open
-  - sdk use java 21.0.2-open
+  - sdk install java 17-open
+  - sdk use java 17-open
   - sdk install maven
 
-install:
-  - chmod 777 ./mvnw
-  - ./mvnw -s .mvn/settings.xml install -DskipTests
-
 jdk:
-  - openjdk21
+  - openjdk17
