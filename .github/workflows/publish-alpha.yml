@@ -53,7 +53,6 @@ jobs:
           version: ${{ steps.maven_version.outputs.VERSION }}
           changelog: "${{ github.event.head_commit.message }}"
           channel: alpha
-          status: draft
           loaders: |-
             paper
             purpur
