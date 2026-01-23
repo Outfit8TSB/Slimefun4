@@ -49,8 +49,8 @@ jobs:
         with:
           token: ${{ secrets.MODRINTH_TOKEN }}
           project: EOlkO9GO
-          name: Slimefun United \#${{ steps.commit.outputs.short }}
-          version: ${{ steps.maven_version.outputs.VERSION }}
+          name: "Slimefun United 4.10 alpha ${{ github.run_number }} #${{ steps.commit.outputs.short }}"
+          version: ${{ steps.version.outputs.VERSION }}
           changelog: "${{ github.event.head_commit.message }}"
           channel: alpha
           loaders: |-
@@ -61,3 +61,17 @@ jobs:
             1.20.x
             1.21.x
           files: ${{ steps.jar.outputs.JAR_FILE }}
+      - name: Upload to Hangar
+        uses: HangarMC/hangar-publish-action@v1
+        with:
+          apiKey: ${{ secrets.HANGAR_TOKEN }}
+          # Your Hangar project slug (e.g. slimefun-united)
+          projectId: slimefun-united
+          version: ${{ steps.version.outputs.VERSION }}
+          channel: Alpha
+          changelog: "${{ github.event.head_commit.message }}"
+          platforms: |
+            PAPER
+            PURPUR
+          files: |
+            ${{ steps.jar.outputs.JAR_FILE }}
