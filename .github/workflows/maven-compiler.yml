@@ -7,11 +7,17 @@ on:
       - dev
     paths:
       - 'src/**'
+      - '.mvn/**'
+      - 'mvnw'
+      - 'mvnw.cmd'
       - 'pom.xml'
   pull_request:
     paths:
-      - '.github/workflows/**'
       - 'src/**'
+      - '.github/workflows/**'
+      - '.mvn/**'
+      - 'mvnw'
+      - 'mvnw.cmd'
       - 'pom.xml'
       - 'CHANGELOG.md'
 
@@ -20,9 +26,9 @@ permissions:
 
 jobs:
   build:
-
     name: Maven build
     runs-on: ubuntu-latest
+    if: !contains(github.event.head_commit.message, '[skip ci]')
 
     steps:
       - name: Checkout repository

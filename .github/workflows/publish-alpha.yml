@@ -4,13 +4,20 @@ on:
   push:
     branches:
       - dev
+    paths:
+      - 'src/**'
+      # These may be needed in the future, but not for now
+      #- '.mvn/**'
+      #- 'mvnw'
+      #- 'mvnw.cmd'
+      #- 'pom.xml'
 
 jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: github.repository_owner == 'Slimefun-United'
+    if: github.repository_owner == 'Slimefun-United' && !contains(github.event.head_commit.message, '[skip ci]')
     permissions:
       contents: write # required to push tags
 
