@@ -43,6 +43,7 @@ jobs:
         id: env-setup
         run: |
           SHORT_COMMIT_HASH=$(git rev-parse --short=8 ${{ github.sha }})
+          echo "SHORT_COMMIT_HASH=$SHORT_COMMIT_HASH" >> "$GITHUB_ENV"
           echo "SHORT_COMMIT_HASH=$SHORT_COMMIT_HASH" >> "$GITHUB_OUTPUT"
 
       - name: Get Maven version and generate alpha version
@@ -69,4 +70,4 @@ jobs:
     needs: [ setup-preview-build ]
     uses: ./.github/workflows/e2e-testing.yml
     with:
-      artifact-name: slimefun-united-pr-${{ github.event.number }}+${{ steps.env-setup.outputs.SHORT_COMMIT_HASH }}
+      artifact-name: slimefun-united-pr-${{ github.event.number }}+${{ env.SHORT_COMMIT_HASH }}
