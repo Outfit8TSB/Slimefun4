@@ -61,17 +61,3 @@ jobs:
             1.20.x
             1.21.x
           files: ${{ steps.jar.outputs.JAR_FILE }}
-      - name: Upload to Hangar
-        uses: HangarMC/hangar-publish-action@v1
-        with:
-          apiKey: ${{ secrets.HANGAR_TOKEN }}
-          # Your Hangar project slug (e.g. slimefun-united)
-          projectId: slimefun-united
-          version: ${{ steps.version.outputs.VERSION }}
-          channel: Alpha
-          changelog: "${{ github.event.head_commit.message }}"
-          platforms: |
-            PAPER
-            PURPUR
-          files: |
-            ${{ steps.jar.outputs.JAR_FILE }}
