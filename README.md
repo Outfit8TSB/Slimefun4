@@ -56,6 +56,8 @@ Check out the [Addon List](https://github.com/Slimefun/Slimefun4/wiki/Addons) to
 * **[Old Official Wiki](https://github.com/Slimefun/Slimefun4/wiki)**
 * **[Old official FAQ](https://github.com/Slimefun/Slimefun4/wiki/FAQ)**
 
+---
+
 ## :floppy_disk: Downloading Slimefun United
 
 (See also: [How to install Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Installing-Slimefun))
@@ -88,6 +90,8 @@ You can check that on many download platforms easily, such as Modrinth or Hangar
 
 More download platforms may be added in the future. You can also request one.
 
+---
+
 ## :electric_plug: Compatibility
 
 Slimefun United is designed to support old saves, which previously used official Slimefun builds (master/dev/experimental branches)
@@ -97,19 +101,21 @@ You can also request compatibility with saves, which used other forks of Slimefu
 
 ### :file_cabinet: Compatible server software
 
-| Name                                          | Is compatible?                                                       |
-|-----------------------------------------------|----------------------------------------------------------------------|
-| Spigot                                        | :x: [Only original Slimefun!](https://github.com/Slimefun/Slimefun4) |
-| Paper                                         | :heavy_check_mark:                                                   |
-| Purpur                                        | :heavy_check_mark:                                                   |
-| Folia                                         | :x: It's planned :eyes:                                              |
-| CraftBukkit                                   | :x:                                                                  |
-| Bukkit                                        | :x:                                                                  |
-| Sponge                                        | :x:                                                                  |
-| Hybrid server software (ArcLight/Mohist etc.) | :x:                                                                  |
-| Fabric/Forge/NeoForge                         | :x: It's not a mod, but a plugin!                                    |
+| Name                                          | Is compatible?                                                        |
+|-----------------------------------------------|-----------------------------------------------------------------------|
+| Spigot                                        | :x: ([use original Slimefun!](https://github.com/Slimefun/Slimefun4)) |
+| Paper                                         | :heavy_check_mark:                                                    |
+| Purpur                                        | :heavy_check_mark:                                                    |
+| Folia                                         | :x: (it's planned :eyes:)                                             |
+| CraftBukkit                                   | :x:                                                                   |
+| Bukkit                                        | :x:                                                                   |
+| Sponge                                        | :x:                                                                   |
+| Hybrid server software (ArcLight/Mohist etc.) | :x:                                                                   |
+| Fabric/Forge/NeoForge                         | :x: (it's not a mod!)                                                 |
 
 Most forks of Paper should be compatible with Slimefun United.
+
+---
 
 ## :computer: Development
 
@@ -188,17 +194,21 @@ After compilation is complete, you can find the compiled plugin file in the `Sli
 
 </details>
 
+---
+
 ## :framed_picture: Screenshots
 
 So, what does Slimefun look like?<br>
 We asked some people from our [Discord server](#discord) to send us some screenshots:
 
-| Reactors and Energy | Amazing Automation Factory | Magic Laboratory |
-| :-------------------------------------------: | :--------------------------------------: | :----------------------------------------: |
+|                                    Reactors and Energy                                    |                                Amazing Automation Factory                                 |                                     Magic Laboratory                                      |
+|:-----------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|
 | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase1.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase6.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase5.png) |
-| *Screenshot by HamtaBot#0001* | *Screenshot by Piͭxͪeͤl (mnb)#5049* | *Screenshot by Kilaruna#4981* |
+|                               *Screenshot by HamtaBot#0001*                               |                            *Screenshot by Piͭxͪeͤl (mnb)#5049*                            |                               *Screenshot by Kilaruna#4981*                               |
 | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase4.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase3.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase2.png) |
-| *Screenshot by GalaxyKat11#3816* | *Screenshot by TamThan#7987* | *Screenshot by Kilaruna#4981* |
+|                             *Screenshot by GalaxyKat11#3816*                              |                               *Screenshot by TamThan#7987*                                |                               *Screenshot by Kilaruna#4981*                               |
+
+---
 
 ## :headphones: Community
 
@@ -240,6 +250,8 @@ For the Chinese community (only regarding Gugu Project's Simplified Chinese vers
 - QQ Group: 807302496
 - Addon Discussion QQ Group: 205679802 (Slimefun Addon Discussion and translation group plugin update notifications)
 
+---
+
 ## :open_book: Wiki
 
 Slimefun has a (detailed and frequently maintained - *ahem*) Wiki for new players,
@@ -262,12 +274,16 @@ The Gugu Project's Wiki is maintained by [@ybw0014](https://github.com/ybw0014).
 * [Help us expand the Wiki!](https://github.com/Slimefun/Slimefun4/wiki/Expanding-the-Wiki)
 * [Help us translate Slimefun!](https://github.com/Slimefun/Slimefun4/wiki/Translating-Slimefun)
 
+---
+
 ## :handshake: Contributing to the Project
 
 Slimefun 4 is an open-source project licensed under the [GNU GPLv3](https://github.com/Slimefun/Slimefun4/blob/master/LICENSE).
 Over 100 people have contributed to this project, and they are amazing.
 We encourage you to contribute to Slimefun United by submitting PRs. Your contributions keep Slimefun alive <3.
 You can also propose forks with interesting features to be merged with this project.
+
+---
 
 ## :exclamation: Disclaimer
 
