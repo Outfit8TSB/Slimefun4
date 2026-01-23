@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: github.repository_owner == 'Slimefun-United'
+    permissions:
+      contents: write # required to push tags
 
     steps:
       - name: Checkout Repository
@@ -19,6 +21,13 @@ jobs:
       - name: Get Maven project version
         id: maven_version
         run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+
+      - name: Create a Git tag
+        run: |
+          TAG="${{ steps.maven_version.outputs.VERSION }}"
+          echo "Tagging with $TAG"
+          git tag "$TAG"
+          git push origin "$TAG"
 
       - name: Compute jar filename
         id: jar
