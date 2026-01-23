@@ -49,7 +49,7 @@ jobs:
         with:
           token: ${{ secrets.MODRINTH_TOKEN }}
           project: EOlkO9GO
-          name: "Slimefun United 4.10 alpha ${{ github.run_number }} #${{ steps.commit.outputs.short }}"
+          name: "Slimefun United ${{ steps.version.outputs.VERSION }} #${{ steps.commit.outputs.short }}"
           version: ${{ steps.version.outputs.VERSION }}
           changelog: "${{ github.event.head_commit.message }}"
           channel: alpha
