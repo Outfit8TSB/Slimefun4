@@ -1,10 +1,23 @@
 # Slimefun United
-:warning: IMPORTANT: **For now no downloads are available!** You can compile it yourself using Dough United though.
+
+<hr />
+<p align="center">
+    <a href="https://github.com/Slimefun-United/Slimefun-United/actions">
+        <img alt="Build Status" src="https://github.com/Slimefun-United/Slimefun-United/actions/workflows/maven-compiler.yml/badge.svg?event=push" />
+    </a>
+    <a href="https://modrinth.com/plugin/slimefun-united">
+        <img alt="Modrinth Downloads" src="https://img.shields.io/modrinth/dt/EOlkO9GO" />
+    </a>
+    <a href="https://hangar.papermc.io/Slimefun-United/Slimefun-United">
+        <img alt="Hangar downloads" src="https://img.shields.io/hangar/dt/Slimefun-United?link=https%3A%2F%2Fhangar.papermc.io%2FSlimefun-United%2FSlimefun-United&style=flat" />
+    </a>
+</p>
+<hr />
 
 A modern and organised continuation of Slimefun's legacy with full support for community translations and add-ons.
 
 Compatible with saves, which used both [the official version of Slimefun](https://github.com/Slimefun/Slimefun4)
-and [Gugu Project's Simplified Chinese translation fork](https://github.com/SlimefunGuguProject/Slimefun4).
+and [Gugu Project's (Simplified Chinese translation) fork](https://github.com/SlimefunGuguProject/Slimefun4).
 
 Download [SlimeGlue](https://github.com/Xzavier0722/SlimeGlue/) to ensure compatibility between Slimefun United and other protection plugins
 
@@ -36,34 +49,67 @@ Check out the [Addon List](https://github.com/Slimefun/Slimefun4/wiki/Addons) to
 
 ### Navigation
 
-* **[Download Slimefun United](#floppy_disk-downloading-slimefun-4)**
-* **[Discord Server](#discord)**
-* **[Bug Reports](https://github.com/SaanPrasanna/Slimefun4/issues)**
-* **[Official Wiki](https://github.com/Slimefun/Slimefun4/wiki)**
-* **[FAQ](https://github.com/Slimefun/Slimefun4/wiki/FAQ)**
+* **[Download Slimefun United](#floppy_disk-downloading-slimefun-united)**
+* **[Compatibility](#electric_plug-compatibility)**
+* **[Discord Server](#our-discord-server)**
+* **[Bug Reports](https://github.com/Slimefun-United/Slimefun-United/issues)**
+* **[Old Official Wiki](https://github.com/Slimefun/Slimefun4/wiki)**
+* **[Old official FAQ](https://github.com/Slimefun/Slimefun4/wiki/FAQ)**
 
 ## :floppy_disk: Downloading Slimefun United
-
-:warning: IMPORTANT: **For now no downloads are available!** You can compile it yourself using Dough United though.
 
 (See also: [How to install Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Installing-Slimefun))
 
 Here are the differences between the two types of versions:
 
-|                       | Development builds (alpha)                                                                       | Releases                                                                                      |
-|-----------------------|--------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| **Minecraft Version** | :video_game: 1.19.X - 1.21.11                                                                    | :video_game: 1.19.X - 1.21.11                                                                 |
-| **Java Version**      | :computer: **Java 17+**                                                                          | :computer: **Java 17+**                                                                       |
-| **Stability**         | :x: **DO NOT USE IN PRODUCTION!**                                                                | :heavy_check_mark:                                                                            |
-| **Auto-Updates**      | :heavy_check_mark:                                                                               | :heavy_check_mark:                                                                            |
-| **Frequent Updates**  | :heavy_check_mark:                                                                               | :heavy_check_mark:                                                                            |
-| **Latest Content**    | :heavy_check_mark:                                                                               | :x:                                                                                           |
-| **Bug Reports**       | :heavy_check_mark:                                                                               | :heavy_check_mark:                                                                            |
-| **Branch**            | [dev](https://github.com/Slimefun-United/Slimefun-United/tree/dev)                               | [master](https://github.com/Slimefun-United/Slimefun-United/tree/master)                      |
-| **Download Link**     | :package: **[Download dev](https://github.com/Slimefun-United/Slimefun-United/releases/latest)** | :package: **[Download release](https://github.com/Slimefun-United/Slimefun-United/releases)** |
+|                       | Development (alpha) builds                                                                 | Releases                                                                                                |
+|-----------------------|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| **Minecraft Version** | :video_game: 1.19.X - 1.21.11                                                              | :video_game: 1.19.X - 1.21.11                                                                           |
+| **Java Version**      | :computer: **Java 17+**                                                                    | :computer: **Java 17+**                                                                                 |
+| **Stability**         | :x: **DO NOT USE IN PRODUCTION!**                                                          | :heavy_check_mark:                                                                                      |
+| **Auto-Updates**      | :heavy_check_mark:                                                                         | :heavy_check_mark:                                                                                      |
+| **Frequent Updates**  | :heavy_check_mark:                                                                         | :heavy_check_mark:                                                                                      |
+| **Latest Content**    | :heavy_check_mark:                                                                         | :x:                                                                                                     |
+| **Bug Reports**       | :heavy_check_mark:                                                                         | :heavy_check_mark:                                                                                      |
+| **Branch**            | [dev](https://github.com/Slimefun-United/Slimefun-United/tree/dev)                         | [master](https://github.com/Slimefun-United/Slimefun-United/tree/master)                                |
+| **Download Link**     | :package: **[Download dev](https://modrinth.com/plugin/slimefun-united/versions?c=alpha)** | :package: **[Download release](https://github.com/Slimefun-United/Slimefun-United/releases?c=release)** |
 
+**Note**: The supported Minecraft versions listed above do not represent the full range of available versions.
+Older builds may support older versions of Minecraft.
+You can check that on many download platforms easily, such as Modrinth or Hangar.
 
-**Note: The supported Minecraft versions listed above do not represent the full range of available versions. Older builds may support older versions of Minecraft.**
+### :arrow_down: Download platforms
+
+| Platform        | Links                                                                                     | Releases           | Alpha (dev) builds |
+|-----------------|-------------------------------------------------------------------------------------------|--------------------|--------------------|
+| Modrinth        | :package: [Downloads](https://modrinth.com/plugin/slimefun-united)                        | :heavy_check_mark: | :heavy_check_mark: |
+| Hangar          | :package: [Downloads](https://hangar.papermc.io/Slimefun-United/Slimefun-United/versions) | :heavy_check_mark: | :heavy_check_mark: |
+| GitHub releases | :package: [Downloads](https://github.com/Slimefun-United/Slimefun-United/releases)        | :heavy_check_mark: | :x:                |
+
+More download platforms may be added in the future. You can also request one.
+
+## :electric_plug: Compatibility
+
+Slimefun United is designed to support old saves, which previously used official Slimefun builds (master/dev/experimental branches)
+and Gugu Project's fork of Slimefun.
+
+You can also request compatibility with saves, which used other forks of Slimefun.
+
+### :file_cabinet: Compatible server software
+
+| Name                                          | Is compatible?                                                       |
+|-----------------------------------------------|----------------------------------------------------------------------|
+| Spigot                                        | :x: [Only original Slimefun!](https://github.com/Slimefun/Slimefun4) |
+| Paper                                         | :heavy_check_mark:                                                   |
+| Purpur                                        | :heavy_check_mark:                                                   |
+| Folia                                         | :x: It's planned :eyes:                                              |
+| CraftBukkit                                   | :x:                                                                  |
+| Bukkit                                        | :x:                                                                  |
+| Sponge                                        | :x:                                                                  |
+| Hybrid server software (ArcLight/Mohist etc.) | :x:                                                                  |
+| Fabric/Forge/NeoForge                         | :x: It's not a mod, but a plugin!                                    |
+
+Most forks of Paper should be compatible with Slimefun United.
 
 ## :computer: Development
 
@@ -71,8 +117,7 @@ Here are the differences between the two types of versions:
 :warning: This section still hasn't been updated! Some pieces of information may be outdated or incorrect!
 
 <details>
-
-<summary>How to add Slimefun United as a dependency</summary>
+<summary>How to add Slimefun United as a dependency?</summary>
 
 First add our repository:
 
@@ -118,10 +163,13 @@ dependencies {
     compileOnly 'io.github.slimefun_united:slimefun-united:4.10-SNAPSHOT'
 }
 ```
+
 </details>
 
-
 ### :bricks: Compiling Slimefun United
+
+<details>
+<summary>How to compile Slimefun United?</summary>
 
 To compile Slimefun United, you must first install [Git](https://git-scm.com/)
 
@@ -137,6 +185,8 @@ Finally, open the `Slimefun-United` folder, and open a terminal or command promp
 - If you are on a Unix-like system: `.\mvnw package`
 
 After compilation is complete, you can find the compiled plugin file in the `Slimefun-United/target` folder.
+
+</details>
 
 ## :framed_picture: Screenshots
 
@@ -163,18 +213,6 @@ We have our own Discord server related to our project, which you can use to get 
   </a>
 </p>
 
-### Other community channels
-
-For the international community:
-- [Slimefun Addon Community Discord sever](https://discord.gg/SqD3gg5SAU)
-- [dough Discord server](https://discord.gg/c8tk8rP8Wb) (for developers)
-**Note**: These servers can be abandoned fully in the near future.
-
-For the Chinese community (only regarding Gugu Project's Simplified Chinese version):
-- [KOOK server](https://kook.top/oqZwh8)
-- QQ Group: 807302496
-- Addon Discussion QQ Group: 205679802 (Slimefun Addon Discussion and translation group plugin update notifications)
-
 #### Old Official Discord
 
 You can find Slimefun's community server on Discord and communicate with **over 7000** users from around the world.
@@ -190,13 +228,27 @@ People who do not follow the above rules may be kicked or even banned from the s
   </a>
 </p>
 
+### Other community channels
+
+For the international community:
+- [Slimefun Addon Community Discord sever](https://discord.gg/SqD3gg5SAU)
+- [dough Discord server](https://discord.gg/c8tk8rP8Wb) (for developers)
+**Note**: These servers can be abandoned fully in the near future.
+
+For the Chinese community (only regarding Gugu Project's Simplified Chinese version):
+- [KOOK server](https://kook.top/oqZwh8)
+- QQ Group: 807302496
+- Addon Discussion QQ Group: 205679802 (Slimefun Addon Discussion and translation group plugin update notifications)
+
 ## :open_book: Wiki
 
 Slimefun has a (detailed and frequently maintained - *ahem*) Wiki for new players,
 and you can also consider contributing to the Wiki.
 
-Old official Wiki: https://github.com/Slimefun/Slimefun4/wiki
-Unofficial Chinese Wiki: https://slimefun-wiki.guizhanss.cn/
+- [Old official Wiki](https://github.com/Slimefun/Slimefun4/wiki)
+- [Gugu Project's Wiki (in Simplified Chinese)](https://slimefun-wiki.guizhanss.cn/Home)
+
+The Gugu Project's Wiki is maintained by [@ybw0014](https://github.com/ybw0014). If you find missing articles, please report them on the Wiki's Issues page.
 
 #### :star: Useful Documentation
 
@@ -209,8 +261,6 @@ Unofficial Chinese Wiki: https://slimefun-wiki.guizhanss.cn/
 * [Common Issues](https://github.com/Slimefun/Slimefun4/wiki/Common-Issues)
 * [Help us expand the Wiki!](https://github.com/Slimefun/Slimefun4/wiki/Expanding-the-Wiki)
 * [Help us translate Slimefun!](https://github.com/Slimefun/Slimefun4/wiki/Translating-Slimefun)
-
-The Chinese Wiki is maintained by @ybw0014. If you find missing articles, please report them on the Wiki's Issues page.
 
 ## :handshake: Contributing to the Project
 
