@@ -8,7 +8,7 @@
        <ref type="branch">
            <pattern>dev</pattern>
            <version>
-               ${version.core}-alpha-${commit.short}
+               ${version.core}-alpha+${commit.short}
            </version>
        </ref>
    </refs>
