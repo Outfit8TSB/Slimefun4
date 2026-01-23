@@ -31,7 +31,7 @@ jobs:
           MAVEN="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
           echo "MAVEN=$MAVEN" >> $GITHUB_OUTPUT
           
-          CLEAN="${MAVEN%%[-+]*}"
+          CLEAN="${MAVEN%%+*}"
           echo "CLEAN=$CLEAN" >> $GITHUB_OUTPUT
           
           RUN_NUMBER="$CLEAN-${{ github.run_number }}"
