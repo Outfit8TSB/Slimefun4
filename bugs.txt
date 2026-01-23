@@ -1,7 +1,0 @@
-PRIORITY
-Data conversion gives warnings
-
-MINOR
-When an Auto Enchanter is processing items, breaking it will drop nothing
-When an Auto Enchanter is processing items, turning the server off during that time will remove these items and progress
-When all slots in a generator are full, it's possible to put items into output using Shift + click on a specific item
