@@ -76,7 +76,7 @@ Browse addons [here](https://github.com/Slimefun/Slimefun4/wiki/Addons)!
 
 ---
 
-## :framed_picture: Screenshots
+## 🖼 Screenshots
 
 So, what does Slimefun look like?<br>
 We asked some people from our [Discord server](#discord) to send us some screenshots:

@@ -101,17 +101,17 @@ You can also request compatibility with saves, which used other forks of Slimefu
 
 ### :file_cabinet: Compatible server software
 
-| Name                                          | Is compatible?                                                        |
-|-----------------------------------------------|-----------------------------------------------------------------------|
-| Spigot                                        | :x: ([use original Slimefun!](https://github.com/Slimefun/Slimefun4)) |
-| Paper                                         | :heavy_check_mark:                                                    |
-| Purpur                                        | :heavy_check_mark:                                                    |
-| Folia                                         | :x: (it's planned :eyes:)                                             |
-| CraftBukkit                                   | :x:                                                                   |
-| Bukkit                                        | :x:                                                                   |
-| Sponge                                        | :x:                                                                   |
-| Hybrid server software (ArcLight/Mohist etc.) | :x:                                                                   |
-| Fabric/Forge/NeoForge                         | :x: (it's not a mod!)                                                 |
+| Name                                    | Is compatible?                                                        |
+|-----------------------------------------|-----------------------------------------------------------------------|
+| Spigot                                  | :x: ([use original Slimefun!](https://github.com/Slimefun/Slimefun4)) |
+| Paper                                   | :heavy_check_mark:                                                    |
+| Purpur                                  | :heavy_check_mark:                                                    |
+| Folia                                   | :x: (it's planned :eyes:)                                             |
+| CraftBukkit                             | :x:                                                                   |
+| Bukkit                                  | :x:                                                                   |
+| Sponge                                  | :x:                                                                   |
+| Hybrid servers (ArcLight, Mohist, etc.) | :x:                                                                   |
+| Fabric / Forge / NeoForge               | :x: (it's not a mod!)                                                 |
 
 Most forks of Paper should be compatible with Slimefun United.
 
