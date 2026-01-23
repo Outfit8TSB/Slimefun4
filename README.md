@@ -82,11 +82,12 @@ You can check that on many download platforms easily, such as Modrinth or Hangar
 
 ### :arrow_down: Download platforms
 
-| Platform        | Links                                                                                     | Releases           | Alpha (dev) builds |
-|-----------------|-------------------------------------------------------------------------------------------|--------------------|--------------------|
-| Modrinth        | :package: [Downloads](https://modrinth.com/plugin/slimefun-united)                        | :heavy_check_mark: | :heavy_check_mark: |
-| Hangar          | :package: [Downloads](https://hangar.papermc.io/Slimefun-United/Slimefun-United/versions) | :heavy_check_mark: | :heavy_check_mark: |
-| GitHub releases | :package: [Downloads](https://github.com/Slimefun-United/Slimefun-United/releases)        | :heavy_check_mark: | :x:                |
+| Platform        | Links                                                                                               | Releases           | Alpha (dev) builds |
+|-----------------|-----------------------------------------------------------------------------------------------------|--------------------|--------------------|
+| Modrinth        | :package: [Downloads](https://modrinth.com/plugin/slimefun-united)                                  | :heavy_check_mark: | :heavy_check_mark: |
+| Hangar          | :package: [Downloads](https://hangar.papermc.io/Slimefun-United/Slimefun-United/versions)           | :heavy_check_mark: | :heavy_check_mark: |
+| CurseForge      | :package: [Downloads](https://legacy.curseforge.com/minecraft/bukkit-plugins/slimefun-united/files) | :heavy_check_mark: | :heavy_check_mark: |
+| GitHub releases | :package: [Downloads](https://github.com/Slimefun-United/Slimefun-United/releases)                  | :heavy_check_mark: | :x:                |
 
 More download platforms may be added in the future. You can also request one.
 
