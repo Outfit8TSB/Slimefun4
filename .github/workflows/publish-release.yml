@@ -1,4 +1,4 @@
-name: Publish a release to Hangar and Modrinth
+name: Publish a release
 
 on:
   push:

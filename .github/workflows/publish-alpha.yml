@@ -1,4 +1,4 @@
-name: Publish an alpha (dev) build to Hangar and Modrinth
+name: Publish an alpha (dev) build
 
 on:
   push:
