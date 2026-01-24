@@ -53,16 +53,16 @@ You can check for older versions on [Modrinth](https://modrinth.com/plugin/slime
 
 ## 🔌 Server Compatibility
 
-| Server Software                         | Supported?                |
-|-----------------------------------------|---------------------------|
-| Paper                                   | ✅                         |
-| Purpur                                  | ✅                         |
-| Folia                                   | ❌ (planned 👀)            |
-| Spigot                                  | ❌ (use original Slimefun) |
-| CraftBukkit / Bukkit                    | ❌                         |
-| Sponge                                  | ❌                         |
-| Hybrid servers (Mohist, Arclight, etc.) | ❌                         |
-| Fabric / Forge / NeoForge               | ❌ (it's not a mod!)       |
+| Server Software                         | Supported?                                                          |
+|-----------------------------------------|---------------------------------------------------------------------|
+| Spigot                                  | ❌ ([use original Slimefun!](https://github.com/Slimefun/Slimefun4)) |
+| Paper                                   | ✅                                                                   |
+| Purpur                                  | ✅                                                                   |
+| Folia                                   | ❌ (planned 👀)                                                      |
+| CraftBukkit / Bukkit                    | ❌                                                                   |
+| Sponge                                  | ❌                                                                   |
+| Hybrid servers (Mohist, ArcLight, etc.) | ❌                                                                   |
+| Fabric / Forge / NeoForge               | ❌ (it's not a mod!)                                                 |
 
 Most forks of Paper should be compatible.
 
@@ -78,7 +78,7 @@ Browse addons [here](https://github.com/Slimefun/Slimefun4/wiki/Addons)!
 
 ## 🖼 Screenshots
 
-So, what does Slimefun look like?<br>
+So, what does Slimefun United look like?<br>
 We asked some people from our [Discord server](#discord) to send us some screenshots:
 
 |                                    Reactors and Energy                                    |                                Amazing Automation Factory                                 |                                     Magic Laboratory                                      |
@@ -98,7 +98,7 @@ Join [our Discord server](https://discord.gg/C8M6nPyDu6) for help, updates, and 
 
 ## 📚 Wiki
 
-Slimefun has a (detailed and frequently maintained - *ahem*) Wiki for new players,
+Slimefun United has a (detailed and frequently maintained - *ahem*) Wiki for new players,
 and you can also consider contributing to the Wiki.
 
 - [Old official Wiki](https://github.com/Slimefun/Slimefun4/wiki)

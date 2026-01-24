@@ -82,12 +82,12 @@ You can check that on many download platforms easily, such as Modrinth or Hangar
 
 ### :arrow_down: Download platforms
 
-| Platform        | Links                                                                                               | Releases           | Alpha (dev) builds |
-|-----------------|-----------------------------------------------------------------------------------------------------|--------------------|--------------------|
-| Modrinth        | :package: [Downloads](https://modrinth.com/plugin/slimefun-united)                                  | :heavy_check_mark: | :heavy_check_mark: |
-| Hangar          | :package: [Downloads](https://hangar.papermc.io/Slimefun-United/Slimefun-United/versions)           | :heavy_check_mark: | :heavy_check_mark: |
-| CurseForge      | :package: [Downloads](https://legacy.curseforge.com/minecraft/bukkit-plugins/slimefun-united/files) | :heavy_check_mark: | :heavy_check_mark: |
-| GitHub releases | :package: [Downloads](https://github.com/Slimefun-United/Slimefun-United/releases)                  | :heavy_check_mark: | :x:                |
+| Platform        | Links                                                                                                                    | Releases           | Alpha (dev) builds |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------|--------------------|--------------------|
+| Modrinth        | :package: [Downloads](https://modrinth.com/plugin/slimefun-united)                                                       | :heavy_check_mark: | :heavy_check_mark: |
+| Hangar          | :package: [Downloads](https://hangar.papermc.io/Slimefun-United/Slimefun-United/versions)                                | :heavy_check_mark: | :heavy_check_mark: |
+| CurseForge      | :package: [Downloads](https://www.curseforge.com/minecraft/bukkit-plugins/slimefun-united/files/all?showAlphaFiles=show) | :heavy_check_mark: | :heavy_check_mark: |
+| GitHub releases | :package: [Downloads](https://github.com/Slimefun-United/Slimefun-United/releases)                                       | :heavy_check_mark: | :x:                |
 
 More download platforms may be added in the future. You can also request one.
 
@@ -107,9 +107,8 @@ You can also request compatibility with saves, which used other forks of Slimefu
 | Spigot                                  | :x: ([use original Slimefun!](https://github.com/Slimefun/Slimefun4)) |
 | Paper                                   | :heavy_check_mark:                                                    |
 | Purpur                                  | :heavy_check_mark:                                                    |
-| Folia                                   | :x: (it's planned :eyes:)                                             |
-| CraftBukkit                             | :x:                                                                   |
-| Bukkit                                  | :x:                                                                   |
+| Folia                                   | :x: (planned :eyes:)                                                  |
+| CraftBukkit / Bukkit                    | :x:                                                                   |
 | Sponge                                  | :x:                                                                   |
 | Hybrid servers (ArcLight, Mohist, etc.) | :x:                                                                   |
 | Fabric / Forge / NeoForge               | :x: (it's not a mod!)                                                 |
@@ -126,49 +125,66 @@ Most forks of Paper should be compatible with Slimefun United.
 <details>
 <summary>How to add Slimefun United as a dependency?</summary>
 
-First add our repository:
+Dough United can easily be included in Gradle ([Groove](#adding-dough-united-via-gradle-groovy) and [Kotlin](#adding-dough-united-via-gradle-kotlin)) and [Maven](#adding-dough-united-via-maven) using Maven Central or JitPack.
 
-Maven:
+### Adding Slimefun United via Gradle (Groovy)
 
-Gradle: Add the following to your `build.gradle`:
+Simply replace `[SF VERSION]` with the most up-to-date version of Slimefun United: <br />
+![Maven Central](https://img.shields.io/maven-central/v/io.github.slimefun-united/dough?label=latest%20version)
+[![](https://jitpack.io/v/Slimefun-United/Dough-United.svg)](https://jitpack.io/#Slimefun-United/Dough-United)
 
-Release version:
+#### JitPack
+
 ```groovy
 repositories {
-    maven {
-        url "https://maven.norain.city/releases"
-    }
+   maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+   implementation 'com.github.Slimefun-United.Slimefun-United:slimefun-united:[SF VERSION]'
 }
 ```
 
-Development version (Slimefun Insider / DEV branch):
-```groovy
+### Adding Slimefun United via Gradle (Kotlin)
+
+Simply replace `[SF VERSION]` with the most up-to-date version of Slimefun United: <br />
+[![](https://jitpack.io/v/Slimefun-United/Dough-United.svg)](https://jitpack.io/#Slimefun-United/Dough-United)
+
+#### JitPack
+
+```kotlin
 repositories {
-    maven {
-        url "https://maven.norain.city/snapshots"
-    }
+   maven("https://jitpack.io")
+}
+
+dependencies {
+   implementation("com.github.Slimefun-United.Slimefun-United:slimefun-united:[SF VERSION]")
 }
 ```
 
-Then add Slimefun United as a dependency:
+### Adding Slimefun United via Maven
 
-Maven:
+Simply replace `[SF VERSION]` with the most up-to-date version of Slimefun United: <br />
+[![](https://jitpack.io/v/Slimefun-United/Dough-United.svg)](https://jitpack.io/#Slimefun-United/Dough-United)
+
+#### JitPack
 
 ```xml
-<dependency>
-    <groupId>io.github.slimefun_united</groupId>
+<repositories>
+   <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+   </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>com.github.Slimefun-United.Slimefun-United</groupId>
     <artifactId>slimefun-united</artifactId>
-    <version>4.10-SNAPSHOT</version>
-    <scope>provided</scope>
-</dependency>
-```
-
-Gradle:
-
-```groovy
-dependencies {
-    compileOnly 'io.github.slimefun_united:slimefun-united:4.10-SNAPSHOT'
-}
+    <version>[SF VERSION]</version>
+    <scope>compile</scope>
+  </dependency>
+</dependencies>
 ```
 
 </details>
@@ -279,8 +295,8 @@ The Gugu Project's Wiki is maintained by [@ybw0014](https://github.com/ybw0014).
 
 ## :handshake: Contributing to the Project
 
-Slimefun 4 is an open-source project licensed under the [GNU GPLv3](https://github.com/Slimefun/Slimefun4/blob/master/LICENSE).
-Over 100 people have contributed to this project, and they are amazing.
+Slimefun United is an open-source project licensed under the [GNU GPLv3](https://github.com/Slimefun/Slimefun4/blob/master/LICENSE).
+Over 100 people have contributed to this and the original Slimefun, and they are amazing.
 We encourage you to contribute to Slimefun United by submitting PRs. Your contributions keep Slimefun alive <3.
 You can also propose forks with interesting features to be merged with this project.
 
