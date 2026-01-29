@@ -70,4 +70,4 @@ jobs:
     needs: [ setup-preview-build ]
     uses: ./.github/workflows/e2e-testing.yml
     with:
-      artifact-name: slimefun-united-pr-${{ github.event.number }}+${{ env.SHORT_COMMIT_HASH }}
+      artifact-name: slimefun-united-pr-${{ github.event.number }}+${{ needs.setup-preview-build.outputs.short-commit-hash }}
