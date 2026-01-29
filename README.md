@@ -125,13 +125,12 @@ Most forks of Paper should be compatible with Slimefun United.
 <details>
 <summary>How to add Slimefun United as a dependency?</summary>
 
-Dough United can easily be included in Gradle ([Groove](#adding-dough-united-via-gradle-groovy) and [Kotlin](#adding-dough-united-via-gradle-kotlin)) and [Maven](#adding-dough-united-via-maven) using Maven Central or JitPack.
+Dough United can easily be included in Gradle ([Groove](#adding-slimefun-united-via-gradle-groovy) and [Kotlin](#adding-slimefun-united-via-gradle-kotlin)) and [Maven](#adding-slimefun-united-via-maven) using Maven Central or JitPack.
 
 ### Adding Slimefun United via Gradle (Groovy)
 
 Simply replace `[SF VERSION]` with the most up-to-date version of Slimefun United: <br />
-![Maven Central](https://img.shields.io/maven-central/v/io.github.slimefun-united/dough?label=latest%20version)
-[![](https://jitpack.io/v/Slimefun-United/Dough-United.svg)](https://jitpack.io/#Slimefun-United/Dough-United)
+[![](https://jitpack.io/v/Slimefun-United/Slimefun-United.svg)](https://jitpack.io/#Slimefun-United/Slimefun-United)
 
 #### JitPack
 
@@ -148,7 +147,7 @@ dependencies {
 ### Adding Slimefun United via Gradle (Kotlin)
 
 Simply replace `[SF VERSION]` with the most up-to-date version of Slimefun United: <br />
-[![](https://jitpack.io/v/Slimefun-United/Dough-United.svg)](https://jitpack.io/#Slimefun-United/Dough-United)
+[![](https://jitpack.io/v/Slimefun-United/Slimefun-United.svg)](https://jitpack.io/#Slimefun-United/Slimefun-United)
 
 #### JitPack
 
@@ -165,7 +164,7 @@ dependencies {
 ### Adding Slimefun United via Maven
 
 Simply replace `[SF VERSION]` with the most up-to-date version of Slimefun United: <br />
-[![](https://jitpack.io/v/Slimefun-United/Dough-United.svg)](https://jitpack.io/#Slimefun-United/Dough-United)
+[![](https://jitpack.io/v/Slimefun-United/Slimefun-United.svg)](https://jitpack.io/#Slimefun-United/Slimefun-United)
 
 #### JitPack
 
@@ -216,7 +215,7 @@ After compilation is complete, you can find the compiled plugin file in the `Sli
 ## :framed_picture: Screenshots
 
 So, what does Slimefun look like?<br>
-We asked some people from our [Discord server](#discord) to send us some screenshots:
+We asked some people from our [Discord server](https://discord.gg/slimefun) to send us some screenshots:
 
 |                                    Reactors and Energy                                    |                                Amazing Automation Factory                                 |                                     Magic Laboratory                                      |
 |:-----------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|
