@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report issues and bugs encountered while using Slimefun 4
+description: Report issues and bugs encountered while using Slimefun United
 labels:
   - "🐞 Bug"
   - "🎯 Needs testing"
@@ -13,7 +13,7 @@ body:
 
         Before submitting feedback, please make sure:
         - You have taken a look at our [troubleshooting guide](https://github.com/Slimefun/Slimefun4/wiki/How-to-report-bugs)
-        - You have checked whether the [latest version](https://github.com/Slimefun-United/Slimefun-United/releases) has already fixed the issue you encountered
+        - You have checked whether the [latest version](https://modrinth.com/plugin/slimefun-united/versions) has already fixed the issue you encountered
         - You have searched existing [issues](https://github.com/Slimefun-United/Slimefun-United/issues) to see if a similar problem has been reported
         
         If your feedback is unclear or does not follow the template, it will be closed immediately.
@@ -41,11 +41,11 @@ body:
     id: issue-description
     attributes:
       label: '📍 Issue Description'
-    description: |
-      A clear and detailed description of what went wrong.
-      The more information you can provide, the easier we can handle this problem.
-    placeholder: |
-      When doing [...] I experienced [...], I am pretty sure this is not intended and should be fixed.
+      description: |
+        A clear and detailed description of what went wrong.
+        The more information you can provide, the easier we can handle this problem.
+      placeholder: |
+        When doing [...] I experienced [...], I am pretty sure this is not intended and should be fixed.
     validations:
       required: true
 
@@ -71,10 +71,6 @@ body:
         Tell us the exact steps to reproduce this issue, the more detailed the easier we can reproduce it.
         You may use a list format such as 1.  2.  3., or any other appropriate format.
         If the issue is difficult to reproduce, please describe the situation when it occurred as clearly as possible.
-    placeholder: |
-      1. Do [...]
-      2. Then do [...]
-      3. Now [...] happens
     validations:
       required: true
 
@@ -85,7 +81,7 @@ body:
       description: |
         Please select the software your server is running on, such as `Paper`.
         Note: Wo do **not** support hybrid servers
-        (e.g., Arclight, Mohist that support both plugins and mods). 
+        (e.g., ArcLight, Mohist that support both plugins and mods). 
         Please resolve such issues on your own or report them to the creators of such server software.
       options:
         - Paper
@@ -142,6 +138,7 @@ body:
       label: '🎮 Minecraft Version'
       description: 'Please select the Minecraft version of the server'
       options:
+        - 1.21.11
         - 1.21.9~1.21.10
         - 1.21.7~1.21.8
         - 1.21.6
@@ -161,8 +158,6 @@ body:
 
   - type: textarea
     id: slimefun-version
-    validations:
-      required: true
     attributes:
       label: '⭐ Slimefun version'
       description: |
@@ -170,6 +165,8 @@ body:
         We recommend running "/sf versions" and uploading a screenshot of that.
         Make sure that the screenshot covers the entire output of that command.
       placeholder: Slimefun 4.10
+    validations:
+      required: true
 
   - type: textarea
     id: other-plugins

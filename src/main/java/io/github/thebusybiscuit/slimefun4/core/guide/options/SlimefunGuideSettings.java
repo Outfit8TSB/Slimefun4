@@ -126,7 +126,7 @@ public final class SlimefunGuideSettings {
            "&7Forks: &e" + github.getForks(),
            "&7Stars: &e" + github.getStars(),
            "",
-           "&7&oSlimefun 4 is a community project,",
+           "&7&oSlimefun United is a community project,",
            "&7&othe source code is available on GitHub",
            "&7&oand if you want to keep this Plugin alive,",
            "&7&othen please consider contributing to it",
@@ -136,7 +136,7 @@ public final class SlimefunGuideSettings {
 
         menu.addMenuClickHandler(6, (pl, slot, item, action) -> {
             pl.closeInventory();
-            ChatUtils.sendURL(pl, "https://github.com/Slimefun/Slimefun4");
+            ChatUtils.sendURL(pl, "https://github.com/Slimefun-United/Slimefun-United");
             return false;
         });
 
@@ -153,7 +153,7 @@ public final class SlimefunGuideSettings {
 
         menu.addMenuClickHandler(8, (pl, slot, item, action) -> {
             pl.closeInventory();
-            ChatUtils.sendURL(pl, "https://github.com/Slimefun/Slimefun4/wiki");
+            ChatUtils.sendURL(pl, "https://github.com/Slimefun-United/Slimefun-United/wiki");
             return false;
         });
 
@@ -172,7 +172,7 @@ public final class SlimefunGuideSettings {
 
         menu.addMenuClickHandler(47, (pl, slot, item, action) -> {
             pl.closeInventory();
-            ChatUtils.sendURL(pl, "https://github.com/Slimefun/Slimefun4/wiki/Addons");
+            ChatUtils.sendURL(pl, "https://github.com/Slimefun-United/Slimefun-United/wiki/Addons");
             return false;
         });
 
@@ -191,7 +191,7 @@ public final class SlimefunGuideSettings {
 
             menu.addMenuClickHandler(49, (pl, slot, item, action) -> {
                 pl.closeInventory();
-                ChatUtils.sendURL(pl, "https://github.com/Slimefun/Slimefun4/issues");
+                ChatUtils.sendURL(pl, "https://github.com/Slimefun-United/Slimefun-United/issues");
                 return false;
             });
         } else {

@@ -9,7 +9,7 @@ options:
   # Auto check and update from Github for new versions
   auto-update: false
   # Prefix for all Slimefun messages
-  chat-prefix: '&a&lSlimefun 4 &7> '
+  chat-prefix: '&a&lSlimefun United &7> '
   # Update interval for Slimefun armor effects
   armor-update-interval: 10
   # Enable/disable armor effects

@@ -1,5 +1,9 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
+
 contact_links:
-  - name: No GitHub account? Not sure how to use GitHub?
-    url: https://docs.qq.com/form/page/DSlFOZmpTQ1JsZ2FD
-    about: Click here to submit a bug report using Tencent Docs
+  - name: Our Discord server
+    url: https://discord.gg/C8M6nPyDu6
+    about: Click here to join our Discord server and ask for help!
+#  - name: No GitHub account? Not sure how to use GitHub?
+#    url: https://docs.qq.com/form/page/DSlFOZmpTQ1JsZ2FD
+#    about: Click here to submit a bug report using Tencent Docs
