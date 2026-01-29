@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 public class DataUtils {
     /**
@@ -34,7 +33,7 @@ public class DataUtils {
         try (var stream = new ByteArrayOutputStream();
                 var bs = new BukkitObjectOutputStream(stream)) {
             bs.writeObject(itemStack);
-            var itemStr = Base64Coder.encodeLines(stream.toByteArray());
+            var itemStr = Base64.getEncoder().encodeToString(stream.toByteArray());
 
             if (!Slimefun.getConfigManager().isBypassItemLengthCheck()
                     && Slimefun.getDatabaseManager().getBlockDataStorageType() == StorageType.MYSQL
@@ -64,7 +63,7 @@ public class DataUtils {
 
         Debug.log(TestCase.BACKPACK, "Deserializing itemstack: " + base64Str);
 
-        try (var stream = new ByteArrayInputStream(Base64Coder.decodeLines(base64Str));
+        try (var stream = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64Str));
                 var bs = new BukkitObjectInputStream(stream)) {
             var result = (ItemStack) bs.readObject();
 
