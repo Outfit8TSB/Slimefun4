@@ -29,7 +29,7 @@ while also offering **full localisation support**, simple release cycle, frequen
 This project treats the following Slimefun forks as its upstreams:
 - [Slimefun Gugu Project](https://github.com/SlimefunGuguProject/Slimefun4)
 - [SaanPrasanna's fork](https://github.com/SaanPrasanna/Slimefun4)
-- Slimefun Lab's fork - repo not available anymore
+- Slimefun Lab's fork - repo not available anymore, but you can check out [our archive](https://github.com/Slimefun-United/Slimefun-United/tree/archive/sf-lab)
 
 **Note:** Please report issues specific to this project here in the [issues tab](https://github.com/Slimefun-United/Slimefun-United/issues).
 
