@@ -81,7 +81,7 @@ body:
       description: |
         Please select the software your server is running on, such as `Paper`.
         Note: Wo do **not** support hybrid servers
-        (e.g., ArcLight, Mohist that support both plugins and mods). 
+        (e.g. ArcLight, Mohist that support both plugins and mods). 
         Please resolve such issues on your own or report them to the creators of such server software.
       options:
         - Paper
@@ -110,7 +110,7 @@ body:
     attributes:
       label: '📷 Screenshots / Videos'
       description: |
-        The best way to illustrate in an issue is by recording a Video or taking a Screenshot.
+        The best way to illustrate in an issue is by recording a video or taking a screenshot.
         If you can capture any footage of the bug happening, it would help us out a lot!
       placeholder: |
         Drag and drop an image or video onto this field to upload it.
@@ -120,7 +120,7 @@ body:
     attributes:
       label: '📜 Server Log'
       description: |
-        Take a look at your server log and upload any error messages from Slimefun to a pasting site (e.g. https://pastebin.com/).
+        Take a look at your server log and upload any error messages from Slimefun to a pasting site (e.g. [Pastebin](https://pastebin.com/)).
         If you are unsure about it, post your full log, you can find it under /logs/latest.log
       placeholder: https://pastebin.com/...
 
@@ -129,7 +129,7 @@ body:
     attributes:
       label: '📂 `/error-reports/` folder'
       description: |
-        Check the folder `/plugins/Slimefun/error-reports/` and upload any files inside that folder to a pasting site (e.g. https://pastebin.com/).
+        Check the folder `/plugins/Slimefun/error-reports/` and upload any files inside that folder to a pasting site (e.g. [Pastebin](https://pastebin.com/)).
       placeholder: https://pastebin.com/...
 
   - type: dropdown
