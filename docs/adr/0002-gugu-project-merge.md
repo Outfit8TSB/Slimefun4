@@ -1,4 +1,4 @@
-# About the merge
+# 2. Merge with Gugu Project
 
 The merge happened in [commit `68d500f`](https://github.com/Slimefun-United/Slimefun-United/commit/68d500f2a98af5df7796fa8ac1d4ee15db57c405).
 
@@ -35,12 +35,12 @@ I don't want it to go to waste.
 
 Checked issues have been resolved.
 
-### PRIORITY
+### Priority
 - [x] Generators do not work!
 - [x] Elemental staffs do not work (Multitool does)
 - [ ] Data conversion gives warnings
 
-### MINOR
+### Minor
 - [ ] When an Auto Enchanter is processing items, breaking it will drop nothing
 - [ ] When an Auto Enchanter is processing items, turning the server off during that time will remove these items and progress
 - [ ] When all slots in a generator are full, it's possible to put items into output using Shift + click on a specific item
