@@ -9,7 +9,7 @@ This of course requires good information and knowledge about ongoing bugs and is
 
 You can help this project by reporting a bug on our [Issues Tracker](https://github.com/Slimefun-United/Slimefun-United/issues).<br>
 Please adhere to the provided template and provide as much information as possible.
-For more info on how to make good and helpful bug reports, check out our article on [How to report bugs](https://github.com/Slimefun-United/Slimefun-United/wiki/How-to-report-bugs).
+For more info on how to make good and helpful bug reports, check out our article on [How to report bugs](https://github.com/Slimefun/Slimefun4/wiki/How-to-report-bugs).
 
 If you encounter an issue which has already been reported, please don't open a new one.<br>
 It would be awesome though if you could post a comment on the existing issue which explains how you were able to reproduce this yourself.
@@ -79,20 +79,21 @@ More or better Unit Tests are always good to have, so feel free to submit a Test
 We are using [Junit 5 - Jupiter](https://github.com/junit-team/junit5/) and [MockBukkit](https://github.com/seeseemelk/MockBukkit) as our testing environment.<br>
 Every new Unit Test should have a `@DisplayName` annotation with a plain text description on what the Unit Test tests.
 
-## :toolbox: How to compile Slimefun4
+## :toolbox: How to compile Slimefun United
 Slimefun is written in Java and uses [Maven](https://maven.apache.org/) for compilation.<br>
-To compile Slimefun yourself, follow these steps:
+To compile Slimefun United yourself, follow these steps:
 
 1. Clone the project via git<br>
-   `$ git clone https://github.com/Slimefun/Slimefun4/`
+   `$ git clone https://github.com/Slimefun-United/Slimefun-United.git`
 2. Compile the project using Maven<br>
-   `$ mvn clean package`
-3. Extract the compiled `Slimefun-v4.X-UNOFFICIAL.jar` from your `/target/` directory.
+   - If you are on Windows: `.\mvnw.cmd package`
+   - If you are on a Unix-like system: `.\mvnw package`
+3. Extract the compiled `slimefun-united-4.X-alpha+a1b2c3d.jar` from your `/target/` directory.
 
 If you are already using an IDE, make sure to import the project via git and set it up as a *Maven project*.
-Then you should be able build it via Maven using the goals `clean package`.
+Then you should be able to build it with Maven using the goals `clean package`.
 
-If you have any further questions, then please join our [Discord Support Server](https://discord.gg/C8M6nPyDu6) and ask your questions in the `#programming-help` channel.<br>
+If you have any further questions, then please join our [Discord Support Server](https://discord.gg/C8M6nPyDu6) and ask your questions in the `#slimefun` channel.<br>
 **Note that we will not accept any bug reports from custom-compiled versions of Slimefun**.
 
 ## :black_nib: Code style guidelines
@@ -216,7 +217,7 @@ This project **requires** the use of [Conventional Commits](https://www.conventi
 > `<type>[optional scope]: <description>`
 >
 > For example, a commit that adds a new feature should look like:
-> `feat(item): add new item to Slimefun`
+> `feat(item): add new item`
 
 If your commit resolves or addresses an Issue, you must explicitly reference it outside the main commit message.
 
