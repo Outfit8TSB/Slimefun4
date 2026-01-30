@@ -3,10 +3,7 @@ options:
   # Auto updates should be disabled for now as automatic updates still haven't been updated
   # and only include legacy builds
 
-  # backwards-compatibility - Item backwards compatibility mode, disabling this will use new item system
-  #                             and improve performance
-
-  # Auto check and update from Github for new versions
+  # Auto check and update from GitHub for new versions
   auto-update: false
   # Prefix for all Slimefun messages
   chat-prefix: '&a&lSlimefun United &7> '
