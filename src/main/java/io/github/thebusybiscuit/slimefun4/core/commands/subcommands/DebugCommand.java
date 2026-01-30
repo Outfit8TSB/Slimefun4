@@ -17,7 +17,7 @@ import org.bukkit.command.CommandSender;
 public class DebugCommand extends SubCommand {
 
     protected DebugCommand(@Nonnull Slimefun plugin, @Nonnull SlimefunCommand cmd) {
-        super(plugin, cmd, "debug", true);
+        super(plugin, cmd, "debug", false);
     }
 
     @Override

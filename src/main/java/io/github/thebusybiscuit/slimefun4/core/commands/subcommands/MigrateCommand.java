@@ -14,7 +14,7 @@ import org.bukkit.command.ConsoleCommandSender;
 
 public class MigrateCommand extends SubCommand {
     MigrateCommand(Slimefun plugin, SlimefunCommand cmd) {
-        super(plugin, cmd, "migrate", true);
+        super(plugin, cmd, "migrate", false);
     }
 
     @Nonnull
