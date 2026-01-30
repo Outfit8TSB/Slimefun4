@@ -1,5 +1,31 @@
 # 2. Merge with Gugu Project
 
+Date: 2025-12-27
+Last update: 2026-01-30
+
+## Status
+
+Done
+
+## Context
+
+Because original development of Slimefun has been very slow in the past months, Gugu Project started to add
+new features to their fork, they also stopped to merge changes from the original Slimefun a few months before
+its official abandonment.
+
+### Gugu Project's additions
+
+* New storage types (SQLite, MySQL, PostgreSQL)
+* A few new commands:
+  * /sf id
+  *  /sf reload
+  *  /sf blockdata
+  *  /sf banitem
+  *  /sf unbanitem
+  *  /sf cleardata
+
+## Technical details
+
 The merge happened in [commit `68d500f`](https://github.com/Slimefun-United/Slimefun-United/commit/68d500f2a98af5df7796fa8ac1d4ee15db57c405).
 
 The merge was between the latest commit from the `experimental` branch of original Slimefun and the Gugu Project's `dev`.
