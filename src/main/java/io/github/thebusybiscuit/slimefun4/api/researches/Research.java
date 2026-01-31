@@ -371,6 +371,46 @@ public class Research implements Keyed {
     }
 
     /**
+     * This unlocks this {@link Research} for the given {@link Player} without any form of callback.
+     *
+     * @param p
+     *            The {@link Player} who should unlock this {@link Research}
+     * @param instant
+     *            Whether to unlock it instantly
+     * @param launchFireworks
+     *            Whether fireworks should be launched or not
+     * @param notifyUnlocked
+     *            Whether notify the player about unlocking the {@link Research}
+     */
+    public void unlock(@Nonnull Player p, boolean instant, boolean launchFireworks, boolean notifyUnlocked) {
+        unlock(p, instant, null, launchFireworks, notifyUnlocked);
+    }
+
+    /**
+     * Unlocks this {@link Research} for the specified {@link Player}.
+     *
+     * @param p
+     *            The {@link Player} for which to unlock this {@link Research}
+     * @param isInstant
+     *            Whether to unlock this {@link Research} instantly
+     * @param callback
+     *            A callback which will be run when the {@link Research} animation completed
+     * @param launchFireworks
+     *            Whether fireworks should be launched or not
+     * @param notifyUnlocked
+     *            Whether notify the player about unlocking the {@link Research}
+     */
+    public void unlock(
+        @Nonnull Player p,
+        boolean isInstant,
+        @Nullable Consumer<Player> callback,
+        boolean launchFireworks,
+        boolean notifyUnlocked
+    ) {
+        PlayerProfile.get(p, new PlayerResearchTask(this, isInstant, callback, launchFireworks, notifyUnlocked));
+    }
+
+    /**
      * Registers this {@link Research}.
      */
     public void register() {
