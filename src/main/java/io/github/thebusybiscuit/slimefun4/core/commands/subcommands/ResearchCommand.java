@@ -101,7 +101,7 @@ class ResearchCommand extends SubCommand {
         }
 
         Slimefun.getLocalization()
-            .sendMessage(p, "messages.unlocked_all", true, msg -> msg);
+            .sendMessage(p, "messages.unlocked-all", true, msg -> msg);
 
         FireworkUtils.launchRandom(p, 1);
 
