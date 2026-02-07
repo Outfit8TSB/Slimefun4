@@ -14,6 +14,10 @@
 </p>
 <hr />
 
+> [!WARNING]
+> This project is still under heavy development and only development/alpha builds are available for now.
+> You should **NOT** use it on your server! If you decide to use it anyway, make frequent back-ups!
+
 A modern and organised continuation of Slimefun's legacy with full support for community translations and add-ons.
 
 Slimefun is a plugin that aims to provide a modding-like experience. It offers everything you can imagine, from jetpacks to magic altars!
@@ -31,10 +35,6 @@ At the same time, Slimefun also has a wide variety of addon plugins to choose fr
 Check out the [Addon List](https://github.com/Slimefun/Slimefun4/wiki/Addons) to find the addons you want!
 
 Download [SlimeGlue](https://github.com/Xzavier0722/SlimeGlue/) to ensure compatibility between Slimefun United and other protection plugins
-
-> [!WARNING]
-> This project is still under heavy development and only development/alpha builds are available for now.
-> You should **NOT** use it on your server! If you decide to use it anyway, make frequent back-ups!
 
 ### :information_source: About this project
 
