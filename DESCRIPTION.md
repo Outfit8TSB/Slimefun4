@@ -20,7 +20,7 @@ It offers a **modded‑like experience** on an **unmodded Minecraft server**, ad
 
 Compatible with worlds previously using:
 
-- The official Slimefun 4
+- The original Slimefun 4
 - Gugu Project’s fork
 - Other community forks (on request)
 
@@ -148,7 +148,8 @@ No personal data is collected.
 
 ## 💚 Credits
 
-- Many thanks to TheBusyBiscuit and **countless contributors** and an **amazing community**, which made original Slimefun possible!
-- Slimefun Gugu Project for many new features, bug fixes and updates
-- SaanPrasanna for his translation of Gugu Project's Slimefun fork
-- TheoDoR for his Slimefun Lab and some bug fixes and updates
+- Many thanks to [TheBusyBiscuit](https://github.com/TheBusyBiscuit) and **countless contributors** and an **amazing community**, which made original Slimefun possible!
+- [Slimefun Gugu Project](https://github.com/SlimefunGuguProject) for many new features, bug fixes and updates
+- [neokini](https://github.com/neokoni) for [Craft233MC's Folia-oriented fork](https://github.com/Craft233MC/Slimefun4)
+- [SaanPrasanna](https://github.com/SaanPrasanna) for [his translation](https://github.com/SaanPrasanna/Slimefun4) of Gugu Project's Slimefun fork
+- [TheoDoR](https://github.com/imTheoDoR) for his Slimefun Lab and some bug fixes and updates

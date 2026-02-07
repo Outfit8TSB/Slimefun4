@@ -248,9 +248,11 @@ We have our own Discord server related to our project, which you can use to get 
 
 #### Old Official Discord
 
+> [!CAUTION]
+> The official Slimefun Discord server does **not** accept any form of issue reports. Please use the [issue tracker](https://github.com/Slimefun-United/Slimefun-United/issues) to report issues!
+
 You can find Slimefun's community server on Discord and communicate with **over 7000** users from around the world.
 As original Slimefun has been abandoned, the server is going to be archived in some future, so keep that in mind.
-**Note**: The official Slimefun Discord server does **not** accept any form of issue reports. Please use the [issue tracker](https://github.com/Slimefun-United/Slimefun-United/issues) to report issues!
 
 Please familiarise yourself with the [important rules](https://github.com/Slimefun/Slimefun4/wiki/Discord-Rules) of the official Discord server before joining.
 People who do not follow the above rules may be kicked or even banned from the server.
@@ -277,13 +279,13 @@ For the Chinese community (only regarding Gugu Project's Simplified Chinese vers
 
 ## :open_book: Wiki
 
-Slimefun has a (detailed and frequently maintained - *ahem*) Wiki for new players,
-and you can also consider contributing to the Wiki.
+Slimefun has a (detailed and frequently maintained - *ahem*) wiki for new players,
+and you can also consider contributing to the wiki.
 
 - [Old official Wiki](https://github.com/Slimefun/Slimefun4/wiki)
 - [Gugu Project's Wiki (in Simplified Chinese)](https://slimefun-wiki.guizhanss.cn/Home)
 
-The Gugu Project's Wiki is maintained by [@ybw0014](https://github.com/ybw0014). If you find missing articles, please report them on the Wiki's Issues page.
+The Gugu Project's wiki is maintained by [@ybw0014](https://github.com/ybw0014). If you find missing articles, please report them on the wiki's issues page.
 
 #### :star: Useful Documentation
 
@@ -371,7 +373,8 @@ Please note: Slimefun United is not affiliated with Mojang Studios or Minecraft.
 
 ## :green_heart: Credits
 
-- Many thanks to TheBusyBiscuit and **countless contributors** and an **amazing community**, which made original Slimefun possible!
-- Slimefun Gugu Project for many new features, bug fixes and updates
-- SaanPrasanna for his translation of Gugu Project's Slimefun fork
-- TheoDoR for his Slimefun Lab and some bug fixes and updates
+- Many thanks to [TheBusyBiscuit](https://github.com/TheBusyBiscuit) and **countless contributors** and an **amazing community**, which made original Slimefun possible!
+- [Slimefun Gugu Project](https://github.com/SlimefunGuguProject) for many new features, bug fixes and updates
+- [neokini](https://github.com/neokoni) for [Craft233MC's Folia-oriented fork](https://github.com/Craft233MC/Slimefun4)
+- [SaanPrasanna](https://github.com/SaanPrasanna) for [his translation](https://github.com/SaanPrasanna/Slimefun4) of Gugu Project's Slimefun fork
+- [TheoDoR](https://github.com/imTheoDoR) for his Slimefun Lab and some bug fixes and updates
