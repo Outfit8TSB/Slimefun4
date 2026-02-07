@@ -16,23 +16,6 @@
 
 A modern and organised continuation of Slimefun's legacy with full support for community translations and add-ons.
 
-Compatible with saves, which used both [the official version of Slimefun](https://github.com/Slimefun/Slimefun4)
-and [Gugu Project's (Simplified Chinese translation) fork](https://github.com/SlimefunGuguProject/Slimefun4).
-
-Download [SlimeGlue](https://github.com/Xzavier0722/SlimeGlue/) to ensure compatibility between Slimefun United and other protection plugins
-
-### About this project
-
-This project is focused on bringing all the best features of every Slimefun fork and the official, discontinued version together,
-while also offering **full localisation support**, simple release cycle, frequent updates and bug fixes.
-
-This project treats the following Slimefun forks as its upstreams:
-- [Slimefun Gugu Project](https://github.com/SlimefunGuguProject/Slimefun4)
-- [SaanPrasanna's fork](https://github.com/SaanPrasanna/Slimefun4)
-- Slimefun Lab's fork - repo not available anymore, but you can check out [our archive](https://github.com/Slimefun-United/Slimefun-United/tree/archive/sf-lab)
-
-**Note:** Please report issues specific to this project here in the [issues tab](https://github.com/Slimefun-United/Slimefun-United/issues).
-
 Slimefun is a plugin that aims to provide a modding-like experience. It offers everything you can imagine, from jetpacks to magic altars!
 
 Slimefun allows every player to decide whether to develop in magic or technology.
@@ -47,7 +30,31 @@ Currently, Slimefun has added more than **500 new items/crafting recipes**
 At the same time, Slimefun also has a wide variety of addon plugins to choose from!<br>
 Check out the [Addon List](https://github.com/Slimefun/Slimefun4/wiki/Addons) to find the addons you want!
 
-### Navigation
+Download [SlimeGlue](https://github.com/Xzavier0722/SlimeGlue/) to ensure compatibility between Slimefun United and other protection plugins
+
+> [!WARNING]
+> This project is still under heavy development and only development/alpha builds are available for now.
+> You should **NOT** use it on your server! If you decide to use it anyway, make frequent back-ups!
+
+### :information_source: About this project
+
+This project is focused on bringing all the best of every Slimefun fork and the official, discontinued version together,
+while also offering **full localisation support**, simple release cycle, frequent updates, bug fixes and much more.
+
+This project treats the following Slimefun forks as its upstreams:
+- [Slimefun Gugu Project](https://github.com/SlimefunGuguProject/Slimefun4)
+- [Craft233MC's Folia-oriented fork](https://github.com/Craft233MC/Slimefun4)
+- [SaanPrasanna's fork](https://github.com/SaanPrasanna/Slimefun4)
+- Slimefun Lab's fork - repo not available anymore, but you can check out [our archive](https://github.com/Slimefun-United/Slimefun-United/tree/archive/sf-lab)
+
+**Note:** Please report issues specific to this project here in the [issues tab](https://github.com/Slimefun-United/Slimefun-United/issues).
+
+### :pushpin: Roadmap
+The full development roadmap, including storage migration, localization, and module system plans, is available here:
+
+➡️ [ROADMAP.md](ROADMAP.md)
+
+### :world_map: Navigation
 
 * **[Download Slimefun United](#floppy_disk-downloading-slimefun-united)**
 * **[Compatibility](#electric_plug-compatibility)**
@@ -82,12 +89,12 @@ You can check that on many download platforms easily, such as Modrinth or Hangar
 
 ### :arrow_down: Download platforms
 
-| Platform        | Links                                                                                                                    | Releases           | Alpha (dev) builds |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------|--------------------|--------------------|
-| Modrinth        | :package: [Downloads](https://modrinth.com/plugin/slimefun-united)                                                       | :heavy_check_mark: | :heavy_check_mark: |
-| Hangar          | :package: [Downloads](https://hangar.papermc.io/Slimefun-United/Slimefun-United/versions)                                | :heavy_check_mark: | :heavy_check_mark: |
-| CurseForge      | :package: [Downloads](https://www.curseforge.com/minecraft/bukkit-plugins/slimefun-united/files/all?showAlphaFiles=show) | :heavy_check_mark: | :heavy_check_mark: |
-| GitHub releases | :package: [Downloads](https://github.com/Slimefun-United/Slimefun-United/releases)                                       | :heavy_check_mark: | :x:                |
+| Platform        | Links                                                                                                                    | Releases | Alpha (dev) builds |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------|----------|--------------------|
+| Modrinth        | :package: [Downloads](https://modrinth.com/plugin/slimefun-united)                                                       | :x:      | :heavy_check_mark: |
+| Hangar          | :package: [Downloads](https://hangar.papermc.io/Slimefun-United/Slimefun-United/versions)                                | :x:      | :heavy_check_mark: |
+| CurseForge      | :package: [Downloads](https://www.curseforge.com/minecraft/bukkit-plugins/slimefun-united/files/all?showAlphaFiles=show) | :x:      | :x:                |
+| GitHub releases | :package: [Downloads](https://github.com/Slimefun-United/Slimefun-United/releases)                                       | :x:      | :x:                |
 
 More download platforms may be added in the future. You can also request one.
 
@@ -110,7 +117,7 @@ You can also request compatibility with saves, which used other forks of Slimefu
 | Folia                                   | :x: (planned :eyes:)                                                  |
 | CraftBukkit / Bukkit                    | :x:                                                                   |
 | Sponge                                  | :x:                                                                   |
-| Hybrid servers (ArcLight, Mohist, etc.) | :x:                                                                   |
+| Hybrid servers (Arclight, Mohist, etc.) | :x:                                                                   |
 | Fabric / Forge / NeoForge               | :x: (it's not a mod!)                                                 |
 
 Most forks of Paper should be compatible with Slimefun United.
