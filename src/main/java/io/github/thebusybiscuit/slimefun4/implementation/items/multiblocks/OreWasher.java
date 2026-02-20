@@ -81,6 +81,9 @@ public class OreWasher extends MultiBlockMachine {
         recipes.add(SlimefunItems.SIFTED_ORE.item());
         recipes.add(SlimefunItems.GOLD_DUST.item());
 
+        recipes.add(SlimefunItems.SIFTED_ORE.item());
+        recipes.add(SlimefunItems.COPPER_DUST.item());
+
         recipes.add(new ItemStack(Material.SAND));
         recipes.add(SlimefunItems.SALT.item());
     }
