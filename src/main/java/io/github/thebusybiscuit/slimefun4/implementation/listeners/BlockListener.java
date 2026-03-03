@@ -76,6 +76,9 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockPlaceExisting(BlockPlaceEvent e) {
+        if (!e.canBuild()) {
+            return;
+        }
         Block block = e.getBlock();
         var loc = block.getLocation();
 
@@ -118,6 +121,9 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent e) {
+        if (!e.canBuild()) {
+            return;
+        }
         ItemStack item = e.getItemInHand();
         SlimefunItem sfItem = SlimefunItem.getByItem(item);
 
