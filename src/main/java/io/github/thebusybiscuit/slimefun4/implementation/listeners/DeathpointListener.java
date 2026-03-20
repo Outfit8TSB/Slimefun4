@@ -19,7 +19,7 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 /**
  * This {@link Listener} listens to the {@link EntityDeathEvent} to automatically
  * create a waypoint for a {@link Player} who carries an Emergency Transmitter.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -36,7 +36,14 @@ public class DeathpointListener implements Listener {
         Player p = e.getEntity();
 
         if (SlimefunUtils.containsSimilarItem(p.getInventory(), SlimefunItems.GPS_EMERGENCY_TRANSMITTER.item(), true)) {
-            Slimefun.getGPSNetwork().addWaypoint(p, "player:death " + Slimefun.getLocalization().getMessage(p, "gps.deathpoint").replace("%date%", format.format(LocalDateTime.now())), p.getLocation().getBlock().getLocation());
+            Slimefun.getGPSNetwork()
+                    .addWaypoint(
+                            p,
+                            "player:death "
+                                    + Slimefun.getLocalization()
+                                            .getMessage(p, "gps.deathpoint")
+                                            .replace("%date%", format.format(LocalDateTime.now())),
+                            p.getLocation().getBlock().getLocation());
         }
     }
 }

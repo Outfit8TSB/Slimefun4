@@ -1,142 +1,334 @@
-# Slimefun 4
-*Looking for the download link? [**Click here**](https://github.com/Slimefun/Slimefun4/blob/master/README.md#floppy_disk-download-slimefun-4)*
+# Slimefun United
 
-Slimefun is a plugin which aims to turn your Spigot Server into a modpack without ever installing a single mod. It offers everything you could possibly imagine. From Backpacks to Jetpacks! Slimefun lets every player decide on their own how much they want to dive into Magic or Tech.<br>
-We got everything from magical wands to nuclear reactors.<br>
-We feature a magical altar, an electric power grid and even item transport systems.
-
-This project originally started back **in 2013** and has grown ever since.<br>
-From one single person working on this plugin back then, we grew to a community of thousands of players and hundreds of contributors to this project.<br>
-It currently adds over **500 new items and recipes** to Minecraft ([Read more about the history of this project](https://github.com/Slimefun/Slimefun4/wiki/Slimefun-in-a-nutshell)).
-
-But it also comes with a lot of addons! Check out our [addons](https://github.com/Slimefun/Slimefun4/wiki/Addons), you may find exactly what you were looking for.
-
-### Quick navigation
-* **[:floppy_disk: Download Slimefun4](#floppy_disk-download-slimefun-4)**
-* **[:framed_picture: Screenshots](#framed_picture-screenshots)**
-* **[:headphones: Discord Support Server](#headphones-discord)**
-* **[:beetle: Bug Tracker](https://github.com/Slimefun/Slimefun4/issues)**
-* **[:open_book: Wiki](https://github.com/Slimefun/Slimefun4/wiki)**
-* **[:interrobang: FAQ](https://github.com/Slimefun/Slimefun4/wiki/FAQ)**
-* **[:handshake: How to contribute](https://github.com/Slimefun/Slimefun4/blob/master/CONTRIBUTING.md)**
-
-## :floppy_disk: Download Slimefun 4
-Slimefun requires your Minecraft Server to be running on [Spigot](https://spigotmc.org/), [Paper](https://papermc.io/) or on any fork of these.<br>
-(See also: [How to install Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Installing-Slimefun))
-
-Slimefun 4 can be downloaded **for free** on our builds page.<br>
-We currently provide two distinct versions of Slimefun, development builds and "stable" builds.<br>
-Here is a full summary of the differences between the two different versions of Slimefun.
-
-| | development (latest) | "stable" |
-| ------------------ | -------- | -------- |
-| **Minecraft version(s)** | :video_game: **1.16.\* - 1.20.\*** | :video_game: **1.16.\* - 1.20.\*** |
-| **Java version** | :computer: **Java 16 (or higher)** | :computer: **Java 16 (or higher)** |
-| **automatic updates** | :heavy_check_mark: | :heavy_check_mark: |
-| **frequent updates** | :heavy_check_mark: | :x: |
-| **latest content** | :heavy_check_mark: | :x: |
-| **Discord support** | :heavy_check_mark: | :x: |
-| **Bug Reports** | :heavy_check_mark: | :x: |
-| **testing before release** | :x: | :heavy_check_mark: |
-| **change logs** | :x: | :memo: **[change log](https://github.com/Slimefun/Slimefun4/blob/master/CHANGELOG.md)** |
-| **Download links** | :floppy_disk: **[download latest](https://blob.build/project/Slimefun4/Dev)** | :floppy_disk: **[download "stable"](https://blob.build/project/Slimefun4/RC)** |
-
-**:exclamation: We wholeheartedly recommend you to use _development builds_, they are the most recent version of Slimefun and also receive the most frequent updates! In fact, "stable" builds are so outdated that we won't accept bug reports from them at all.**
-<details>
-  <summary>Here's why...</summary>
-  
-"Stable" builds do not receive frequent updates or fast patches. As time goes on, bugs are fixed but it will take some time until these fixes make it into a "stable" build. We will also not accept or review any bug reports from "stable" builds. They are in fact just old development builds that seemed to run fine without any __major__ issues.
-
-**:question: Why use a "stable" build then?**<br>
-While "stable" builds most definitely contain more bugs than development builds due to their very slow update schedule. you can be sure that they will not include __game-breaking__ issues, but rest assured that development builds almost never contain such issues either. If your server or business however heavily depends on a version of Slimefun that does not change/update a lot, you are forgiven if you choose the "stable" branch. But development builds will bring you the best experience, both in terms of features and bug fixes.
-
-**:question: What exactly are these "stable" builds then and why do you put them in quotes?**<br>
-"Stable" builds are literally just outdated development builds that seemed to run fine without any __major__ issues. But they are far from bug-free hence why actually calling them stable would be hypocritical. However these builds can only really stay "stable" if there are enough people using development builds and report any bugs they come across. Otherwise potential issues may go unnoticed and slip into a "stable" build. Again, we really recommend you to choose the development builds. But since a few people really wanted "stable" builds, they are now an option too.
-
-</details>
-
-## :framed_picture: Screenshots
-So what does Slimefun look like?<br>
-Well, we asked some users on our [Discord server](#headphones-discord) to send us some screenshots, so see for yourself:
-|                 Reactors and electricity                  |            Awesome factories             |          Magic and Altars           |
-| :-------------------------------------------: | :--------------------------------------: | :----------------------------------------: |
-| ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase1.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase6.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase5.png) |
-| *Screenshot provided by HamtaBot#0001* | *Screenshot provided by Piͭxͪeͤl (mnb)#5049* | *Screenshot provided by Kilaruna#4981* |
-| ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase4.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase3.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase2.png) |
-| *Screenshot provided by GalaxyKat11#3816* | *Screenshot provided by TamThan#7987* | *Screenshot provided by Kilaruna#4981* |
-
-## :headphones: Discord
-You can find Slimefun's community on Discord and connect with **over 7000** users of this plugin from all over the world.<br>
-Click the badge down below to join the server for suggestions/questions or other discussions about this plugin.<br>
-We are also hosting a community event every so often, join us to find out more.<br>
-**Important: We don't accept bug reports on discord, please use our [Issue Tracker](https://github.com/Slimefun/Slimefun4/issues) to submit bug reports!**
-
-Due to the sheer size of this discord server, we need to enforce some [important rules](https://github.com/Slimefun/Slimefun4/wiki/Discord-Rules).<br>
-Not following these rules can lead to a kick or even a ban from the server.
-
+<hr />
 <p align="center">
-  <a href="https://discord.gg/slimefun">
-    <img src="https://discordapp.com/api/guilds/565557184348422174/widget.png?style=banner3" alt="Discord Invite"/>
-  </a>
+    <a href="https://github.com/Slimefun-United/Slimefun-United/actions">
+        <img alt="Build Status" src="https://github.com/Slimefun-United/Slimefun-United/actions/workflows/maven-compiler.yml/badge.svg?event=push" />
+    </a>
+    <a href="https://modrinth.com/plugin/slimefun-united">
+        <img alt="Modrinth Downloads" src="https://img.shields.io/modrinth/dt/EOlkO9GO" />
+    </a>
+    <a href="https://hangar.papermc.io/Slimefun-United/Slimefun-United">
+        <img alt="Hangar downloads" src="https://img.shields.io/hangar/dt/Slimefun-United?link=https%3A%2F%2Fhangar.papermc.io%2FSlimefun-United%2FSlimefun-United&style=flat" />
+    </a>
 </p>
+<hr />
 
-## :open_book: Wiki
-Slimefun has a (detailed and well-maintained - *cough*) Wiki for new players, maybe also consider
-expanding the wiki to help grow our community and help out new users of this plugin.
-https://github.com/Slimefun/Slimefun4/wiki
+> [!WARNING]
+> This project is still under heavy development and only development/alpha builds are available for now.
+> You should **NOT** use it on your server! If you decide to use it anyway, make frequent back-ups!
 
-#### :star: Highlighted Articles
-* [What is Slimefun?](https://github.com/Slimefun/Slimefun4/wiki/Slimefun-in-a-nutshell)
-* [How to install Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Installing-Slimefun)
-* [Addons for Slimefun 4](https://github.com/Slimefun/Slimefun4/wiki/Addons)
-* [How to create an Addon for Slimefun 4](https://github.com/Slimefun/Slimefun4/wiki/Developer-Guide)
-* [Getting Started](https://github.com/Slimefun/Slimefun4/wiki/Getting-Started)
-* [Frequently Asked Questions](https://github.com/Slimefun/Slimefun4/wiki/FAQ)
-* [Common issues](https://github.com/Slimefun/Slimefun4/wiki/Common-Issues)
-* [Help us expand the Wiki!](https://github.com/Slimefun/Slimefun4/wiki/Expanding-the-Wiki)
-* [Help us translate Slimefun!](https://github.com/Slimefun/Slimefun4/wiki/Translating-Slimefun)
+A modern and organised continuation of Slimefun's legacy with full support for community translations and add-ons.
 
-The wiki is entirely community-run, so if you find an article missing, feel free to write one and share it with others.
+Slimefun is a plugin that aims to provide a modding-like experience. It offers everything you can imagine, from jetpacks to magic altars!
 
-## :handshake: Contributing to this project
-Slimefun 4 is an Open-Source project and licensed under
-[GNU GPLv3](https://github.com/Slimefun/Slimefun4/blob/master/LICENSE).<br>
-**Over 200 people have already contributed to this amazing project. You guys are awesome! :heart:**<br>
-Please consider helping us maintain this project too, your engagement keeps the project alive!
+Slimefun allows every player to decide whether to develop in magic or technology.
+From wands to nuclear reactors, we have it all.
+In addition, we also have magic altars, energy networks, and even item transportation systems.
 
-You can find more info on how to contribute to this project in our [CONTRIBUTING.md](https://github.com/Slimefun/Slimefun4/blob/master/CONTRIBUTING.md).
+This project started in 2013 and is still evolving today.
+It has grown from a small independent plugin to a community with thousands of participants and hundreds of contributors.
+Currently, Slimefun has added more than **500 new items/crafting recipes**
+([Learn about the history of Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Slimefun-in-a-nutshell)).
 
-## :exclamation: Disclaimers
-Slimefun4 uses various systems that collect usage information or download automatic updates as well as the latest information about the project.
-We do not collect any personal information from you but there are some services that may gather or download some form of data.
+At the same time, Slimefun also has a wide variety of addon plugins to choose from!<br>
+Check out the [Addon List](https://github.com/Slimefun/Slimefun4/wiki/Addons) to find the addons you want!
 
-You can opt-out of the Auto-Updater and stats collection at any time!
+Download [SlimeGlue](https://github.com/Xzavier0722/SlimeGlue/) to ensure compatibility between Slimefun United and other protection plugins
 
-<details>
-  <summary>Automatic updates</summary>
-  
-Slimefun4 uses an Auto-Updater which connects to https://thebusybiscuit.github.io/builds/ to check for and download updates.<br>
-This behaviour is enabled by default but can be turned off under `/plugins/Slimefun/config.yml`.<br>
-We highly recommend you to keep this on at any time though, as you could be missing out on important patches.
-</details>
+### :information_source: About this project
 
-<details>
-  <summary>Metrics and Statistics</summary>
-  
-Slimefun4 uses [bStats](https://bstats.org/plugin/bukkit/Slimefun/4574) to collect anonymous information about the usage of this plugin.<br>
-This is solely for statistical purposes, as we are interested in how Servers/Players use this plugin.<br>
-All available data is anonymous and aggregated, at no point can we see individual server or player information.<br>
-All of the collected data is publicly accessible: https://bstats.org/plugin/bukkit/Slimefun/4574
+This project is focused on bringing all the best of every Slimefun fork and the official, discontinued version together,
+while also offering **full localisation support**, simple release cycle, frequent updates, bug fixes and much more.
 
-You can also disable this behaviour under `/plugins/bStats/config.yml`.<br>
-For more info see [bStats' Privacy Policy](https://bstats.org/privacy-policy)
+This project treats the following Slimefun forks as its upstreams:
+- [Slimefun Gugu Project](https://github.com/SlimefunGuguProject/Slimefun4)
+- [Craft233MC's Folia-oriented fork](https://github.com/Craft233MC/Slimefun4)
+- [SaanPrasanna's fork](https://github.com/SaanPrasanna/Slimefun4)
+- Slimefun Lab's fork - repo not available anymore, but you can check out [our archive](https://github.com/Slimefun-United/Slimefun-United/tree/archive/sf-lab)
 
-Our [bStats Module](https://github.com/Slimefun/MetricsModule) is downloaded automatically when installing this Plugin, this module will automatically update on server starts independently from the main plugin. This way we can automatically roll out updates to the bStats module, in cases of severe performance issues for example where live data and insight into what is impacting performance can be crucial.
-These updates can of course be disabled under `/plugins/Slimefun/config.yml`. To disable metrics collection as a whole, see the paragraph above.
+**Note:** Please report issues specific to this project here in the [issues tab](https://github.com/Slimefun-United/Slimefun-United/issues).
+
+### :pushpin: Roadmap
+The full development roadmap, including storage migration, localization, and module system plans, is available here:
+
+➡️ [ROADMAP.md](ROADMAP.md)
+
+### :world_map: Navigation
+
+* **[Download Slimefun United](#floppy_disk-downloading-slimefun-united)**
+* **[Compatibility](#electric_plug-compatibility)**
+* **[Discord Server](#our-discord-server)**
+* **[Bug Reports](https://github.com/Slimefun-United/Slimefun-United/issues)**
+* **[Old Official Wiki](https://github.com/Slimefun/Slimefun4/wiki)**
+* **[Old official FAQ](https://github.com/Slimefun/Slimefun4/wiki/FAQ)**
 
 ---
 
-Slimefun also uses its own analytics system to collect anonymous information about the performance of this plugin.<br>
+## :floppy_disk: Downloading Slimefun United
+
+(See also: [How to install Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Installing-Slimefun))
+
+Here are the differences between the two types of versions:
+
+|                       | Development (alpha) builds                                                                 | Releases                                                                                                |
+|-----------------------|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| **Minecraft Version** | :video_game: 1.19.X - 1.21.11                                                              | :video_game: 1.19.X - 1.21.11                                                                           |
+| **Java Version**      | :computer: **Java 17+**                                                                    | :computer: **Java 17+**                                                                                 |
+| **Stability**         | :x: **DO NOT USE IN PRODUCTION!**                                                          | :heavy_check_mark:                                                                                      |
+| **Auto-Updates**      | :heavy_check_mark:                                                                         | :heavy_check_mark:                                                                                      |
+| **Frequent Updates**  | :heavy_check_mark:                                                                         | :heavy_check_mark:                                                                                      |
+| **Latest Content**    | :heavy_check_mark:                                                                         | :x:                                                                                                     |
+| **Bug Reports**       | :heavy_check_mark:                                                                         | :heavy_check_mark:                                                                                      |
+| **Branch**            | [dev](https://github.com/Slimefun-United/Slimefun-United/tree/dev)                         | [master](https://github.com/Slimefun-United/Slimefun-United/tree/master)                                |
+| **Download Link**     | :package: **[Download dev](https://modrinth.com/plugin/slimefun-united/versions?c=alpha)** | :package: **[Download release](https://github.com/Slimefun-United/Slimefun-United/releases?c=release)** |
+
+**Note**: The supported Minecraft versions listed above do not represent the full range of available versions.
+Older builds may support older versions of Minecraft.
+You can check that on many download platforms easily, such as Modrinth or Hangar.
+
+### :arrow_down: Download platforms
+
+| Platform        | Links                                                                                                                    | Releases | Alpha (dev) builds |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------|----------|--------------------|
+| Modrinth        | :package: [Downloads](https://modrinth.com/plugin/slimefun-united)                                                       | :x:      | :heavy_check_mark: |
+| Hangar          | :package: [Downloads](https://hangar.papermc.io/Slimefun-United/Slimefun-United/versions)                                | :x:      | :heavy_check_mark: |
+| CurseForge      | :package: [Downloads](https://www.curseforge.com/minecraft/bukkit-plugins/slimefun-united/files/all?showAlphaFiles=show) | :x:      | :x:                |
+| GitHub releases | :package: [Downloads](https://github.com/Slimefun-United/Slimefun-United/releases)                                       | :x:      | :x:                |
+
+More download platforms may be added in the future. You can also request one.
+
+---
+
+## :electric_plug: Compatibility
+
+Slimefun United is designed to support old saves, which previously used official Slimefun builds (master/dev/experimental branches)
+and Gugu Project's fork of Slimefun.
+
+You can also request compatibility with saves, which used other forks of Slimefun.
+
+### :file_cabinet: Compatible server software
+
+| Name                                    | Is compatible?                                                        |
+|-----------------------------------------|-----------------------------------------------------------------------|
+| Spigot                                  | :x: ([use original Slimefun!](https://github.com/Slimefun/Slimefun4)) |
+| Paper                                   | :heavy_check_mark:                                                    |
+| Purpur                                  | :heavy_check_mark:                                                    |
+| Folia                                   | :x: (planned :eyes:)                                                  |
+| CraftBukkit / Bukkit                    | :x:                                                                   |
+| Sponge                                  | :x:                                                                   |
+| Hybrid servers (Arclight, Mohist, etc.) | :x:                                                                   |
+| Fabric / Forge / NeoForge               | :x: (it's not a mod!)                                                 |
+
+Most forks of Paper should be compatible with Slimefun United.
+
+---
+
+## :computer: Development
+
+### :trackball: Adding as a Dependency
+:warning: This section still hasn't been updated! Some pieces of information may be outdated or incorrect!
+
+<details>
+<summary>How to add Slimefun United as a dependency?</summary>
+
+Dough United can easily be included in Gradle ([Groove](#adding-slimefun-united-via-gradle-groovy) and [Kotlin](#adding-slimefun-united-via-gradle-kotlin)) and [Maven](#adding-slimefun-united-via-maven) using Maven Central or JitPack.
+
+### Adding Slimefun United via Gradle (Groovy)
+
+Simply replace `[SF VERSION]` with the most up-to-date version of Slimefun United: <br />
+[![](https://jitpack.io/v/Slimefun-United/Slimefun-United.svg)](https://jitpack.io/#Slimefun-United/Slimefun-United)
+
+#### JitPack
+
+```groovy
+repositories {
+   maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+   implementation 'com.github.Slimefun-United.Slimefun-United:slimefun-united:[SF VERSION]'
+}
+```
+
+### Adding Slimefun United via Gradle (Kotlin)
+
+Simply replace `[SF VERSION]` with the most up-to-date version of Slimefun United: <br />
+[![](https://jitpack.io/v/Slimefun-United/Slimefun-United.svg)](https://jitpack.io/#Slimefun-United/Slimefun-United)
+
+#### JitPack
+
+```kotlin
+repositories {
+   maven("https://jitpack.io")
+}
+
+dependencies {
+   implementation("com.github.Slimefun-United.Slimefun-United:slimefun-united:[SF VERSION]")
+}
+```
+
+### Adding Slimefun United via Maven
+
+Simply replace `[SF VERSION]` with the most up-to-date version of Slimefun United: <br />
+[![](https://jitpack.io/v/Slimefun-United/Slimefun-United.svg)](https://jitpack.io/#Slimefun-United/Slimefun-United)
+
+#### JitPack
+
+```xml
+<repositories>
+   <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+   </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>com.github.Slimefun-United.Slimefun-United</groupId>
+    <artifactId>slimefun-united</artifactId>
+    <version>[SF VERSION]</version>
+    <scope>compile</scope>
+  </dependency>
+</dependencies>
+```
+
+</details>
+
+### :bricks: Compiling Slimefun United
+
+<details>
+<summary>How to compile Slimefun United?</summary>
+
+To compile Slimefun United, you must first install [Git](https://git-scm.com/)
+
+Open a terminal or command prompt in the location where you want to store the code and run the following command:
+
+```bash
+git clone https://github.com/Slimefun-United/Slimefun-United.git --depth=1
+```
+This will pull Slimefun United's code to your local machine.
+
+Finally, open the `Slimefun-United` folder, and open a terminal or command prompt in that folder and enter the following command to compile:
+- If you are on Windows: `.\mvnw.cmd package`
+- If you are on a Unix-like system: `.\mvnw package`
+
+After compilation is complete, you can find the compiled plugin file in the `Slimefun-United/target` folder.
+
+</details>
+
+---
+
+## :framed_picture: Screenshots
+
+So, what does Slimefun look like?<br>
+We asked some people from our [Discord server](https://discord.gg/slimefun) to send us some screenshots:
+
+|                                    Reactors and Energy                                    |                                Amazing Automation Factory                                 |                                     Magic Laboratory                                      |
+|:-----------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|
+| ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase1.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase6.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase5.png) |
+|                               *Screenshot by HamtaBot#0001*                               |                            *Screenshot by Piͭxͪeͤl (mnb)#5049*                            |                               *Screenshot by Kilaruna#4981*                               |
+| ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase4.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase3.png) | ![](https://raw.githubusercontent.com/Slimefun/Slimefun-Wiki/master/images/showcase2.png) |
+|                             *Screenshot by GalaxyKat11#3816*                              |                               *Screenshot by TamThan#7987*                                |                               *Screenshot by Kilaruna#4981*                               |
+
+---
+
+## :headphones: Community
+
+### Our Discord server
+
+We have our own Discord server related to our project, which you can use to get help, meet new people, share ideas and much more!
+**Note**: You should report bugs in the [issues tab](https://github.com/Slimefun-United/Slimefun-United/issues).
+
+<p align="center">
+  <a href="https://discord.gg/C8M6nPyDu6">
+    <img src="https://discord.com/api/guilds/588806119544061968/widget.png?style=banner3" alt="Discord invite to Slimefun United server"/>
+  </a>
+</p>
+
+#### Old Official Discord
+
+> [!CAUTION]
+> The official Slimefun Discord server does **not** accept any form of issue reports. Please use the [issue tracker](https://github.com/Slimefun-United/Slimefun-United/issues) to report issues!
+
+You can find Slimefun's community server on Discord and communicate with **over 7000** users from around the world.
+As original Slimefun has been abandoned, the server is going to be archived in some future, so keep that in mind.
+
+Please familiarise yourself with the [important rules](https://github.com/Slimefun/Slimefun4/wiki/Discord-Rules) of the official Discord server before joining.
+People who do not follow the above rules may be kicked or even banned from the server.
+
+<p align="center">
+  <a href="https://discord.gg/slimefun">
+    <img src="https://discordapp.com/api/guilds/565557184348422174/widget.png?style=banner3" alt="Discord invite to old Slimefun server"/>
+  </a>
+</p>
+
+### Other community channels
+
+For the international community:
+- [Slimefun Addon Community Discord sever](https://discord.gg/SqD3gg5SAU)
+- [dough Discord server](https://discord.gg/c8tk8rP8Wb) (for developers)
+**Note**: These servers can be abandoned fully in the near future.
+
+For the Chinese community (only regarding Gugu Project's Simplified Chinese version):
+- [KOOK server](https://kook.top/oqZwh8)
+- QQ Group: 807302496
+- Addon Discussion QQ Group: 205679802 (Slimefun Addon Discussion and translation group plugin update notifications)
+
+---
+
+## :open_book: Wiki
+
+Slimefun has a (detailed and frequently maintained - *ahem*) wiki for new players,
+and you can also consider contributing to the wiki.
+
+- [Old official Wiki](https://github.com/Slimefun/Slimefun4/wiki)
+- [Gugu Project's Wiki (in Simplified Chinese)](https://slimefun-wiki.guizhanss.cn/Home)
+
+The Gugu Project's wiki is maintained by [@ybw0014](https://github.com/ybw0014). If you find missing articles, please report them on the wiki's issues page.
+
+#### :star: Useful Documentation
+
+* [What is Slimefun?](https://github.com/Slimefun/Slimefun4/wiki/Slimefun-in-a-nutshell)
+* [How to install Slimefun](https://github.com/Slimefun/Slimefun4/wiki/Installing-Slimefun)
+* [Slimefun 4 Addon List](https://github.com/Slimefun/Slimefun4/wiki/Addons)
+* [Slimefun 4 Addon Development Guide](https://github.com/Slimefun/Slimefun4/wiki/Developer-Guide)
+* [Getting Started](https://github.com/Slimefun/Slimefun4/wiki/Getting-Started)
+* [FAQ](https://github.com/Slimefun/Slimefun4/wiki/FAQ)
+* [Common Issues](https://github.com/Slimefun/Slimefun4/wiki/Common-Issues)
+* [Help us expand the Wiki!](https://github.com/Slimefun/Slimefun4/wiki/Expanding-the-Wiki)
+* [Help us translate Slimefun!](https://github.com/Slimefun/Slimefun4/wiki/Translating-Slimefun)
+
+---
+
+## :handshake: Contributing to the Project
+
+Slimefun United is an open-source project licensed under the [GNU GPLv3](https://github.com/Slimefun/Slimefun4/blob/master/LICENSE).
+Over 100 people have contributed to this and the original Slimefun, and they are amazing.
+We encourage you to contribute to Slimefun United by submitting PRs. Your contributions keep Slimefun alive <3.
+You can also propose forks with interesting features to be merged with this project.
+
+---
+
+## :exclamation: Disclaimer
+
+Slimefun United uses multiple systems to collect plugin usage data and has auto-update functionality to push new versions to you.
+The plugin does not collect personal information stored in any form. The types of information collected can be seen below.
+
+Of course, you can disable data telemetry and auto-updates at any time.
+
+<details>
+  <summary>Auto-Updates</summary>
+
+Slimefun United uses GitHub API to check for and download updates.
+Auto-updates are enabled by default, but you can choose to disable them in `/plugins/Slimefun/config.yml`.
+We strongly recommend keeping auto-updates enabled to ensure you get the latest features/fixes.
+
+The Gugu Project's version uses GitHub API + GuizhanBuild API for updates.
+
+---
+
+Slimefun United also uses its own analytics system to collect anonymous information about the performance of this plugin.<br>
 This is solely for statistical purposes, as we are interested in how it's performing for all servers.<br>
 All available data is anonymous and aggregated, at no point can we see individual server information.<br>
 
@@ -145,21 +337,44 @@ You can also disable this behaviour under `/plugins/Slimefun/config.yml`.<br>
 </details>
 
 <details>
-  <summary>GitHub Integration</summary>
-  
-Lastly, Slimefun4 connects to https://api.github.com/ to gather information about this open-source project.<br>
-No information about you or your Minecraft Server is sent to GitHub.
+  <summary>Anonymous Server Data</summary>
 
-This information includes (but is not limited to)
-* list of contributors, their username and profile link (from the repositories `Slimefun/Slimefun4`, `Slimefun/Slimefun-Wiki` and `Slimefun/Resourcepack`)
-* amount of open issues in this repository
-* amount of pending pull requests in this repository
-* amount of stars in this repository
-* amount of forks of this repository
-* amount of code-bytes in this repository
-* date of the last commit to this repository
+Slimefun United uses [bStats](https://bstats.org/plugin/bukkit/Slimefun/4574) to collect anonymous information about the plugin because we are interested in how server players use the plugin.
+However, all data published on bStats is anonymous, and we absolutely cannot trace back to specific servers or players based on the reported data.
+All collected data is publicly accessible: https://bstats.org/plugin/bukkit/Slimefun/4574
+
+You can also disable data collection in `/plugins/bStats/config.yml`.
+Learn more by checking out [bStats Privacy Policy](https://bstats.org/privacy-policy).
+
 </details>
 
-Additionally the plugin connects to [textures.minecraft.net](https://www.minecraft.net/en-us) to retrieve the Minecraft skins of our contributors (if possible).<br>
+<details>
+  <summary>GitHub Data</summary>
 
-*Note that Slimefun is not associated with `Mojang Studios` or `Minecraft`.*
+Slimefun United uses the [GitHub API](https://api.github.com/) to collect usage data about this open-source project.
+Rest assured, your Minecraft server information will not be sent to GitHub.
+
+This information includes but is not limited to:
+
+* List of collaborators, their usernames and profile links (from repositories `Slimefun/Slimefun4`, `Slimefun/Slimefun-Wiki`, and `Slimefun/Resourcepack`)
+* Number of open issues in the repository
+* Number of pending pull requests in the repository
+* Number of stars in the repository
+* Number of forks of the repository
+* Code size of the repository
+* Date of the last commit in the repository
+
+</details>
+
+Additionally, the plugin also uses [textures.minecraft.net](https://www.minecraft.net/en-us) to obtain collaborators' Minecraft skins.
+Please note: Slimefun United is not affiliated with Mojang Studios or Minecraft.
+
+---
+
+## :green_heart: Credits
+
+- Many thanks to [TheBusyBiscuit](https://github.com/TheBusyBiscuit) and **countless contributors** and an **amazing community**, which made original Slimefun possible!
+- [Slimefun Gugu Project](https://github.com/SlimefunGuguProject) for many new features, bug fixes and updates
+- [neokini](https://github.com/neokoni) for [Craft233MC's Folia-oriented fork](https://github.com/Craft233MC/Slimefun4)
+- [SaanPrasanna](https://github.com/SaanPrasanna) for [his translation](https://github.com/SaanPrasanna/Slimefun4) of Gugu Project's Slimefun fork
+- [TheoDoR](https://github.com/imTheoDoR) for his Slimefun Lab and some bug fixes and updates

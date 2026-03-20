@@ -1,15 +1,13 @@
 package io.github.thebusybiscuit.slimefun4.api.events;
 
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import java.util.UUID;
-
 import javax.annotation.Nonnull;
-
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 
 /**
  * This {@link Event} is called when the {@link PlayerProfile} of a {@link Player}
@@ -30,7 +28,9 @@ public class AsyncProfileLoadEvent extends Event {
     private PlayerProfile profile;
 
     public AsyncProfileLoadEvent(@Nonnull PlayerProfile profile) {
-        super(true);
+        // this event may be called in main-thread by accident, or while migration
+        // we are not sure
+        super(!Bukkit.isPrimaryThread());
 
         Validate.notNull(profile, "The Profile cannot be null");
 
@@ -51,7 +51,7 @@ public class AsyncProfileLoadEvent extends Event {
     /**
      * This method can be used to inject your custom {@link PlayerProfile} implementations.
      * However, the passed {@link PlayerProfile} must have the same {@link UUID} as the original one!
-     * 
+     *
      * @param profile
      *            The {@link PlayerProfile}
      */

@@ -1,11 +1,12 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
+import io.github.thebusybiscuit.slimefun4.core.attributes.Soulbound;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.annotation.Nonnull;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,15 +14,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.core.attributes.Soulbound;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-
 /**
  * This {@link Listener} is responsible for handling any {@link Soulbound} items.
  * A {@link Soulbound} {@link ItemStack} will not drop upon a {@link Player Player's} death.
  * Instead the {@link ItemStack} is saved and given back to the {@link Player} when they respawn.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -48,13 +45,14 @@ public class SoulboundListener implements Listener {
         }
 
         // There shouldn't even be any items in there, but let's be extra safe!
-        Map<Integer, ItemStack> existingItems = soulbound.get(p.getUniqueId());
-
-        if (existingItems == null) {
-            soulbound.put(p.getUniqueId(), items);
-        } else {
-            existingItems.putAll(items);
-        }
+        //        Map<Integer, ItemStack> existingItems = soulbound.get(p.getUniqueId());
+        // fix issue #964 dupe using soulbound
+        //
+        //        if (existingItems == null) {
+        //        } else {
+        //            existingItems.putAll(items);
+        //        }
+        soulbound.put(p.getUniqueId(), items);
 
         // Remove soulbound items from our drops
         e.getDrops().removeIf(itemStack -> SlimefunUtils.isSoulbound(itemStack, p.getWorld()));

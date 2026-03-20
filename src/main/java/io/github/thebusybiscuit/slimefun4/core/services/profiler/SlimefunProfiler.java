@@ -1,20 +1,31 @@
 package io.github.thebusybiscuit.slimefun4.core.services.profiler;
 
+import city.norain.slimefun4.utils.SlimefunPoolExecutor;
+import city.norain.slimefun4.utils.StringUtil;
+import com.google.common.util.concurrent.AtomicDouble;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
-
 import javax.annotation.Nonnull;
-
+import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -22,21 +33,13 @@ import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.google.common.util.concurrent.AtomicDouble;
-
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.TickerTask;
-import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-
 /**
  * The {@link SlimefunProfiler} works closely to the {@link TickerTask} and is
  * responsible for monitoring that task.
  * It collects timings data for any ticked {@link Block} and the corresponding {@link SlimefunItem}.
  * This allows developers to identify laggy {@link SlimefunItem SlimefunItems} or {@link SlimefunAddon SlimefunAddons}.
  * But it also enables Server Admins to locate lag-inducing areas on the {@link Server}.
- * 
+ *
  * @author TheBusyBiscuit
  * 
  * @see TickerTask
@@ -62,7 +65,8 @@ public class SlimefunProfiler {
      * this data in split seconds.
      * So we cannot simply wait until the next server tick for this.
      */
-    private final ExecutorService executor = Executors.newFixedThreadPool(threadFactory.getThreadCount(), threadFactory);
+    private final ExecutorService executor =
+            Executors.newFixedThreadPool(threadFactory.getThreadCount(), threadFactory);
 
     /**
      * All possible values of {@link PerformanceRating}.
@@ -74,6 +78,7 @@ public class SlimefunProfiler {
     /**
      * This boolean marks whether we are currently profiling or not.
      */
+    @Getter
     private volatile boolean isProfiling = false;
 
     /**
@@ -81,6 +86,8 @@ public class SlimefunProfiler {
      * profiled.
      */
     private final AtomicInteger queued = new AtomicInteger(0);
+
+    private final List<SlimefunPoolExecutor> threadPools = new CopyOnWriteArrayList<>();
 
     private long totalElapsedTime;
 
@@ -112,7 +119,7 @@ public class SlimefunProfiler {
 
     /**
      * This method starts a new profiler entry.
-     * 
+     *
      * @return A timestamp, best fed back into {@link #closeEntry(Location, SlimefunItem, long)}
      */
     public long newEntry() {
@@ -128,7 +135,7 @@ public class SlimefunProfiler {
      * This method schedules a given amount of entries for the future.
      * Be careful to {@link #closeEntry(Location, SlimefunItem, long)} all of them again!
      * No {@link PerformanceSummary} will be sent until all entries were closed.
-     * 
+     *
      * If the specified amount is negative, scheduled entries will be removed
      * 
      * @param amount
@@ -188,6 +195,17 @@ public class SlimefunProfiler {
         executor.execute(this::finishReport);
     }
 
+    public void registerPool(SlimefunPoolExecutor executor) {
+        Validate.notNull(executor, "Cannot register a null SlimefunPoolExecutor");
+
+        if (threadPools.contains(executor)) {
+            // Already registered
+            return;
+        }
+
+        threadPools.add(executor);
+    }
+
     private void finishReport() {
         // We will only wait for a maximum of this many 1ms sleeps
         int iterations = 4000;
@@ -207,7 +225,9 @@ public class SlimefunProfiler {
                     Iterator<PerformanceInspector> iterator = requests.iterator();
 
                     while (iterator.hasNext()) {
-                        iterator.next().sendMessage("Your timings report has timed out, we were still waiting for " + queued.get() + " samples to be collected :/");
+                        iterator.next()
+                                .sendMessage("Your timings report has timed out, we were still waiting for "
+                                        + queued.get() + " samples to be collected :/");
                         iterator.remove();
                     }
 
@@ -226,7 +246,8 @@ public class SlimefunProfiler {
 
         totalElapsedTime = timings.values().stream().mapToLong(Long::longValue).sum();
 
-        averageTimingsPerMachine.getAndSet(timings.values().stream().mapToLong(Long::longValue).average().orElse(0));
+        averageTimingsPerMachine.getAndSet(
+                timings.values().stream().mapToLong(Long::longValue).average().orElse(0));
 
         /*
          * We log how many milliseconds have been ticked, and how many ticks have passed
@@ -350,7 +371,7 @@ public class SlimefunProfiler {
 
     /**
      * This method returns the current {@link PerformanceRating}.
-     * 
+     *
      * @return The current performance grade
      */
     @Nonnull
@@ -400,7 +421,8 @@ public class SlimefunProfiler {
     public String getTime(@Nonnull Chunk chunk) {
         Validate.notNull(chunk, "Cannot get timings for a null Chunk");
 
-        long time = getByChunk().getOrDefault(chunk.getWorld().getName() + " (" + chunk.getX() + ',' + chunk.getZ() + ')', 0L);
+        long time = getByChunk()
+                .getOrDefault(chunk.getWorld().getName() + " (" + chunk.getX() + ',' + chunk.getZ() + ')', 0L);
         return NumberUtils.getAsMillis(time);
     }
 
@@ -444,5 +466,44 @@ public class SlimefunProfiler {
      */
     public double getAverageTimingsPerMachine() {
         return averageTimingsPerMachine.getAndSet(0);
+    }
+
+    public String getThreadPoolStatus() {
+        StringBuilder sb = new StringBuilder();
+    sb.append("Thread pool state [ Running | Completed | Total Tasks | Queue Size ]\n");
+
+        for (SlimefunPoolExecutor executor : threadPools) {
+            sb.append(executor.getName())
+                    .append(" (")
+                    .append(executor.getCorePoolSize())
+                    .append(" / ")
+                    .append(executor.getMaximumPoolSize())
+                    .append(") ")
+                    .append(": ")
+                    .append("\n")
+                    .append(executor.getActiveCount())
+                    .append(" | ")
+                    .append(executor.getCompletedTaskCount())
+                    .append(" | ")
+                    .append(executor.getTaskCount())
+                    .append(" | ")
+                    .append(executor.getQueue().size())
+                    .append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    public String snapshotThreads() {
+        StringBuilder sb = new StringBuilder();
+        final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+        for (SlimefunPoolExecutor threadPool : threadPools) {
+            for (long id : threadPool.getRunningThreads()) {
+                sb.append(StringUtil.formatDetailedThreadInfo(threadMXBean.getThreadInfo(id, 100)))
+                        .append("\n");
+            }
+        }
+
+        return sb.toString();
     }
 }

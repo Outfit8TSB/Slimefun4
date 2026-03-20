@@ -52,5 +52,4 @@ public class IcyBow extends SlimefunBow {
             n.addPotionEffect(new PotionEffect(VersionedPotionEffectType.JUMP_BOOST, 20 * 2, -10));
         };
     }
-
 }

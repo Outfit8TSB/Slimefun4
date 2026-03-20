@@ -1,110 +1,271 @@
 package io.github.thebusybiscuit.slimefun4.api.player;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
-import io.github.bakedlibs.dough.config.Config;
+import city.norain.slimefun4.holder.SlimefunInventoryHolder;
+import city.norain.slimefun4.utils.InventoryUtil;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.InvSnapshot;
+import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.bakedlibs.dough.common.CommonPatterns;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.SlimefunBackpack;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.BackpackListener;
+import io.github.thebusybiscuit.slimefun4.utils.ThreadUtils;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 /**
  * This class represents the instance of a {@link SlimefunBackpack} that is ready to
  * be opened.
- * 
+ *
  * It holds an actual {@link Inventory} and represents the backpack on the
  * level of an individual {@link ItemStack} as opposed to the class {@link SlimefunBackpack}.
- * 
+ *
  * @author TheBusyBiscuit
  *
  * @see SlimefunBackpack
  * @see BackpackListener
  */
-public class PlayerBackpack {
-
-    private static final String CONFIG_PREFIX = "backpacks.";
-
-    private final UUID ownerId;
+public class PlayerBackpack extends SlimefunInventoryHolder {
+    public static final String LORE_OWNER = "&7Owner: ";
+    private static final String COLORED_LORE_OWNER = ChatColors.color(LORE_OWNER);
+    private static final NamespacedKey KEY_BACKPACK_UUID = new NamespacedKey(Slimefun.instance(), "B_UUID");
+    private static final NamespacedKey KEY_OWNER_UUID = new NamespacedKey(Slimefun.instance(), "OWNER_UUID");
+    private final OfflinePlayer owner;
+    private final UUID uuid;
     private final int id;
-
-    @Deprecated
-    private PlayerProfile profile;
-    @Deprecated
-    private Config cfg;
-    private Inventory inventory;
+    private String name;
     private int size;
+    private boolean isInvalid = false;
+    // This snapshot holds the inventory's last save content , it should be recreated after each save by using
+    // PlayerBackpack#refreshSnapshot
+    @Nonnull
+    @Getter
+    private InvSnapshot snapshot;
 
-    private PlayerBackpack(@Nonnull UUID ownerId, int id, int size) {
-        this.ownerId = ownerId;
-        this.id = id;
-        this.size = size;
-    }
+    public static void getAsync(ItemStack item, Consumer<PlayerBackpack> callback, boolean runCbOnMainThread) {
+        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore()) {
+            return;
+        }
+        Executor executor = runCbOnMainThread
+                ? ThreadUtils.getMainDelayedExecutor()
+                : Slimefun.getDatabaseManager().getProfileDataController().getCallbackExecutor();
+        var bUuid = getBackpackUUID(item.getItemMeta());
+        if (bUuid.isPresent()) {
+            Slimefun.getDatabaseManager()
+                    .getProfileDataController()
+                    .getBackpackAsync(bUuid.get())
+                    .thenAcceptAsync(
+                            (result) -> {
+                                if (result != null) {
+                                    callback.accept(result);
+                                }
+                            },
+                            executor);
+            return;
+        }
 
-    /**
-     * This constructor loads an existing Backpack
-     * 
-     * @param profile
-     *            The {@link PlayerProfile} of this Backpack
-     * @param id
-     *            The id of this Backpack
-     *
-     * @deprecated Use {@link PlayerBackpack#load(UUID, int, int, HashMap)} instead
-     */
-    @Deprecated
-    public PlayerBackpack(@Nonnull PlayerProfile profile, int id) {
-        this(profile, id, profile.getConfig().getInt(CONFIG_PREFIX + id + ".size"));
+        // Old backpack item
+        OptionalInt id = OptionalInt.empty();
+        String uuid = "";
+        for (String line : item.getItemMeta().getLore()) {
+            if (line.startsWith(ChatColors.color("&7ID: ")) && line.indexOf('#') != -1) {
+                String[] splitLine = CommonPatterns.HASH.split(line);
 
-        for (int i = 0; i < size; i++) {
-            inventory.setItem(i, cfg.getItem(CONFIG_PREFIX + id + ".contents." + i));
+                if (CommonPatterns.NUMERIC.matcher(splitLine[1]).matches()) {
+                    uuid = splitLine[0].replace(ChatColors.color("&7ID: "), "");
+                    id = OptionalInt.of(Integer.parseInt(splitLine[1]));
+                }
+            }
+        }
+
+        if (id.isPresent()) {
+            int number = id.getAsInt();
+            Slimefun.getDatabaseManager()
+                    .getProfileDataController()
+                    .getBackpackAsync(Bukkit.getOfflinePlayer(UUID.fromString(uuid)), number)
+                    .thenAcceptAsync(
+                            (result) -> {
+                                if (result != null) {
+                                    var meta = item.getItemMeta();
+                                    meta.getPersistentDataContainer()
+                                            .set(KEY_BACKPACK_UUID, PersistentDataType.STRING, result.uuid.toString());
+                                    item.setItemMeta(meta);
+                                    // TODO: upgrade lore
+                                    callback.accept(result);
+                                }
+                            },
+                            executor);
         }
     }
 
-    /**
-     * This constructor creates a new Backpack
-     * 
-     * @param profile
-     *            The {@link PlayerProfile} of this Backpack
-     * @param id
-     *            The id of this Backpack
-     * @param size
-     *            The size of this Backpack
-     *
-     * @deprecated Use {@link PlayerBackpack#newBackpack(UUID, int, int)} instead
-     */
-    @Deprecated
-    public PlayerBackpack(@Nonnull PlayerProfile profile, int id, int size) {
+    public static CompletableFuture<PlayerBackpack> getAsync(ItemStack item) {
+        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore()) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        var bUuid = getBackpackUUID(item.getItemMeta());
+        if (bUuid.isPresent()) {
+            return Slimefun.getDatabaseManager().getProfileDataController().getBackpackAsync(bUuid.get());
+        }
+
+        // Old backpack item
+        OptionalInt id = OptionalInt.empty();
+        String uuid = "";
+
+        for (String line : item.getItemMeta().getLore()) {
+            if (line.startsWith(ChatColors.color("&7ID: ")) && line.indexOf('#') != -1) {
+                String[] splitLine = CommonPatterns.HASH.split(line);
+
+                if (CommonPatterns.NUMERIC.matcher(splitLine[1]).matches()) {
+                    uuid = splitLine[0].replace(ChatColors.color("&7ID: "), "");
+                    id = OptionalInt.of(Integer.parseInt(splitLine[1]));
+                }
+            }
+        }
+
+        if (id.isPresent()) {
+            int number = id.getAsInt();
+            return Slimefun.getDatabaseManager()
+                    .getProfileDataController()
+                    .getBackpackAsync(Bukkit.getOfflinePlayer(UUID.fromString(uuid)), number);
+        }
+        return CompletableFuture.completedFuture(null);
+    }
+
+    public static Optional<String> getBackpackUUID(ItemMeta meta) {
+        if (meta == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(meta.getPersistentDataContainer().get(KEY_BACKPACK_UUID, PersistentDataType.STRING));
+    }
+
+    public static Optional<String> getOwnerUUID(ItemMeta meta) {
+        if (meta == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(meta.getPersistentDataContainer().get(KEY_OWNER_UUID, PersistentDataType.STRING));
+    }
+
+    public static OptionalInt getBackpackID(ItemMeta meta) {
+        if (meta == null) {
+            return OptionalInt.empty();
+        }
+
+        for (String line : meta.getLore()) {
+            if (line.startsWith(ChatColors.color("&7ID: ")) && line.contains("#")) {
+                try {
+                    return OptionalInt.of(Integer.parseInt(
+                            CommonPatterns.HASH.split(line.replace(ChatColors.color("&7ID: "), ""))[1]));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return OptionalInt.empty();
+    }
+
+    public static void setItemPdc(ItemStack item, String bpUuid, String ownerUuid) {
+        ItemMeta meta = item.getItemMeta();
+        setPdc(meta, bpUuid, ownerUuid);
+        item.setItemMeta(meta);
+    }
+
+    public static void bindItem(ItemStack item, PlayerBackpack bp) {
+        var meta = item.getItemMeta();
+        setPdc(meta, bp.uuid.toString(), bp.owner.getUniqueId().toString());
+        setItem(meta, bp);
+        item.setItemMeta(meta);
+    }
+
+    public static void setItemDisplayInfo(ItemStack item, PlayerBackpack bp) {
+        var meta = item.getItemMeta();
+        setItem(meta, bp);
+        item.setItemMeta(meta);
+    }
+
+    public static boolean isOwnerOnline(ItemMeta meta) {
+        if (Slimefun.getCfg().getBoolean("backpack.allow-open-when-owner-offline")) {
+            return true;
+        }
+        var ownerUuid = PlayerBackpack.getOwnerUUID(meta);
+        return ownerUuid.isEmpty() || Bukkit.getPlayer(UUID.fromString(ownerUuid.get())) != null;
+    }
+
+    private static void setPdc(ItemMeta meta, String bpUuid, String ownerUuid) {
+        var pdc = meta.getPersistentDataContainer();
+        pdc.set(PlayerBackpack.KEY_BACKPACK_UUID, PersistentDataType.STRING, bpUuid);
+        pdc.set(PlayerBackpack.KEY_OWNER_UUID, PersistentDataType.STRING, ownerUuid);
+    }
+
+    private static void setItem(ItemMeta meta, PlayerBackpack bp) {
+        var lore = meta.getLore();
+        for (var i = 0; i < lore.size(); i++) {
+            var line = lore.get(i);
+            if (COLORED_LORE_OWNER.equals(line)) {
+                lore.set(i, COLORED_LORE_OWNER + bp.getOwner().getName());
+                break;
+            }
+        }
+        meta.setLore(lore);
+
+        if (bp.name.isEmpty() || bp.name.isBlank()) {
+            return;
+        }
+        meta.setDisplayName(ChatColors.color(bp.name));
+    }
+
+    @ParametersAreNonnullByDefault
+    public PlayerBackpack(
+            OfflinePlayer owner, UUID uuid, String name, int id, int size, @Nullable ItemStack[] contents) {
         if (size < 9 || size > 54 || size % 9 != 0) {
             throw new IllegalArgumentException("Invalid size! Size must be one of: [9, 18, 27, 36, 45, 54]");
         }
 
-        this.ownerId = profile.getUUID();
-        this.profile = profile;
+        this.owner = owner;
+        this.uuid = uuid;
+        this.name = name;
         this.id = id;
-        this.cfg = profile.getConfig();
         this.size = size;
+        inventory = newInv();
 
-        cfg.setValue(CONFIG_PREFIX + id + ".size", size);
-        markDirty();
+        if (contents != null) {
+            if (size != contents.length) {
+                throw new IllegalArgumentException("Invalid contents: size mismatched!");
+            }
+            inventory.setContents(contents);
+        }
 
-        inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
+        this.snapshot = new InvSnapshot(inventory);
+    }
+
+    /**
+     * This refreshes the internal snapshot,
+     * It should be called after every database writing task
+     * It should not be called elsewhere
+     */
+    public void refreshSnapshot() {
+        this.snapshot = new InvSnapshot(inventory);
     }
 
     /**
      * This returns the id of this {@link PlayerBackpack}
-     * 
+     *
      * @return The id of this {@link PlayerBackpack}
      */
     public int getId() {
@@ -113,24 +274,17 @@ public class PlayerBackpack {
 
     /**
      * This method returns the {@link PlayerProfile} this {@link PlayerBackpack} belongs to
-     * 
+     *
      * @return The owning {@link PlayerProfile}
-     * 
-     * @deprecated Use {@link PlayerBackpack#getOwnerId()} instead
      */
-    @Deprecated
     @Nonnull
-    public PlayerProfile getOwner() {
-        return profile != null ? profile : PlayerProfile.find(Bukkit.getOfflinePlayer(ownerId)).orElse(null);
-    }
-
-    public UUID getOwnerId() {
-        return this.ownerId;
+    public OfflinePlayer getOwner() {
+        return owner;
     }
 
     /**
      * This returns the size of this {@link PlayerBackpack}.
-     * 
+     *
      * @return The size of this {@link PlayerBackpack}
      */
     public int getSize() {
@@ -139,7 +293,7 @@ public class PlayerBackpack {
 
     /**
      * This method returns the {@link Inventory} of this {@link PlayerBackpack}
-     * 
+     *
      * @return The {@link Inventory} of this {@link PlayerBackpack}
      */
     @Nonnull
@@ -150,45 +304,22 @@ public class PlayerBackpack {
     /**
      * This will open the {@link Inventory} of this backpack to every {@link Player}
      * that was passed onto this method.
-     * 
-     * @param players
-     *            The players who this Backpack will be shown to
+     * <p>
+    * Binary compatible
+     *
+     * @param p The player who this Backpack will be shown to
      */
-    public void open(Player... players) {
-        Slimefun.runSync(() -> {
-            for (Player p : players) {
-                p.openInventory(inventory);
-            }
-        });
-    }
+    public void open(Player p) {
+        if (isInvalid) {
+            return;
+        }
 
-    /**
-     * This will close the {@link Inventory} of this backpack for every {@link Player}
-     * that has opened it.
-     * 
-     * This process has to run on the main server thread.
-     * 
-     * @return A {@link CompletableFuture}.
-     */
-    public CompletableFuture<Void> closeForAll() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-
-        Slimefun.runSync(() -> {
-            Iterator<HumanEntity> iterator = new ArrayList<>(inventory.getViewers()).iterator();
-
-            while (iterator.hasNext()) {
-                iterator.next().closeInventory();
-            }
-
-            future.complete(null);
-        });
-
-        return future;
+        InventoryUtil.openInventory(p, inventory);
     }
 
     /**
      * This will change the current size of this Backpack to the specified size.
-     * 
+     *
      * @param size
      *            The new size for this Backpack
      */
@@ -198,69 +329,52 @@ public class PlayerBackpack {
         }
 
         this.size = size;
+        updateInv();
+        Slimefun.getDatabaseManager().getProfileDataController().saveBackpackInfo(this);
+    }
 
-        Inventory inv = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
+    public UUID getUniqueId() {
+        return uuid;
+    }
 
-        for (int slot = 0; slot < this.inventory.getSize(); slot++) {
-            inv.setItem(slot, this.inventory.getItem(slot));
-        }
+    public void setName(String name) {
+        this.name = name;
+        updateInv();
+        Slimefun.getDatabaseManager().getProfileDataController().saveBackpackInfo(this);
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public void markInvalid() {
+        isInvalid = true;
+        InventoryUtil.closeInventory(this.inventory);
+        Slimefun.getDatabaseManager().getProfileDataController().saveBackpackInventory(this);
+    }
+
+    public boolean isInvalid() {
+        return isInvalid;
+    }
+
+    /**
+     * Construct a new backpack inventory.
+     * <p>
+     * Warning: You should **manually** update inventory contents!
+     *
+     * @return new {@link Inventory}
+     */
+    private Inventory newInv() {
+    return Bukkit.createInventory(
+        this, size, (name.isEmpty() ? "Backpack" : ChatColors.color(name + "&r")) + " [Size " + size + "]");
+    }
+
+    private void updateInv() {
+        InventoryUtil.closeInventory(this.inventory);
+        var inv = newInv();
+        inv.setContents(this.inventory.getContents());
+        this.inventory.clear();
         this.inventory = inv;
-
-        markDirty();
-    }
-
-    /**
-     * This method will save the contents of this backpack to a {@link File}.
-     * 
-     * @deprecated Handled by {@link PlayerProfile#save()} now
-     */
-    @Deprecated
-    public void save() {
-        for (int i = 0; i < size; i++) {
-            cfg.setValue(CONFIG_PREFIX + id + ".contents." + i, inventory.getItem(i));
-        }
-    }
-
-    /**
-     * This method marks the backpack dirty, it will then be queued for an autosave
-     * using {@link PlayerBackpack#save()}
-     */
-    public void markDirty() {
-        if (profile != null) {
-            profile.markDirty();
-        }
-    }
-
-    private void setContents(int size, HashMap<Integer, ItemStack> contents) {
-        if (this.inventory == null) {
-            this.inventory = Bukkit.createInventory(null, size, "Backpack [" + size + " Slots]");
-        }
-
-        for (int i = 0; i < size; i++) {
-            this.inventory.setItem(i, contents.get(i));
-        }
-    }
-
-    @ParametersAreNonnullByDefault
-    public static PlayerBackpack load(UUID ownerId, int id, int size, HashMap<Integer, ItemStack> contents) {
-        PlayerBackpack backpack = new PlayerBackpack(ownerId, id, size);
-
-        backpack.setContents(size, contents);
-
-        return backpack;
-    }
-
-    @ParametersAreNonnullByDefault
-    public static PlayerBackpack newBackpack(UUID ownerId, int id, int size) {
-        if (size < 9 || size > 54 || size % 9 != 0) {
-            throw new IllegalArgumentException("Invalid size! Size must be one of: [9, 18, 27, 36, 45, 54]");
-        }
-
-        PlayerBackpack backpack = new PlayerBackpack(ownerId, id, size);
-
-        backpack.setContents(size, new HashMap<>());
-
-        return backpack;
+        setInventory(inv);
     }
 }

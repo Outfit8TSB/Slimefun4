@@ -1,7 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +21,9 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 /**
  * This Service is responsible for handling the {@link Permission} of a
  * {@link SlimefunItem}.
- * 
+ *
  * You can set up these {@link Permission} nodes inside the {@code permissions.yml} file.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -37,12 +36,15 @@ public class PermissionsService {
         config = new Config(plugin, "permissions.yml");
 
         // @formatter:off
-        config.getConfiguration().options().header(
-            "This file is used to assign permission nodes to items from Slimefun or any of its addons.\n" +
-            "To assign an item a certain permission node you simply have to set the 'permission' attribute\n" +
-            "to your desired permission node.\n" +
-            "You can also customize the text that is displayed when a Player does not have that permission."
-        );
+        config.getConfiguration()
+                .options()
+                .header("This file is used to assign permission nodes to items from Slimefun or any of its"
+                        + " addons.\n"
+                        + "To assign an item a certain permission node you simply have to set the"
+                        + " 'permission' attribute\n"
+                        + "to your desired permission node.\n"
+                        + "You can also customize the text that is displayed when a Player does not have"
+                        + " that permission.");
         // @formatter:on
 
         config.getConfiguration().options().copyHeader(true);
@@ -74,15 +76,44 @@ public class PermissionsService {
         }
     }
 
+    // TODO: Figure this out
+    // From Gugu Project, no idea what's the difference
+    // between this one and register()
+    public void update(@Nonnull Iterable<SlimefunItem> items, boolean save) {
+        for (SlimefunItem item : items) {
+            update(item, false);
+        }
+
+        if (save) {
+            config.save();
+        }
+    }
+
+    public void update(@Nonnull SlimefunItem item, boolean save) {
+        Validate.notNull(item, "The Item should not be null!");
+
+        String path = item.getId() + ".permission";
+
+        config.setDefaultValue(path, "none");
+        config.setDefaultValue(
+            item.getId() + ".lore", new String[] {"&rYou do not have the permission", "&rto access this item."});
+
+        permissions.put(item.getId(), config.getString(path));
+
+        if (save) {
+            config.save();
+        }
+    }
+
     /**
      * This method checks whether the given {@link Permissible} has the {@link Permission}
      * to access the given {@link SlimefunItem}.
-     * 
+     *
      * @param p
      *            The {@link Permissible} to check
      * @param item
      *            The {@link SlimefunItem} in question
-     * 
+     *
      * @return Whether the {@link Permissible} has the required {@link Permission}
      */
     public boolean hasPermission(Permissible p, SlimefunItem item) {
@@ -99,10 +130,10 @@ public class PermissionsService {
      * This returns the associated {@link Permission} with the given {@link SlimefunItem}.
      * It actually returns an {@link Optional}, {@link Optional#empty()} means that there was no
      * {@link Permission} set for the given {@link SlimefunItem}
-     * 
+     *
      * @param item
      *            The {@link SlimefunItem} to retrieve the {@link Permission} for.
-     * 
+     *
      * @return An {@link Optional} holding the {@link Permission} as a {@link String} or an empty {@link Optional}
      */
     @Nonnull
@@ -119,7 +150,7 @@ public class PermissionsService {
 
     /**
      * This method sets the {@link Permission} for a given {@link SlimefunItem}.
-     * 
+     *
      * @param item
      *            The {@link SlimefunItem} to modify
      * @param permission
@@ -144,14 +175,13 @@ public class PermissionsService {
     /**
      * This returns the lore to display for a given {@link SlimefunItem} when a {@link Player}
      * does not have the required permission node.
-     * 
+     *
      * @param item
      *            The {@link SlimefunItem}
-     * 
+     *
      * @return The configured lore to display
      */
     public @Nonnull List<String> getLore(@Nonnull SlimefunItem item) {
         return config.getStringList(item.getId() + ".lore");
     }
-
 }

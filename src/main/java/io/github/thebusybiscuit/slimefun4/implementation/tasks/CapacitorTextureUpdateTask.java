@@ -1,18 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.implementation.tasks;
 
 import javax.annotation.Nonnull;
-
 import org.apache.commons.lang.Validate;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
+import io.papermc.lib.PaperLib;
 
-import io.github.bakedlibs.dough.skins.PlayerHead;
-import io.github.bakedlibs.dough.skins.PlayerSkin;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
+import io.github.thebusybiscuit.slimefun4.utils.Utils;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.Capacitor;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
-import io.papermc.lib.PaperLib;
 
 /**
  * This task is run whenever a {@link Capacitor} needs to update their texture.
@@ -51,6 +51,21 @@ public class CapacitorTextureUpdateTask implements Runnable {
         this.filledPercentage = charge / capacity;
     }
 
+    /**
+     * This creates a new {@link CapacitorTextureUpdateTask} with the given parameters.
+     *
+     * @param l
+     *            The {@link Location} of the {@link Capacitor}
+     * @param percentage
+     *            The percentage of charge in this {@link Capacitor}
+     */
+    public CapacitorTextureUpdateTask(@Nonnull Location l, double percentage) {
+        Validate.notNull(l, "The Location cannot be null");
+
+        this.l = l;
+        this.filledPercentage = NumberUtils.clamp(0.0D, percentage, 1.0D);
+    }
+
     @Override
     public void run() {
         Block b = l.getBlock();
@@ -75,10 +90,8 @@ public class CapacitorTextureUpdateTask implements Runnable {
     }
 
     private void setTexture(@Nonnull Block b, @Nonnull HeadTexture texture) {
-        PlayerSkin skin = PlayerSkin.fromHashCode(texture.getUniqueId(), texture.getTexture());
-        PlayerHead.setSkin(b, skin, false);
+        Utils.applyHeadHashToBlock(b, texture.getTexture(), texture.getUniqueId());
 
         PaperLib.getBlockState(b, false).getState().update(true, false);
     }
-
 }

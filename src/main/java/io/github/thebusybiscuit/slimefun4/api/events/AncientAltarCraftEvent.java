@@ -1,8 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.api.events;
 
+import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientAltarTask;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,10 +13,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
-
-import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAltar;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientAltarTask;
 
 /**
  * This {@link Event} is fired before an item is dropped by an {@link AncientAltar}.
@@ -34,12 +32,9 @@ public class AncientAltarCraftEvent extends PlayerEvent implements Cancellable {
     private boolean cancelled;
 
     /**
-     * @param output
-     *            The {@link ItemStack} that would be dropped by the ritual
-     * @param block
-     *            The altar {@link Block}
-     * @param player
-     *            The {@link Player} that started the ritual.
+     * @param block  The altar {@link Block}
+     * @param output The {@link ItemStack} that would be dropped by the ritual
+     * @param player The {@link Player} that started the ritual.
      */
     @ParametersAreNonnullByDefault
     public AncientAltarCraftEvent(ItemStack output, Block block, Player player) {
@@ -103,5 +98,4 @@ public class AncientAltarCraftEvent extends PlayerEvent implements Cancellable {
     public HandlerList getHandlers() {
         return getHandlerList();
     }
-
 }

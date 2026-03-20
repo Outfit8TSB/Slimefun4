@@ -12,7 +12,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
@@ -84,7 +83,8 @@ public class NestedItemGroup extends FlexItemGroup {
         }
 
         ChestMenu menu = new ChestMenu(Slimefun.getLocalization().getMessage(p, "guide.title.main"));
-        SurvivalSlimefunGuide guide = (SurvivalSlimefunGuide) Slimefun.getRegistry().getSlimefunGuide(mode);
+        SurvivalSlimefunGuide guide =
+                (SurvivalSlimefunGuide) Slimefun.getRegistry().getSlimefunGuide(mode);
 
         menu.setEmptySlotsClickable(false);
         menu.addMenuOpeningHandler(SoundEffect.GUIDE_BUTTON_CLICK_SOUND::playFor);
@@ -143,5 +143,4 @@ public class NestedItemGroup extends FlexItemGroup {
 
         menu.open(p);
     }
-
 }

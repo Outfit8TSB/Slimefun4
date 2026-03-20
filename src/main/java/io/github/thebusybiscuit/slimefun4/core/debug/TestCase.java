@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.core.debug;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
 import javax.annotation.Nonnull;
 
 import io.github.thebusybiscuit.slimefun4.core.services.AnalyticsService;
@@ -32,7 +31,15 @@ public enum TestCase {
     /**
      * Debug information regarding our {@link AnalyticsService}.
      */
-    ANALYTICS;
+    ANALYTICS,
+
+    DATABASE,
+
+    BACKPACK,
+
+    UTILS,
+
+    ENERGYNET;
 
     public static final List<String> VALUES_LIST = Arrays.stream(values()).map(TestCase::toString).toList();
 

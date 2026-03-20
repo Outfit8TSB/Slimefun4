@@ -23,7 +23,7 @@ import io.github.thebusybiscuit.slimefun4.utils.biomes.BiomeMap;
  * <p>
  * It just provides a bit of a convenience for us to reduce redundancies
  * in our {@link GEOResource} implementations.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -79,12 +79,12 @@ abstract class AbstractResource implements GEOResource {
     /**
      * Internal helper method for reading a {@link BiomeMap} of {@link Integer} type values from
      * a resource file.
-     * 
+     *
      * @param resource
      *            The {@link AbstractResource} instance
      * @param path
      *            The path to our biome map file
-     * 
+     *
      * @return A {@link BiomeMap} for this resource
      */
     @ParametersAreNonnullByDefault
@@ -100,7 +100,8 @@ abstract class AbstractResource implements GEOResource {
                 throw new IllegalStateException(x);
             } else {
                 // In a server environment, we should just print a warning and carry on
-                Slimefun.logger().log(Level.WARNING, x, () -> "Failed to load BiomeMap for GEO-resource: " + resource.getKey());
+                Slimefun.logger()
+                        .log(Level.WARNING, x, () -> "Failed to load BiomeMap for GEO-resource: " + resource.getKey());
                 return new BiomeMap<>(resource.getKey());
             }
         }

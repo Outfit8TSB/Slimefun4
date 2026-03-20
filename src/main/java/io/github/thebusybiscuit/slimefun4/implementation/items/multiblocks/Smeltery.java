@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -46,11 +46,26 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.misc.AlloyIngot;
  */
 public class Smeltery extends AbstractSmeltery {
 
-    private final ItemSetting<Integer> fireBreakingChance = new IntRangeSetting(this, "fire-breaking-chance", 0, 34, 100);
+    private final ItemSetting<Integer> fireBreakingChance =
+            new IntRangeSetting(this, "fire-breaking-chance", 0, 34, 100);
 
     @ParametersAreNonnullByDefault
     public Smeltery(ItemGroup itemGroup, SlimefunItemStack item) {
-        super(itemGroup, item, new ItemStack[] { null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.NETHER_BRICKS), CustomItemStack.create(Material.DISPENSER, "Dispenser (Facing up)"), new ItemStack(Material.NETHER_BRICKS), null, new ItemStack(Material.FLINT_AND_STEEL), null }, BlockFace.DOWN);
+        super(
+                itemGroup,
+                item,
+                new ItemStack[] {
+                    null,
+                    new ItemStack(Material.NETHER_BRICK_FENCE),
+                    null,
+                    new ItemStack(Material.NETHER_BRICKS),
+                    ItemStackFactory.create(Material.DISPENSER, "Dispenser (Facing Up)"),
+                    new ItemStack(Material.NETHER_BRICKS),
+                    null,
+                    new ItemStack(Material.FLINT_AND_STEEL),
+                    null
+                },
+                BlockFace.DOWN);
 
         addItemSetting(fireBreakingChance);
     }
@@ -59,6 +74,10 @@ public class Smeltery extends AbstractSmeltery {
     protected void registerDefaultRecipes(@Nonnull List<ItemStack> recipes) {
         recipes.add(SlimefunItems.IRON_DUST.item());
         recipes.add(new ItemStack(Material.IRON_INGOT));
+        recipes.add(SlimefunItems.GOLD_DUST.item());
+        recipes.add(new ItemStack(Material.GOLD_INGOT));
+        recipes.add(SlimefunItems.COPPER_DUST.item());
+        recipes.add(new ItemStack(Material.COPPER_INGOT));
     }
 
     @Override
@@ -96,5 +115,4 @@ public class Smeltery extends AbstractSmeltery {
             fire.setType(Material.AIR);
         }
     }
-
 }

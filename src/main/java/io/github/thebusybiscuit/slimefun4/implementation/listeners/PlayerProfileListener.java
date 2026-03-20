@@ -1,23 +1,20 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
+import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import java.util.Optional;
-
 import javax.annotation.Nonnull;
-
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This {@link Listener} removes a {@link PlayerProfile} from memory if the corresponding {@link Player}
  * has left the {@link Server} or was kicked.
- * 
+ *
  * @author TheBusyBiscuit
  * @author SoSeDiK
  *
@@ -28,20 +25,14 @@ public class PlayerProfileListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onDisconnect(PlayerQuitEvent e) {
         Optional<PlayerProfile> profile = PlayerProfile.find(e.getPlayer());
 
         // if we still have a profile of this Player in memory, delete it
         profile.ifPresent(PlayerProfile::markForDeletion);
+        Slimefun.getDatabaseManager()
+                .getProfileDataController()
+                .invalidateCache(e.getPlayer().getUniqueId().toString());
     }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onKick(PlayerKickEvent e) {
-        Optional<PlayerProfile> profile = PlayerProfile.find(e.getPlayer());
-
-        // if we still have a profile of this Player in memory, delete it
-        profile.ifPresent(PlayerProfile::markForDeletion);
-    }
-
 }

@@ -11,10 +11,9 @@ permissions:
 
 jobs:
   pr-labeler:
-
     name: Pull Request Labels
     runs-on: ubuntu-latest
-    if: github.repository == 'Slimefun/Slimefun4'
+    if: github.repository == 'Slimefun-United/Slimefun-United'
 
     steps:
       - uses: baked-libs/pull-request-labels@v1.1

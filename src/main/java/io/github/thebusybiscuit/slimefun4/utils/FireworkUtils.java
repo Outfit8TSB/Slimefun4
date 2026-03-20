@@ -2,9 +2,7 @@ package io.github.thebusybiscuit.slimefun4.utils;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
 import javax.annotation.Nonnull;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -19,7 +17,7 @@ import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedEntityTyp
 
 /**
  * This is a simple utility class for spawning random and colorful {@link Firework} rockets.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -27,10 +25,23 @@ public final class FireworkUtils {
 
     // @formatter:off
     private static final Color[] COLORS = {
-        Color.AQUA, Color.BLACK, Color.BLUE, Color.FUCHSIA,
-        Color.GRAY, Color.GREEN, Color.LIME, Color.MAROON,
-        Color.NAVY, Color.OLIVE, Color.ORANGE, Color.PURPLE,
-        Color.RED, Color.SILVER, Color.TEAL, Color.WHITE, Color.YELLOW
+        Color.AQUA,
+        Color.BLACK,
+        Color.BLUE,
+        Color.FUCHSIA,
+        Color.GRAY,
+        Color.GREEN,
+        Color.LIME,
+        Color.MAROON,
+        Color.NAVY,
+        Color.OLIVE,
+        Color.ORANGE,
+        Color.PURPLE,
+        Color.RED,
+        Color.SILVER,
+        Color.TEAL,
+        Color.WHITE,
+        Color.YELLOW
     };
     // @formatter:on
     
@@ -69,12 +80,12 @@ public final class FireworkUtils {
 
     /**
      * This returns a randomized {@link FireworkEffect} using the given {@link Color}.
-     * 
+     *
      * @param random
      *            The {@link Random} instance to use
      * @param color
      *            The {@link Color} of this {@link FireworkEffect}
-     * 
+     *
      * @return A randomized {@link FireworkEffect}
      */
     public static @Nonnull FireworkEffect getRandomEffect(@Nonnull Random random, @Nonnull Color color) {
@@ -83,14 +94,14 @@ public final class FireworkUtils {
                 .flicker(random.nextBoolean())
                 .withColor(color)
                 .with(random.nextBoolean() ? Type.BALL : Type.BALL_LARGE)
-                .trail(random.nextBoolean()
-        ).build();
+                .trail(random.nextBoolean())
+                .build();
         // @formatter:on
     }
 
     /**
      * This returns a random {@link Color} for our {@link FireworkEffect}.
-     * 
+     *
      * @return A random {@link Color}
      */
     private static @Nonnull Color getRandomColor() {

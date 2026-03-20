@@ -11,7 +11,6 @@ import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 public class VersionedItemFlag {
-    
     public static final ItemFlag HIDE_ADDITIONAL_TOOLTIP;
 
     static {
@@ -27,7 +26,7 @@ public class VersionedItemFlag {
         try {
             Field field = ItemFlag.class.getDeclaredField(key);
             return (ItemFlag) field.get(null);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }

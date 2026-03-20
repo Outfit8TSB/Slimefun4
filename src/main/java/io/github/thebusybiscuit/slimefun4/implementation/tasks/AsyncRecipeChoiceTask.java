@@ -23,10 +23,10 @@ import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunG
 /**
  * A {@link AsyncRecipeChoiceTask} is an asynchronously repeating task that cycles
  * through the different variants of {@link Material} that a {@link MaterialChoice} or {@link Tag} can represent.
- * 
+ *
  * It is used in the {@link SurvivalSlimefunGuide} for any {@link ItemStack} from Minecraft
  * that accepts more than one {@link Material} in its {@link Recipe}.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -42,7 +42,7 @@ public class AsyncRecipeChoiceTask implements Runnable {
 
     /**
      * This will start this task for the given {@link Inventory}.
-     * 
+     *
      * @param inv
      *            The {@link Inventory} to start this task for
      */
@@ -50,7 +50,9 @@ public class AsyncRecipeChoiceTask implements Runnable {
         Validate.notNull(inv, "Inventory must not be null");
 
         inventory = inv;
-        id = Bukkit.getScheduler().runTaskTimerAsynchronously(Slimefun.instance(), this, 0, UPDATE_INTERVAL).getTaskId();
+        id = Bukkit.getScheduler()
+                .runTaskTimerAsynchronously(Slimefun.instance(), this, 0, UPDATE_INTERVAL)
+                .getTaskId();
     }
 
     public void add(int slot, @Nonnull MaterialChoice choice) {
@@ -79,7 +81,7 @@ public class AsyncRecipeChoiceTask implements Runnable {
 
     /**
      * This method checks if there are any slots that need to be updated.
-     * 
+     *
      * @return Whether this task has nothing to do
      */
     public boolean isEmpty() {
@@ -124,5 +126,4 @@ public class AsyncRecipeChoiceTask implements Runnable {
             lock.readLock().unlock();
         }
     }
-
 }

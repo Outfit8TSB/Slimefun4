@@ -21,23 +21,31 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import io.github.bakedlibs.dough.common.ChatColors;
-import io.github.bakedlibs.dough.skins.PlayerHead;
+
+import city.norain.slimefun4.utils.TaskUtil;
+import com.xzavier0722.mc.plugin.slimefun4.storage.callback.IAsyncReadCallback;
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.ASlimefunDataContainer;
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunUniversalData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.LocationUtils;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.core.services.sounds.SoundEffect;
+import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNet;
+import io.github.thebusybiscuit.slimefun4.implementation.items.electric.EnergyRegulator;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import io.github.thebusybiscuit.slimefun4.utils.Utils;
 
 /**
  * This {@link Listener} is responsible for handling our debugging tool, the debug fish.
  * This is where the functionality of this item is implemented.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -79,8 +87,10 @@ public class DebugFishListener implements Listener {
     @ParametersAreNonnullByDefault
     private void onLeftClick(Player p, Block b, PlayerInteractEvent e) {
         if (p.isSneaking()) {
-            if (BlockStorage.hasBlockInfo(b)) {
-                BlockStorage.clearBlockInfo(b);
+            var controller = Slimefun.getDatabaseManager().getBlockDataController();
+            var loc = b.getLocation();
+            if (controller.getBlockDataFromCache(loc) != null) {
+                controller.removeBlock(loc);
             }
         } else {
             e.setCancelled(false);
@@ -91,48 +101,108 @@ public class DebugFishListener implements Listener {
     private void onRightClick(Player p, Block b, BlockFace face) {
         if (p.isSneaking()) {
             // Fixes #2655 - Delaying the placement to prevent a new event from being fired
-            Slimefun.runSync(() -> {
-                Block block = b.getRelative(face);
-                block.setType(Material.PLAYER_HEAD);
+            Slimefun.runSync(
+                    () -> {
+                        Block block = b.getRelative(face);
+                        block.setType(Material.PLAYER_HEAD);
 
-                PlayerHead.setSkin(block, HeadTexture.MISSING_TEXTURE.getAsSkin(), true);
-                SoundEffect.DEBUG_FISH_CLICK_SOUND.playFor(p);
-            }, 2L);
-        } else if (BlockStorage.hasBlockInfo(b)) {
+                Utils.applyHeadHashToBlock(block, HeadTexture.MISSING_TEXTURE.getTextureHash(), HeadTexture.MISSING_TEXTURE.getUniqueId());
+                        SoundEffect.DEBUG_FISH_CLICK_SOUND.playFor(p);
+                    },
+                    2L);
+            return;
+        }
+
+        if (StorageCacheUtils.hasSlimefunBlock(b.getLocation())) {
+            var data = StorageCacheUtils.getDataContainer(b.getLocation());
+
             try {
-                sendInfo(p, b);
+                if (data == null) {
+                    TaskUtil.runSyncMethod(() -> Slimefun.getBlockDataService()
+                            .getUniversalDataUUID(b)
+                            .ifPresentOrElse(
+                                    (uuid) -> {
+                    p.sendMessage(ChatColors.color(
+                        "&cDetected a corrupted universal data item. UUID: " + uuid + ". Please check whether the corresponding record exists in the database!"));
+                                        sendVanillaInfo(p, b);
+                                    },
+                                    () -> sendVanillaInfo(p, b)));
+
+                    return;
+                }
+
+                if (data.isDataLoaded()) {
+                    sendInfo(p, b, data);
+                } else {
+                    if (data instanceof SlimefunBlockData blockData) {
+                        Slimefun.getDatabaseManager()
+                                .getBlockDataController()
+                                .loadBlockDataAsync(blockData, new IAsyncReadCallback<>() {
+                                    @Override
+                                    public boolean runOnMainThread() {
+                                        return true;
+                                    }
+
+                                    @Override
+                                    public void onResult(SlimefunBlockData result) {
+                                        sendInfo(p, b, result);
+                                    }
+                                });
+                    } else {
+                        SlimefunUniversalData universalData = (SlimefunUniversalData) data;
+                        Slimefun.getDatabaseManager()
+                                .getBlockDataController()
+                                .loadUniversalDataAsync(universalData, new IAsyncReadCallback<>() {
+                                    @Override
+                                    public boolean runOnMainThread() {
+                                        return true;
+                                    }
+
+                                    @Override
+                                    public void onResult(SlimefunUniversalData result) {
+                                        sendInfo(p, b, result);
+                                    }
+                                });
+                    }
+                }
             } catch (Exception x) {
                 Slimefun.logger().log(Level.SEVERE, "An Exception occurred while using a Debug-Fish", x);
             }
         } else {
-            // Read applicable Slimefun tags
-            Set<SlimefunTag> tags = EnumSet.noneOf(SlimefunTag.class);
+            sendVanillaInfo(p, b);
+        }
+    }
 
-            for (SlimefunTag tag : SlimefunTag.values()) {
-                if (tag.isTagged(b.getType())) {
-                    tags.add(tag);
-                }
+    private void sendVanillaInfo(Player p, Block b) {
+        // Read applicable Slimefun tags
+        Set<SlimefunTag> tags = EnumSet.noneOf(SlimefunTag.class);
+
+        for (SlimefunTag tag : SlimefunTag.values()) {
+            if (tag.isTagged(b.getType())) {
+                tags.add(tag);
+            }
+        }
+
+        if (!tags.isEmpty()) {
+            p.sendMessage(" ");
+            p.sendMessage(
+                    ChatColors.color("&dSlimefun tags for: &e") + b.getType().name());
+
+            for (SlimefunTag tag : tags) {
+                p.sendMessage(ChatColors.color("&d* &e") + tag.name());
             }
 
-            if (!tags.isEmpty()) {
-                p.sendMessage(" ");
-                p.sendMessage(ChatColors.color("&dSlimefun tags for: &e") + b.getType().name());
-
-                for (SlimefunTag tag : tags) {
-                    p.sendMessage(ChatColors.color("&d* &e") + tag.name());
-                }
-
-                p.sendMessage(" ");
-            }
+            p.sendMessage(" ");
         }
     }
 
     @ParametersAreNonnullByDefault
-    private void sendInfo(Player p, Block b) {
-        SlimefunItem item = BlockStorage.check(b);
+    private void sendInfo(Player p, Block b, ASlimefunDataContainer data) {
+        SlimefunItem item = SlimefunItem.getById(data.getSfId());
 
         p.sendMessage(" ");
-        p.sendMessage(ChatColors.color("&d" + b.getType() + " &e@ X: " + b.getX() + " Y: " + b.getY() + " Z: " + b.getZ()));
+        p.sendMessage(
+                ChatColors.color("&d" + b.getType() + " &e@ X: " + b.getX() + " Y: " + b.getY() + " Z: " + b.getZ()));
         p.sendMessage(ChatColors.color("&dId: " + "&e" + item.getId()));
         p.sendMessage(ChatColors.color("&dPlugin: " + "&e" + item.getAddon().getName()));
 
@@ -141,31 +211,67 @@ public class DebugFishListener implements Listener {
 
             // Check if the skull is a wall skull, and if so use Directional instead of Rotatable.
             if (b.getType() == Material.PLAYER_WALL_HEAD) {
-                p.sendMessage(ChatColors.color("  &dFacing: &e" + ((Directional) b.getBlockData()).getFacing().toString()));
+                p.sendMessage(ChatColors.color("  &dFacing: &e" + ((Directional) b.getBlockData()).getFacing()));
             } else {
-                p.sendMessage(ChatColors.color("  &dRotation: &e" + ((Rotatable) b.getBlockData()).getRotation().toString()));
+                p.sendMessage(ChatColors.color("  &dRotation: &e" + ((Rotatable) b.getBlockData()).getRotation()));
             }
         }
 
-        if (BlockStorage.getStorage(b.getWorld()).hasInventory(b.getLocation())) {
+        if ((data instanceof SlimefunBlockData bd && bd.getBlockMenu() != null)
+                || (data instanceof SlimefunUniversalData ud && ud.getMenu() != null)) {
             p.sendMessage(ChatColors.color("&dInventory: " + greenCheckmark));
         } else {
             p.sendMessage(ChatColors.color("&dInventory: " + redCross));
         }
 
-        if (item.isTicking()) {
-            p.sendMessage(ChatColors.color("&dTicking: " + greenCheckmark));
-            p.sendMessage(ChatColors.color("  &dAsync: &e" + (item.getBlockTicker().isSynchronized() ? redCross : greenCheckmark)));
-        } else if (item instanceof EnergyNetProvider) {
-            p.sendMessage(ChatColors.color("&dTicking: &3Indirect (Generator)"));
-        } else {
-            p.sendMessage(ChatColors.color("&dTicking: " + redCross));
+        if (data instanceof SlimefunUniversalData universalData) {
+            p.sendMessage(ChatColors.color("&dUniversal Item: " + greenCheckmark));
+            p.sendMessage(ChatColors.color("    &dUUID: " + universalData.getUUID()));
+            p.sendMessage(ChatColors.color("    &dTrait: " + universalData.getTraits()));
         }
 
+        if (item.isTicking()) {
+            p.sendMessage(ChatColors.color("&dTicker: " + greenCheckmark));
+            p.sendMessage(ChatColors.color(
+                    "  &dAsync: &e" + (item.getBlockTicker().isSynchronized() ? redCross : greenCheckmark)));
+        } else if (item instanceof EnergyNetProvider) {
+            p.sendMessage(ChatColors.color("&dTicker: &3Indirect (Generator)"));
+        } else {
+            p.sendMessage(ChatColors.color("&dTicker: " + redCross));
+        }
+
+        Slimefun.getTickerTask().getTickLocations(p.getLocation().getChunk()).stream()
+                .filter(l -> l.getLocation().equals(b.getLocation()))
+                .findFirst()
+                .ifPresent(tickLoc -> p.sendMessage(ChatColors.color(
+                        "&dIn Ticker Queue " + (tickLoc.isUniversal() ? "(Universal)" : "") + ": " + greenCheckmark)));
+
         if (Slimefun.getProfiler().hasTimings(b)) {
-            p.sendMessage(ChatColors.color("  &dTimings: &e" + Slimefun.getProfiler().getTime(b)));
-            p.sendMessage(ChatColors.color("  &dTotal Timings: &e" + Slimefun.getProfiler().getTime(item)));
-            p.sendMessage(ChatColors.color("  &dChunk Timings: &e" + Slimefun.getProfiler().getTime(b.getChunk())));
+            p.sendMessage(
+                    ChatColors.color("  &dTimings: &e" + Slimefun.getProfiler().getTime(b)));
+            p.sendMessage(ChatColors.color(
+                    "  &dTotal Timings: &e" + Slimefun.getProfiler().getTime(item)));
+            p.sendMessage(ChatColors.color(
+                    "  &dChunk Timings: &e" + Slimefun.getProfiler().getTime(b.getChunk())));
+        }
+
+        if (item instanceof EnergyRegulator) {
+            p.sendMessage(ChatColors.color("&dEnergy Regulator"));
+            EnergyNet network = EnergyNet.getNetworkFromLocationOrCreate(b.getLocation());
+            p.sendMessage(ChatColors.color("&dNetwork range: " + network.getRange()));
+            p.sendMessage(ChatColors.color("&dNetwork components:"));
+            p.sendMessage(ChatColors.color("  &d- Network capacitors:"));
+            network.getCapacitors()
+                    .forEach((loc, component) -> p.sendMessage(
+                            ChatColors.color("&d " + component.getId() + " - " + LocationUtils.locationToString(loc))));
+            p.sendMessage(ChatColors.color("  &d- Network consumers:"));
+            network.getConsumers()
+                    .forEach((loc, component) -> p.sendMessage(
+                            ChatColors.color("&d " + component.getId() + " - " + LocationUtils.locationToString(loc))));
+            p.sendMessage(ChatColors.color("  &d- Network generators:"));
+            network.getGenerators()
+                    .forEach((loc, component) -> p.sendMessage(
+                            ChatColors.color("&d " + component.getId() + " - " + LocationUtils.locationToString(loc))));
         }
 
         if (item instanceof EnergyNetComponent component) {
@@ -174,13 +280,14 @@ public class DebugFishListener implements Listener {
 
             if (component.isChargeable()) {
                 p.sendMessage(ChatColors.color("  &dChargeable: " + greenCheckmark));
-                p.sendMessage(ChatColors.color("  &dEnergy: &e" + component.getCharge(b.getLocation()) + " / " + component.getCapacity()));
+                p.sendMessage(ChatColors.color("  &dEnergy: &e" + component.getChargeLong(b.getLocation()) + " / "
+                        + component.getCapacityLong()));
             } else {
                 p.sendMessage(ChatColors.color("&dChargeable: " + redCross));
             }
         }
 
-        p.sendMessage(ChatColors.color("&6" + BlockStorage.getBlockInfoAsJson(b)));
+        data.getAllData().forEach((k, v) -> p.sendMessage(ChatColors.color("&6" + k + ": " + v)));
         p.sendMessage(" ");
     }
 }

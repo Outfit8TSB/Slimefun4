@@ -10,11 +10,12 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.Allay;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Item;
@@ -22,6 +23,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Ravager;
+import org.bukkit.entity.Steerable;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -38,12 +40,16 @@ import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.LlamaInventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
+
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.talismans.MagicianTalisman;
@@ -166,6 +172,13 @@ public class TalismanListener implements Listener {
         }
 
         /*
+         * Return because allay is so cute, DO NOT KILL THEM.
+         */
+        if (Slimefun.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_19) && entity instanceof Allay) {
+            return;
+        }
+
+        /*
          * We are also excluding entities which can pickup items,
          * this is not perfect but it at least prevents dupes
          * by tossing items to zombies.
@@ -222,6 +235,21 @@ public class TalismanListener implements Listener {
 
             items.remove(equipment.getItemInMainHand());
             items.remove(equipment.getItemInOffHand());
+        }
+
+        if (entity instanceof AbstractHorse abstractHorse) {
+            var inventory = abstractHorse.getInventory();
+            items.remove(inventory.getSaddle());
+
+            if (inventory instanceof LlamaInventory llamaInventory) {
+                items.remove(llamaInventory.getDecor());
+            } else if (inventory.getItem(1) != null) {
+                items.remove(inventory.getItem(1));
+            }
+        }
+
+        if (entity instanceof Steerable steerable && steerable.hasSaddle()) {
+            items.remove(new ItemStack(Material.SADDLE));
         }
 
         return items;
@@ -302,7 +330,9 @@ public class TalismanListener implements Listener {
         }
 
         // Wizard Talisman
-        if (!enchantments.containsKey(Enchantment.SILK_TOUCH) && VersionedEnchantment.FORTUNE.canEnchantItem(e.getItem()) && Talisman.trigger(e, SlimefunItems.TALISMAN_WIZARD)) {
+        if (!enchantments.containsKey(Enchantment.SILK_TOUCH)
+                && VersionedEnchantment.FORTUNE.canEnchantItem(e.getItem())
+                && Talisman.trigger(e, SlimefunItems.TALISMAN_WIZARD)) {
             // Randomly lower some enchantments
             for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
                 if (entry.getValue() > 1 && random.nextInt(100) < 40) {
@@ -347,7 +377,8 @@ public class TalismanListener implements Listener {
         }
     }
 
-    private void doubleTalismanDrops(BlockDropItemEvent e, SlimefunItemStack talismanItemStack, SlimefunTag tag, Material type, ItemMeta meta) {
+    private void doubleTalismanDrops(
+            BlockDropItemEvent e, SlimefunItemStack talismanItemStack, SlimefunTag tag, Material type, ItemMeta meta) {
         if (tag.isTagged(type)) {
             Collection<Item> drops = e.getItems();
 
@@ -364,7 +395,10 @@ public class TalismanListener implements Listener {
                     // We do not want to dupe blocks
                     if (!droppedItem.getType().isBlock()) {
                         int amount = Math.max(1, (dropAmount * 2) - droppedItem.getAmount());
-                        e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), CustomItemStack.create(droppedItem, amount));
+                        e.getBlock()
+                                .getWorld()
+                                .dropItemNaturally(
+                                        e.getBlock().getLocation(), ItemStackFactory.create(droppedItem, amount));
                         doubledDrops = true;
                     }
                 }

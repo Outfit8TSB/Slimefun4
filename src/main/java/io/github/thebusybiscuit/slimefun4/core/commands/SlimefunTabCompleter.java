@@ -6,13 +6,16 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.generator.WorldInfo;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.researches.Research;
@@ -29,14 +32,25 @@ class SlimefunTabCompleter implements TabCompleter {
         this.command = command;
     }
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 1) {
             return createReturnList(command.getSubCommandNames(), args[0]);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("debug")) {
                 return createReturnList(TestCase.VALUES_LIST, args[1]);
+            } else if (args[0].equalsIgnoreCase("banitem")) {
+                return createReturnList(getSlimefunItems(), args[1]);
+            } else if (args[0].equalsIgnoreCase("unbanitem")) {
+                List<String> list = Slimefun.getRegistry().getDisabledSlimefunItems().stream()
+                        .map(SlimefunItem::getId)
+                        .collect(Collectors.toList());
+                return createReturnList(list, args[1]);
+            } else if (args[0].equalsIgnoreCase("cleardata")) {
+                List<String> list = new ArrayList<>(
+                        Bukkit.getWorlds().stream().map(WorldInfo::getName).toList());
+                list.add("*");
+                return createReturnList(list, args[1]);
             } else {
                 // Returning null will make it fallback to the default arguments (all online players)
                 return null;
@@ -56,6 +70,8 @@ class SlimefunTabCompleter implements TabCompleter {
                 }
 
                 return createReturnList(suggestions, args[2]);
+            } else if (args[0].equalsIgnoreCase("cleardata")) {
+                return createReturnList(List.of("block", "oil", "*"), args[2]);
             } else {
                 // Returning null will make it fallback to the default arguments (all online players)
                 return null;
@@ -70,7 +86,7 @@ class SlimefunTabCompleter implements TabCompleter {
 
     /***
      * Returns a sublist from a given list containing items that start with the given string if string is not empty
-     * 
+     *
      * @param list
      *            The list to process
      * @param string
@@ -79,8 +95,12 @@ class SlimefunTabCompleter implements TabCompleter {
      */
     @Nonnull
     private List<String> createReturnList(@Nonnull List<String> list, @Nonnull String string) {
-        if (string.length() == 0) {
-            return list;
+        if (string.isEmpty()) {
+            if (list.size() >= MAX_SUGGESTIONS) {
+                return list.subList(0, MAX_SUGGESTIONS);
+            } else {
+                return list;
+            }
         }
 
         String input = string.toLowerCase(Locale.ROOT);
@@ -112,5 +132,4 @@ class SlimefunTabCompleter implements TabCompleter {
 
         return list;
     }
-
 }

@@ -10,9 +10,8 @@ import org.bukkit.entity.Player;
 /**
  * This represents an {@link ElevatorFloor} to which a {@link Player}
  * can travel to using an {@link ElevatorPlate}.
- * 
- * @author TheBusyBiscuit
  *
+ * @author TheBusyBiscuit
  */
 class ElevatorFloor {
 
@@ -51,7 +50,7 @@ class ElevatorFloor {
 
     /**
      * This returns the name of this {@link ElevatorFloor}.
-     * 
+     *
      * @return The name of this floor
      */
     public @Nonnull String getName() {
@@ -60,7 +59,7 @@ class ElevatorFloor {
 
     /**
      * This returns the {@link Location} of this {@link ElevatorFloor}.
-     * 
+     *
      * @return The {@link Location} of this floor
      */
     public @Nonnull Location getLocation() {
@@ -70,7 +69,7 @@ class ElevatorFloor {
     /**
      * This returns the "altitude" of this floor.
      * This is equivalent to the Y level of {@link #getLocation()}.
-     * 
+     *
      * @return The altitude of this floor
      */
     public int getAltitude() {
@@ -81,11 +80,10 @@ class ElevatorFloor {
      * This returns the number of this floor.
      * The lowest floor will have the number 0 and it
      * increments from there.
-     * 
+     *
      * @return The number of this floor.
      */
     public int getNumber() {
         return number;
     }
-
 }

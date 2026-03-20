@@ -1,5 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.core.services;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.StorageType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -8,22 +10,17 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.annotation.Nonnull;
-
 import org.apache.commons.lang.Validate;
-
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This Service creates a Backup of your Slimefun world data on every server shutdown.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -46,6 +43,11 @@ public class BackupService implements Runnable {
 
     @Override
     public void run() {
+        var dbManager = Slimefun.getDatabaseManager();
+        if (dbManager.getProfileStorageType() != StorageType.SQLITE
+                && dbManager.getBlockDataStorageType() != StorageType.SQLITE) {
+            return;
+        }
         // Make sure that the directory exists.
         if (directory.exists()) {
             List<File> backups = Arrays.asList(directory.listFiles());
@@ -54,7 +56,7 @@ public class BackupService implements Runnable {
                 try {
                     purgeBackups(backups);
                 } catch (IOException e) {
-                    Slimefun.logger().log(Level.WARNING, "Could not delete an old backup", e);
+                    Slimefun.logger().log(Level.WARNING, "Unable to delete old backup file", e);
                 }
             }
 
@@ -69,10 +71,15 @@ public class BackupService implements Runnable {
 
                         Slimefun.logger().log(Level.INFO, "Backed up Slimefun data to: {0}", file.getName());
                     } else {
-                        Slimefun.logger().log(Level.WARNING, "Could not create backup-file: {0}", file.getName());
+                        Slimefun.logger().log(Level.WARNING, "Unable to create backup file: {0}", file.getName());
                     }
                 } catch (IOException x) {
-                    Slimefun.logger().log(Level.SEVERE, x, () -> "An Exception occurred while creating a backup for Slimefun " + Slimefun.getVersion());
+                    Slimefun.logger()
+                            .log(
+                                    Level.SEVERE,
+                                    x,
+                                    () -> "An Exception occurred while creating a backup for Slimefun "
+                                            + Slimefun.getVersion());
                 }
             }
         }
@@ -81,71 +88,61 @@ public class BackupService implements Runnable {
     private void createBackup(@Nonnull ZipOutputStream output) throws IOException {
         Validate.notNull(output, "The Output Stream cannot be null!");
 
-        for (File folder : new File("data-storage/Slimefun/stored-blocks/").listFiles()) {
-            addDirectory(output, folder, "stored-blocks/" + folder.getName());
+        if (Slimefun.getDatabaseManager().getProfileStorageType() == StorageType.SQLITE) {
+            addFile(output, new File("data-storage/Slimefun", "profile.db"), "");
         }
 
-        addDirectory(output, new File("data-storage/Slimefun/universal-inventories/"), "universal-inventories");
-        addDirectory(output, new File("data-storage/Slimefun/stored-inventories/"), "stored-inventories");
-
-        File chunks = new File("data-storage/Slimefun/stored-chunks/chunks.sfc");
-
-        if (chunks.exists()) {
-            byte[] buffer = new byte[1024];
-            ZipEntry entry = new ZipEntry("stored-chunks/chunks.sfc");
-            output.putNextEntry(entry);
-
-            try (FileInputStream input = new FileInputStream(chunks)) {
-                int length;
-
-                while ((length = input.read(buffer)) > 0) {
-                    output.write(buffer, 0, length);
-                }
-            }
-
-            output.closeEntry();
+        if (Slimefun.getDatabaseManager().getBlockDataStorageType() == StorageType.SQLITE) {
+            addFile(output, new File("data-storage/Slimefun", "block-storage.db"), "");
         }
     }
 
-    private void addDirectory(@Nonnull ZipOutputStream output, @Nonnull File directory, @Nonnull String zipPath) throws IOException {
-        byte[] buffer = new byte[1024];
+    private void addFile(ZipOutputStream output, File file, String path) throws IOException {
+        var entry = new ZipEntry(path + "/" + file.getName());
+        output.putNextEntry(entry);
 
-        for (File file : directory.listFiles()) {
-            ZipEntry entry = new ZipEntry(zipPath + '/' + file.getName());
-            output.putNextEntry(entry);
+        byte[] buffer = new byte[4096];
+        try (var input = new FileInputStream(file)) {
+            int length;
 
-            try (FileInputStream input = new FileInputStream(file)) {
-                int length;
-
-                while ((length = input.read(buffer)) > 0) {
-                    output.write(buffer, 0, length);
-                }
+            while ((length = input.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
             }
+        }
+        output.closeEntry();
+    }
 
-            output.closeEntry();
+    private void addDirectory(@Nonnull ZipOutputStream output, @Nonnull File directory, @Nonnull String zipPath)
+            throws IOException {
+        for (File file : directory.listFiles()) {
+            addFile(output, file, zipPath);
         }
     }
 
     /**
      * This method will delete old backups.
-     * 
+     *
      * @param backups
      *            The {@link List} of all backups
-     * 
+     *
      * @throws IOException
      *             An {@link IOException} is thrown if a {@link File} could not be deleted
      */
     private void purgeBackups(@Nonnull List<File> backups) throws IOException {
-        Collections.sort(backups, (a, b) -> {
-            LocalDateTime time1 = LocalDateTime.parse(a.getName().substring(0, a.getName().length() - 4), format);
-            LocalDateTime time2 = LocalDateTime.parse(b.getName().substring(0, b.getName().length() - 4), format);
+        var matchedBackup = backups.stream()
+                .filter(f -> f.getName().matches("^\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}$"))
+                .sorted((a, b) -> {
+                    LocalDateTime time1 = LocalDateTime.parse(
+                            a.getName().substring(0, a.getName().length() - 4), format);
+                    LocalDateTime time2 = LocalDateTime.parse(
+                            b.getName().substring(0, b.getName().length() - 4), format);
 
-            return time2.compareTo(time1);
-        });
+                    return time2.compareTo(time1);
+                })
+                .toList();
 
-        for (int i = backups.size() - MAX_BACKUPS; i > 0; i--) {
-            Files.delete(backups.get(i).toPath());
+        for (int i = matchedBackup.size() - MAX_BACKUPS; i > 0; i--) {
+            Files.delete(matchedBackup.get(i).toPath());
         }
     }
-
 }

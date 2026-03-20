@@ -17,29 +17,27 @@ jobs:
     strategy:
       matrix:
         include:
-          - mcVersion: '1.16.5'
-            javaVersion: '16'
-          - mcVersion: '1.17.1'
-            javaVersion: '17'
-          - mcVersion: '1.18.2'
-            javaVersion: '18'
           - mcVersion: '1.19.4'
             javaVersion: '19'
-          - mcVersion: '1.20.4'
-            javaVersion: '20'
           - mcVersion: '1.20.6'
             javaVersion: '21'
-          #- mcVersion: 'latest'
-          #  javaVersion: '21'
+          - mcVersion: '1.21.4'
+            javaVersion: '21'
+          - mcVersion: '1.21.8'
+            javaVersion: '21'
+          - mcVersion: '1.21.10'
+            javaVersion: '21'
+          - mcVersion: 'latest'
+            javaVersion: '21'
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up JDK
-        uses: actions/setup-java@v4.6.0
+        uses: actions/setup-java@v5
         with:
-          distribution: temurin
+          distribution: adopt
           java-version: ${{ matrix.javaVersion }}
           java-package: jdk
           architecture: x64
@@ -66,14 +64,14 @@ jobs:
             "https://api.papermc.io/v2/projects/paper/versions/$VERSION/builds/$BUILD/downloads/$JAR_FILE"
 
       - name: Download Slimefun
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.artifact-name }}
           path: plugins/
 
       - name: Download e2e-tester
         run: |
-          curl -o e2e-tester.jar https://preview-builds.walshy.dev/download/e2e-tester/main/latest
+          curl -o e2e-tester.jar https://builds.guizhanss.com/api/download/ybw0014/Slimefun-e2e-tester/main/latest
           mv e2e-tester.jar plugins/e2e-tester.jar
 
       - name: Run server

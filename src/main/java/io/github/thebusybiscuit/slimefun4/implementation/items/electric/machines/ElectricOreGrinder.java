@@ -1,17 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotHopperable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
-
+import javax.annotation.ParametersAreNonnullByDefault;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class ElectricOreGrinder extends AContainer implements RecipeDisplayItem, NotHopperable {
 
@@ -29,5 +26,4 @@ public class ElectricOreGrinder extends AContainer implements RecipeDisplayItem,
     public ItemStack getProgressBar() {
         return new ItemStack(Material.IRON_PICKAXE);
     }
-
 }

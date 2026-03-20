@@ -1,8 +1,20 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.magical;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.items.settings.DoubleRangeSetting;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.services.sounds.SoundEffect;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
+import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,21 +24,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.items.settings.DoubleRangeSetting;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.core.services.sounds.SoundEffect;
-import io.github.thebusybiscuit.slimefun4.implementation.handlers.VanillaInventoryDropHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-
 /**
  * The {@link InfusedHopper} is a special kind of {@link Hopper} which teleports any
  * nearby {@link Item} to itself.
@@ -34,7 +31,6 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
  *
  * @author TheBusyBiscuit
  * @author Walshy
- * 
  * @see InfusedMagnet
  */
 public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
@@ -58,10 +54,10 @@ public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
         return new BlockTicker() {
 
             @Override
-            public void tick(Block b, SlimefunItem sfItem, Config data) {
+            public void tick(Block b, SlimefunItem sfItem, SlimefunBlockData data) {
                 if (b.getType() != Material.HOPPER) {
                     // we're no longer a hopper, we were probably destroyed. skipping this tick.
-                    BlockStorage.clearBlockInfo(b);
+                    Slimefun.getDatabaseManager().getBlockDataController().removeBlock(b.getLocation());
                     return;
                 }
 
@@ -108,7 +104,9 @@ public class InfusedHopper extends SimpleSlimefunItem<BlockTicker> {
     private boolean isValidItem(@Nonnull Location l, @Nonnull Entity entity) {
         if (entity instanceof Item item && entity.isValid()) {
             // Check if the item cannot be picked up or has the "no pickup" metadata
-            return item.getPickupDelay() <= 0 && !SlimefunUtils.hasNoPickupFlag(item) && item.getLocation().distanceSquared(l) > 0.25;
+            return item.getPickupDelay() <= 0
+                    && !SlimefunUtils.hasNoPickupFlag(item)
+                    && item.getLocation().distanceSquared(l) > 0.25;
         }
 
         return false;

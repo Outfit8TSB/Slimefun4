@@ -12,7 +12,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 
 /**
  * This {@link MachineOperation} represents the process of burning fuel.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -62,5 +62,4 @@ public class FuelOperation implements MachineOperation {
     public int getTotalTicks() {
         return totalTicks;
     }
-
 }

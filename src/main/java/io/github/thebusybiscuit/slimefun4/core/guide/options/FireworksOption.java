@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.bakedlibs.dough.data.persistent.PersistentDataAPI;
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.core.SlimefunRegistry;
+import io.github.thebusybiscuit.slimefun4.core.config.SlimefunConfigManager;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 class FireworksOption implements SlimefunGuideOption<Boolean> {
@@ -26,6 +26,8 @@ class FireworksOption implements SlimefunGuideOption<Boolean> {
         return new NamespacedKey(Slimefun.instance(), "research_fireworks");
     }
 
+    // TODO: Merge it with the commented-out code
+    /*
     @Override
     public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
         SlimefunRegistry registry = Slimefun.getRegistry();
@@ -38,7 +40,28 @@ class FireworksOption implements SlimefunGuideOption<Boolean> {
             lore.add("");
             lore.add("&7\u21E8 " + Slimefun.getLocalization().getMessage(p, "guide.options.fireworks." + optionState + ".click"));
 
-            ItemStack item = CustomItemStack.create(Material.FIREWORK_ROCKET, lore);
+            ItemStack item = ItemStackFactory.create(Material.FIREWORK_ROCKET, lore);
+            return Optional.of(item);
+        } else {
+            return Optional.empty();
+        }
+    }
+     */
+    @Override
+    public Optional<ItemStack> getDisplayItem(Player p, ItemStack guide) {
+        SlimefunConfigManager cfgManager = Slimefun.getConfigManager();
+
+        if (cfgManager.isResearchingEnabled() && cfgManager.isResearchFireworkEnabled()) {
+            boolean enabled = getSelectedOption(p, guide).orElse(true);
+            ItemStack item = ItemStackFactory.create(
+                    Material.FIREWORK_ROCKET,
+                    "&bFirework Effect: &" + (enabled ? "aEnabled" : "4Disabled"),
+                    "",
+                    "&7You can now choose whether",
+                    "&7to show a firework effect",
+                    "&7when unlocking a new item.",
+                    "",
+                    "&7\u21E8 &eClick to " + (enabled ? "disable" : "enable") + " firework effect");
             return Optional.of(item);
         } else {
             return Optional.empty();
@@ -62,5 +85,4 @@ class FireworksOption implements SlimefunGuideOption<Boolean> {
     public void setSelectedOption(Player p, ItemStack guide, Boolean value) {
         PersistentDataAPI.setByte(p, getKey(), value.booleanValue() ? (byte) 1 : (byte) 0);
     }
-
 }

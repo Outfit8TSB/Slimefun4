@@ -1,22 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.implementation.tasks.player;
 
 import javax.annotation.Nonnull;
-
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import io.github.thebusybiscuit.slimefun4.implementation.items.armor.Parachute;
-
-/**
- * The {@link ParachuteTask} adds the entire functionality of the {@link Parachute}.
- * It continously sets the velocity of the {@link Player} to make them fall slowly.
- * Perhaps it can be changed to use the slow falling effect at some point.
- * 
- * @author TheBusyBiscuit
- * 
- * @see Parachute
- *
- */
 public class ParachuteTask extends AbstractPlayerTask {
 
     public ParachuteTask(@Nonnull Player p) {
@@ -34,5 +21,4 @@ public class ParachuteTask extends AbstractPlayerTask {
             cancel();
         }
     }
-
 }

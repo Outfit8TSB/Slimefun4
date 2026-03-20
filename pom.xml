@@ -4,37 +4,37 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.slimefun</groupId>
-    <artifactId>Slimefun</artifactId>
+    <groupId>io.github.slimefun_united</groupId>
+    <artifactId>slimefun-united</artifactId>
 
-    <!-- Our default version will be UNOFFICIAL, this will prevent auto updates -->
+    <!-- Our default version will be SNAPSHOT, this will prevent auto updates -->
     <!-- from overriding our local test file -->
-    <version>4.9-UNOFFICIAL</version>
+    <version>4.10-SNAPSHOT</version>
     <inceptionYear>2013</inceptionYear>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <description>Slimefun is a Paper plugin that simulates a modpack-like atmosphere by adding over 500 new items and recipes to your Minecraft Server.</description>
-    <url>https://github.com/Slimefun/Slimefun4</url>
+    <description>
+        A modern and organised continuation of Slimefun's legacy.
+        Slimefun United transforms your server into a modpack-like experience with backpacks, jetpacks,
+        reactors, electricity, automation and countless new systems.
+    </description>
+    <url>https://github.com/Slimefun-United/Slimefun-United</url>
 
     <properties>
         <!-- UTF-8 is our standard encoding for source files -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Target Java 16 -->
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
-        <!-- Run tests using java 21 -->
-        <maven.compiler.testSource>21</maven.compiler.testSource>
-        <maven.compiler.testTarget>21</maven.compiler.testTarget>
+        <!-- Target Java 17 -->
+        <maven.compiler.release>17</maven.compiler.release>
 
-        <!-- Spigot properties -->
-        <paper.version>1.21.1</paper.version>
-        <paper.javadocs>https://hub.spigotmc.org/javadocs/spigot/</paper.javadocs>
+        <!-- Paper properties -->
+        <paper.version>1.21.10</paper.version>
+        <paper.javadocs>https://papermc.io/javadocs</paper.javadocs>
 
         <!-- Default settings for sonarcloud.io -->
-        <sonar.projectKey>Slimefun_Slimefun4</sonar.projectKey>
-        <sonar.organization>slimefun</sonar.organization>
+        <sonar.projectKey>slimefun-united_slimefun-united</sonar.projectKey>
+        <sonar.organization>slimefun-united</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.log.level>DEBUG</sonar.log.level>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
@@ -43,14 +43,14 @@
     <issueManagement>
         <!-- Bug Tracker -->
         <system>GitHub Issues</system>
-        <url>https://github.com/Slimefun/Slimefun4/issues</url>
+        <url>https://github.com/Slimefun-United/Slimefun-United</url>
     </issueManagement>
 
     <licenses>
         <license>
             <!-- License -->
             <name>GNU General Public License v3.0</name>
-            <url>https://github.com/Slimefun/Slimefun4/blob/master/LICENSE</url>
+            <url>https://github.com/Slimefun-United/Slimefun-United/blob/main/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -58,11 +58,6 @@
     <!-- Repositories that host our dependencies -->
     <!-- Well, any that aren't found on maven-central. -->
     <repositories>
-        <repository>
-            <!-- Spigot-API -->
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
-        </repository>
         <repository>
             <!-- PaperLib -->
             <id>paper-repo</id>
@@ -81,7 +76,7 @@
         <repository>
             <!-- PlaceholderAPI -->
             <id>placeholderapi-repo</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi</url>
+            <url>https://repo.extendedclip.com/releases/</url>
         </repository>
         <repository>
             <!-- mcMMO -->
@@ -104,14 +99,11 @@
         <!-- /src/main/java/ contains all sources (production code) -->
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
 
-        <!-- /src/test/java/ contains all unit tests (testing code) -->
-        <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
-
         <!-- The default goal for compiling is "clean package" -->
         <defaultGoal>clean package</defaultGoal>
 
         <!-- The name of the final jar -->
-        <finalName>${project.name} v${project.version}</finalName>
+        <finalName>${project.name}-${project.version}</finalName>
 
         <plugins>
             <plugin>
@@ -126,6 +118,15 @@
                         <!-- We can safely exclude them from the final jar -->
                         <exclude>**/package-info.java</exclude>
                     </excludes>
+                    <source>17</source>
+                    <target>17</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.34</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -208,8 +209,16 @@
                             <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.paperlib</shadedPattern>
                         </relocation>
                         <relocation>
+                            <pattern>kong.unirest</pattern>
+                            <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.unirest</shadedPattern>
+                        </relocation>
+                        <relocation>
                             <pattern>org.apache.commons.lang</pattern>
                             <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.commons.lang</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>net.guizhanss.guizhanlib</pattern>
+                            <shadedPattern>io.github.thebusybiscuit.slimefun4.libraries.guizhanlib</shadedPattern>
                         </relocation>
                     </relocations>
 
@@ -235,71 +244,134 @@
             </plugin>
 
             <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <java>
+                        <palantirJavaFormat>
+                            <version>2.38.0</version>
+                            <style>PALANTIR</style>
+                        </palantirJavaFormat>
+
+                        <removeUnusedImports />
+                        <formatAnnotations />
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>9.0.1</version>
+
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <dateFormat>yyyy-MM-dd HH:mm:ss</dateFormat>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+                        <includeOnlyProperty>git.branch</includeOnlyProperty>
+                    </includeOnlyProperties>
+                    <commitIdGenerationMode>full</commitIdGenerationMode>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.4</version>
+            </plugin>
+
+            <plugin>
                 <!-- Javadocs -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.11.2</version>
 
                 <configuration>
-                    <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
-                    <destDir>javadocs</destDir>
+                    <outputDirectory>${project.basedir}/javadocs</outputDirectory>
 
-                    <doctitle>Slimefun4 - Javadocs</doctitle>
-                    <windowtitle>Slimefun4 - Javadocs</windowtitle>
+                    <doctitle>Slimefun United - Javadocs</doctitle>
+                    <windowtitle>Slimefun United - Javadocs</windowtitle>
+                    <failOnError>false</failOnError>
                     <detectOfflineLinks>false</detectOfflineLinks>
                     <additionalJOption>-html5</additionalJOption>
-
-                    <links>
-                        <!-- We can reference the Spigot API in our Javadocs -->
-                        <link>${paper.javadocs}</link>
-                    </links>
 
                     <!-- We can group packages together in our Javadocs -->
                     <groups>
                         <group>
-                            <title>Slimefun4 - API</title>
+                            <title>Slimefun - API</title>
                             <packages>io.github.thebusybiscuit.slimefun4.api*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Core packages</title>
+                            <title>Slimefun - Core packages</title>
                             <packages>io.github.thebusybiscuit.slimefun4.core*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Implementations</title>
+                            <title>Slimefun - Implementations</title>
                             <packages>io.github.thebusybiscuit.slimefun4.implementation*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Integrations with other
+                            <title>Slimefun - Integrations with other
                                 plugins</title>
                             <packages>io.github.thebusybiscuit.slimefun4.integrations*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Common utility packages</title>
+                            <title>Slimefun - Common utility packages</title>
                             <packages>io.github.thebusybiscuit.slimefun4.utils*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Items</title>
+                            <title>Slimefun - Items</title>
                             <packages>io.github.thebusybiscuit.slimefun4.implementation.items*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Multiblocks</title>
+                            <title>Slimefun - Multiblocks</title>
                             <packages>io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Electrical Machines</title>
+                            <title>Slimefun - Electrical Machines</title>
                             <packages>io.github.thebusybiscuit.slimefun4.implementation.items.electric*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Old packages</title>
+                            <title>Slimefun - Old packages</title>
                             <packages>me.mrCookieSlime.Slimefun*</packages>
+                        </group>
+                        <group>
+                            <title>Database-related implementation</title>
+                            <packages>com.xzavier0722.mc.plugin.slimefun4.storage*</packages>
+                        </group>
+                        <group>
+                            <title>Additional features implemented in Gugu Project</title>
+                            <packages>city.norain.slimefun4.api*</packages>
                         </group>
                     </groups>
                 </configuration>
             </plugin>
         </plugins>
 
-        <resources>
+        <!-- Publishing components to a private Maven repository -->
 
+        <resources>
             <!-- Resources we want to include, e.g. configs or language files -->
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
@@ -309,6 +381,8 @@
                     <include>plugin.yml</include>
                     <include>config.yml</include>
                     <include>item-models.yml</include>
+                    <include>profile-storage.yml</include>
+                    <include>block-storage.yml</include>
 
                     <include>wiki.json</include>
                     <include>languages/translators.json</include>
@@ -317,6 +391,7 @@
                     <include>biome-maps/*.json</include>
 
                     <include>languages/**/*.yml</include>
+                    <include>git.properties</include>
                 </includes>
             </resource>
 
@@ -345,6 +420,16 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Hard dependencies -->
+
+        <!-- Paper -->
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>${paper.version}-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Development dependencies -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -353,18 +438,25 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Shaded packages -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
-            <groupId>com.github.Slimefun.dough</groupId>
-            <artifactId>dough-api</artifactId>
-            <version>cb22e71335</version>
-            <scope>compile</scope>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.24.1</version>
+            <scope>provided</scope>
         </dependency>
+
+        <!-- Shaded packages -->
         <dependency>
-            <groupId>com.github.Slimefun.dough</groupId>
+            <groupId>com.github.Slimefun-United.Dough-United</groupId>
             <artifactId>dough-api</artifactId>
-            <version>cb22e71335</version>
+            <version>1.4-SNAPSHOT-6445025</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -373,13 +465,33 @@
             <version>1.0.8</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- Paper -->
         <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>${paper.version}-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>3.14.5</version>
+            <scope>compile</scope>
+
+            <exclusions>
+                <exclusion>
+                    <!-- No need to shade Gson, Spigot does that already -->
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Databases -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.7</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Testing dependencies -->
@@ -399,22 +511,6 @@
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.16</version>
             <scope>test</scope>
-        </dependency>
-        <!-- This needs to be before Spigot because MockBukkit will fail otherwise. -->
-        <dependency>
-            <groupId>com.github.seeseemelk</groupId>
-            <artifactId>MockBukkit-v1.21</artifactId>
-            <version>3.133.2</version>
-            <scope>test</scope>
-
-            <exclusions>
-                <exclusion>
-                    <!-- We use javax.annotation instead. Excluding this -->
-                    <!-- prevents us from using inconsistent annotations -->
-                    <groupId>org.jetbrains</groupId>
-                    <artifactId>annotations</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Third party plugin integrations / soft dependencies -->
@@ -449,7 +545,7 @@
         <dependency>
             <groupId>com.gmail.nossr50.mcMMO</groupId>
             <artifactId>mcMMO</artifactId>
-            <version>2.2.029</version>
+            <version>2.2.031</version>
             <scope>provided</scope>
 
             <exclusions>
@@ -505,9 +601,35 @@
         <dependency>
             <groupId>net.imprex</groupId>
             <artifactId>orebfuscator-api</artifactId>
-            <version>5.4.0</version>
+            <version>5.5.3</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7.1</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <!-- We don't need any of the dependencies -->
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>6.0.52</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <!-- We don't need any of the dependencies -->
@@ -523,18 +645,19 @@
             <version>2.6</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Slimefun Compatibility Lib -->
         <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
-            <version>6.0.52</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <!-- We don't need any of the dependencies -->
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.github.Xzavier0722</groupId>
+            <artifactId>SlimefunCompLib</artifactId>
+            <version>b7a2bd8</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Auto updater lib -->
+        <dependency>
+            <groupId>net.guizhanss</groupId>
+            <artifactId>guizhanlib-updater</artifactId>
+            <version>2.3.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

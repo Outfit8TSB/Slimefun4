@@ -20,6 +20,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.bakedlibs.dough.blocks.BlockPosition;
+
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSpawnReason;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
@@ -27,7 +29,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
@@ -35,11 +36,11 @@ import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 /**
  * The {@link CargoNetworkTask} is the actual {@link Runnable} responsible for moving {@link ItemStack ItemStacks}
  * around the {@link CargoNet}.
- * 
+ *
  * Inbefore this was just a method in the {@link CargoNet} class.
  * However for aesthetic reasons but mainly to prevent the Cargo Task from showing up as
  * "lambda:xyz-123" in timing reports... this was moved.
- * 
+ *
  * @see CargoNet
  * @see CargoUtils
  * @see AbstractItemNetwork
@@ -76,15 +77,22 @@ class CargoNetworkTask implements Runnable {
             for (Map.Entry<Location, Integer> entry : inputs.entrySet()) {
                 long nodeTimestamp = System.nanoTime();
                 Location input = entry.getKey();
-                Optional<Block> attachedBlock = network.getAttachedBlock(input);
 
-                attachedBlock.ifPresent(block -> routeItems(input, block, entry.getValue(), outputs));
+                Block attached = network.getAttachedBlock(input).orElse(null);
+                if (attached != null) {
+                    routeItems(input, attached, entry.getValue(), outputs);
+                }
 
                 // This will prevent this timings from showing up for the Cargo Manager
                 timestamp += Slimefun.getProfiler().closeEntry(entry.getKey(), inputNode, nodeTimestamp);
             }
         } catch (Exception | LinkageError x) {
-            Slimefun.logger().log(Level.SEVERE, x, () -> "An Exception was caught while ticking a Cargo network @ " + new BlockPosition(network.getRegulator()));
+            Slimefun.logger()
+                    .log(
+                            Level.SEVERE,
+                            x,
+                            () -> "An Exception was caught while ticking a Cargo network @ "
+                                    + new BlockPosition(network.getRegulator()));
         }
 
         // Submit a timings report
@@ -92,7 +100,8 @@ class CargoNetworkTask implements Runnable {
     }
 
     @ParametersAreNonnullByDefault
-    private void routeItems(Location inputNode, Block inputTarget, int frequency, Map<Integer, List<Location>> outputNodes) {
+    private void routeItems(
+            Location inputNode, Block inputTarget, int frequency, Map<Integer, List<Location>> outputNodes) {
         ItemStackAndInteger slot = CargoUtils.withdraw(network, inventories, inputNode.getBlock(), inputTarget);
 
         if (slot == null) {
@@ -102,6 +111,11 @@ class CargoNetworkTask implements Runnable {
         ItemStack stack = slot.getItem();
         int previousSlot = slot.getInt();
         List<Location> destinations = outputNodes.get(frequency);
+
+        if (destinations == null || destinations.isEmpty()) {
+            insertItem(inputTarget, previousSlot, stack);
+            return;
+        }
 
         if (destinations != null) {
             stack = distributeItem(stack, inputNode, destinations);
@@ -126,7 +140,8 @@ class CargoNetworkTask implements Runnable {
 
                 if (rest != null && !manager.isItemDeletionEnabled()) {
                     // If the item still couldn't be inserted, simply drop it on the ground
-                    SlimefunUtils.spawnItem(inputTarget.getLocation().add(0, 1, 0), rest, ItemSpawnReason.CARGO_OVERFLOW);
+                    SlimefunUtils.spawnItem(
+                            inputTarget.getLocation().add(0, 1, 0), rest, ItemSpawnReason.CARGO_OVERFLOW);
                 }
             }
         } else {
@@ -136,20 +151,20 @@ class CargoNetworkTask implements Runnable {
                 if (menu.getItemInSlot(previousSlot) == null) {
                     menu.replaceExistingItem(previousSlot, item);
                 } else if (!manager.isItemDeletionEnabled()) {
-                    SlimefunUtils.spawnItem(inputTarget.getLocation().add(0, 1, 0), item, ItemSpawnReason.CARGO_OVERFLOW);
+                    SlimefunUtils.spawnItem(
+                            inputTarget.getLocation().add(0, 1, 0), item, ItemSpawnReason.CARGO_OVERFLOW);
                 }
             }
         }
     }
 
-    @Nullable
-    @ParametersAreNonnullByDefault
+    @Nullable @ParametersAreNonnullByDefault
     private ItemStack distributeItem(ItemStack stack, Location inputNode, List<Location> outputNodes) {
         ItemStack item = stack;
 
-        Config cfg = BlockStorage.getLocationInfo(inputNode);
-        boolean roundrobin = Objects.equals(cfg.getString("round-robin"), "true");
-        boolean smartFill = Objects.equals(cfg.getString("smart-fill"), "true");
+        var blockData = StorageCacheUtils.getBlock(inputNode);
+        boolean roundrobin = Objects.equals(blockData.getData("round-robin"), "true");
+        boolean smartFill = Objects.equals(blockData.getData("smart-fill"), "true");
 
         int index = 0;
         Collection<Location> destinations;
@@ -176,7 +191,8 @@ class CargoNetworkTask implements Runnable {
 
             if (target.isPresent()) {
                 ItemStackWrapper wrapper = ItemStackWrapper.wrap(item);
-                item = CargoUtils.insert(network, inventories, output.getBlock(), target.get(), smartFill, item, wrapper);
+                item = CargoUtils.insert(
+                        network, inventories, output.getBlock(), target.get(), smartFill, item, wrapper);
 
                 if (item == null) {
                     if (roundrobin) {
@@ -195,7 +211,7 @@ class CargoNetworkTask implements Runnable {
     /**
      * This method sorts a given {@link Deque} of output node locations using a semi-accurate
      * round-robin method.
-     * 
+     *
      * @param index
      *            The round-robin index of the input node
      * @param outputNodes
@@ -210,5 +226,4 @@ class CargoNetworkTask implements Runnable {
             }
         }
     }
-
 }

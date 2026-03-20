@@ -2,11 +2,12 @@ package me.mrCookieSlime.CSCoreLibPlugin.general.Inventory;
 
 /**
  * An old remnant of CS-CoreLib.
- * This will be removed once we updated everything.
+ * This will be removed once we update everything.
  * Don't look at the code, it will be gone soon, don't worry.
  */
+@Deprecated
+// todo: make it an enum
 public class ClickAction {
-
     private boolean right;
     private boolean shift;
 
@@ -22,5 +23,4 @@ public class ClickAction {
     public boolean isShiftClicked() {
         return shift;
     }
-
 }

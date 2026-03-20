@@ -146,5 +146,4 @@ public interface Rechargeable extends ItemAttribute {
         item.setItemMeta(meta);
         return true;
     }
-
 }

@@ -15,8 +15,14 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
 import io.github.bakedlibs.dough.blocks.Vein;
+
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -30,15 +36,10 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces.InventoryBlock;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionType;
 
 /**
  * This machine collects liquids from the {@link World} and puts them
@@ -74,7 +75,7 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
 
             @Override
             public void onBlockBreak(Block b) {
-                BlockMenu inv = BlockStorage.getInventory(b);
+                BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
 
                 if (inv != null) {
                     inv.dropItems(b.getLocation(), getInputSlots());
@@ -125,7 +126,7 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
         Block fluid = b.getRelative(BlockFace.DOWN);
 
         if (fluid.isLiquid() && getCharge(b.getLocation()) >= ENERGY_CONSUMPTION) {
-            BlockMenu menu = BlockStorage.getInventory(b);
+            BlockMenu menu = StorageCacheUtils.getMenu(b.getLocation());
 
             for (int slot : getInputSlots()) {
                 ItemStack itemInSlot = menu.getItemInSlot(slot);
@@ -219,11 +220,10 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
     private @Nonnull ItemStack getFilledBucket(@Nonnull Block fluid) {
         return switch (fluid.getType()) {
             case LAVA -> new ItemStack(Material.LAVA_BUCKET);
-            case WATER,
-                BUBBLE_COLUMN -> new ItemStack(Material.WATER_BUCKET);
+            case WATER, BUBBLE_COLUMN -> new ItemStack(Material.WATER_BUCKET);
             default ->
-                // Fallback for any new liquids
-                new ItemStack(Material.BUCKET);
+            // Fallback for any new liquids
+            new ItemStack(Material.BUCKET);
         };
     }
 
@@ -253,7 +253,7 @@ public class FluidPump extends SimpleSlimefunItem<BlockTicker> implements Invent
         return new BlockTicker() {
 
             @Override
-            public void tick(Block b, SlimefunItem sf, Config data) {
+            public void tick(Block b, SlimefunItem sf, SlimefunBlockData data) {
                 FluidPump.this.tick(b);
             }
 

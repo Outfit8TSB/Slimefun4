@@ -30,5 +30,4 @@ public class MachineRecipe {
     public int getTicks() {
         return ticks;
     }
-
 }

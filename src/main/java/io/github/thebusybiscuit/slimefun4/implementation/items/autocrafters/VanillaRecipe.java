@@ -25,9 +25,9 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 /**
  * The {@link VanillaRecipe} implements an {@link AbstractRecipe} and represents a
  * {@link ShapedRecipe} or {@link ShapelessRecipe}.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see VanillaAutoCrafter
  *
  */
@@ -46,6 +46,10 @@ class VanillaRecipe extends AbstractRecipe {
         super(getChoices(recipe), recipe.getResult());
 
         this.recipe = recipe;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
     }
 
     @Nonnull

@@ -2,10 +2,12 @@ package io.github.thebusybiscuit.slimefun4.implementation.setup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import com.xzavier0722.mc.plugin.slimefun4.autocrafter.CrafterSmartPort;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -16,7 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -396,7 +398,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new BasicCircuitBoard(itemGroups.technicalComponents, SlimefunItems.BASIC_CIRCUIT_BOARD, RecipeType.MOB_DROP,
-                new ItemStack[] {null, null, null, null, CustomItemStack.create(SlimefunUtils.getCustomHead(HeadTexture.IRON_GOLEM.getTexture()), "&aIron Golem"), null, null, null, null})
+                new ItemStack[] {null, null, null, null, ItemStackFactory.create(SlimefunUtils.getCustomHead(HeadTexture.IRON_GOLEM.getTexture()), "&aIron Golem"), null, null, null, null})
                 .register(plugin);
 
         new UnplaceableBlock(itemGroups.technicalComponents, SlimefunItems.ADVANCED_CIRCUIT_BOARD, RecipeType.ENHANCED_CRAFTING_TABLE,
@@ -425,7 +427,7 @@ public final class SlimefunItemSetup {
         new PressureChamber(itemGroups.basicMachines, SlimefunItems.PRESSURE_CHAMBER).register(plugin);
 
         new UnplaceableBlock(itemGroups.technicalComponents, SlimefunItems.BATTERY, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {null, new ItemStack(Material.REDSTONE), null, SlimefunItems.ZINC_INGOT.item(), SlimefunItems.SULFATE.item(), SlimefunItems.COPPER_INGOT.item(), SlimefunItems.ZINC_INGOT.item(), SlimefunItems.SULFATE.item(), SlimefunItems.COPPER_INGOT.item()})
+                new ItemStack[] {null, new ItemStack(Material.REDSTONE), null, SlimefunItems.ZINC_INGOT.item(), SlimefunItems.SULFATE.item(), new ItemStack(Material.COPPER_INGOT), SlimefunItems.ZINC_INGOT.item(), SlimefunItems.SULFATE.item(), new ItemStack(Material.COPPER_INGOT)})
                 .register(plugin);
 
         registerArmorSet(itemGroups.magicalArmor, new ItemStack(Material.GLOWSTONE), new ItemStack[] {SlimefunItems.GLOWSTONE_HELMET.item(), SlimefunItems.GLOWSTONE_CHESTPLATE.item(), SlimefunItems.GLOWSTONE_LEGGINGS.item(), SlimefunItems.GLOWSTONE_BOOTS.item()}, "GLOWSTONE", false,
@@ -490,7 +492,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new AlloyIngot(itemGroups.resources, SlimefunItems.BRONZE_INGOT,
-                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), SlimefunItems.TIN_DUST.item(), SlimefunItems.COPPER_INGOT.item(), null, null, null, null, null, null})
+                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), SlimefunItems.TIN_DUST.item(), new ItemStack(Material.COPPER_INGOT), null, null, null, null, null, null})
                 .register(plugin);
 
         new AlloyIngot(itemGroups.resources, SlimefunItems.DURALUMIN_INGOT,
@@ -502,7 +504,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new AlloyIngot(itemGroups.resources, SlimefunItems.BRASS_INGOT,
-                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), SlimefunItems.ZINC_DUST.item(), SlimefunItems.COPPER_INGOT.item(), null, null, null, null, null, null})
+                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), SlimefunItems.ZINC_DUST.item(), new ItemStack(Material.COPPER_INGOT), null, null, null, null, null, null})
                 .register(plugin);
 
         new AlloyIngot(itemGroups.resources, SlimefunItems.ALUMINUM_BRASS_INGOT,
@@ -522,7 +524,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new SlimefunItem(itemGroups.resources, SlimefunItems.SYNTHETIC_SAPPHIRE, RecipeType.SMELTERY,
-                new ItemStack[] {SlimefunItems.ALUMINUM_DUST.item(), new ItemStack(Material.GLASS), new ItemStack(Material.GLASS_PANE), SlimefunItems.ALUMINUM_INGOT.item(), new ItemStack(Material.LAPIS_LAZULI), null, null, null, null})
+                new ItemStack[] {SlimefunItems.ALUMINUM_DUST.item(), new ItemStack(Material.GLASS), new ItemStack(Material.GLASS_PANE), SlimefunItems.ALUMINUM_INGOT.item(), SlimefunItems.SALT.item(), SlimefunItems.SULFATE.item(), new ItemStack(Material.CALCITE), null, null})
                 .setUseableInWorkbench(true)
                 .register(plugin);
 
@@ -555,14 +557,15 @@ public final class SlimefunItemSetup {
                 new ItemStack[] {new ItemStack(Material.IRON_ORE), null, null, null, null, null, null, null, null},
                 new SlimefunItemStack(SlimefunItems.IRON_DUST, oreCrusher.isOreDoublingEnabled() ? 2 : 1).item())
                 .register(plugin);
-
+        
+        new SlimefunItem(itemGroups.resources, SlimefunItems.COPPER_DUST, RecipeType.ORE_CRUSHER,
+                new ItemStack[] {new ItemStack(Material.COPPER_ORE), null, null, null, null, null, null, null, null},
+                new SlimefunItemStack(SlimefunItems.COPPER_DUST, oreCrusher.isOreDoublingEnabled() ? 2 : 1).item())
+                .register(plugin);
+        
         new SlimefunItem(itemGroups.resources, SlimefunItems.GOLD_DUST, RecipeType.ORE_CRUSHER,
                 new ItemStack[] {new ItemStack(Material.GOLD_ORE), null, null, null, null, null, null, null, null},
                 new SlimefunItemStack(SlimefunItems.GOLD_DUST, oreCrusher.isOreDoublingEnabled() ? 2 : 1).item())
-                .register(plugin);
-
-        new SlimefunItem(itemGroups.resources, SlimefunItems.COPPER_DUST, RecipeType.ORE_WASHER,
-                new ItemStack[] {SlimefunItems.SIFTED_ORE.item(), null, null, null, null, null, null, null, null})
                 .register(plugin);
 
         new SlimefunItem(itemGroups.resources, SlimefunItems.TIN_DUST, RecipeType.ORE_WASHER,
@@ -587,10 +590,6 @@ public final class SlimefunItemSetup {
 
         new SlimefunItem(itemGroups.resources, SlimefunItems.MAGNESIUM_DUST, RecipeType.ORE_WASHER,
                 new ItemStack[] {SlimefunItems.SIFTED_ORE.item(), null, null, null, null, null, null, null, null})
-                .register(plugin);
-
-        new SlimefunItem(itemGroups.resources, SlimefunItems.COPPER_INGOT, RecipeType.SMELTERY,
-                new ItemStack[] {SlimefunItems.COPPER_DUST.item(), null, null, null, null, null, null, null, null})
                 .register(plugin);
 
         new SlimefunItem(itemGroups.resources, SlimefunItems.TIN_INGOT, RecipeType.SMELTERY,
@@ -729,7 +728,13 @@ public final class SlimefunItemSetup {
                 new ItemStack[] {null, null, SlimefunItems.LAVA_CRYSTAL.item(), null, SlimefunItems.STAFF_ELEMENTAL.item(), null, SlimefunItems.STAFF_ELEMENTAL.item(), null, null})
                 .register(plugin);
 
-        String[] multiToolItems = new String[] {"PORTABLE_CRAFTER", "MAGIC_EYE_OF_ENDER", "STAFF_ELEMENTAL_WIND", "GRAPPLING_HOOK"};
+        List<String> multiToolItems = new ArrayList<>(
+            List.of("PORTABLE_CRAFTER", "MAGIC_EYE_OF_ENDER", "STAFF_ELEMENTAL_WIND", "GRAPPLING_HOOK")
+        );
+
+        List<String> additionalMultiToolItems = new ArrayList<>(
+            List.of("GOLD_PAN", "NETHER_GOLD_PAN", "STAFF_ELEMENTAL_WATER", "STAFF_ELEMENTAL_STORM")
+        );
 
         new MultiTool(itemGroups.technicalGadgets, SlimefunItems.DURALUMIN_MULTI_TOOL, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[] {SlimefunItems.DURALUMIN_INGOT.item(), null, SlimefunItems.DURALUMIN_INGOT.item(), SlimefunItems.DURALUMIN_INGOT.item(), SlimefunItems.SMALL_CAPACITOR.item(), SlimefunItems.DURALUMIN_INGOT.item(), null, SlimefunItems.DURALUMIN_INGOT.item(), null},
@@ -763,7 +768,7 @@ public final class SlimefunItemSetup {
 
         new MultiTool(itemGroups.technicalGadgets, SlimefunItems.CARBONADO_MULTI_TOOL, RecipeType.ENHANCED_CRAFTING_TABLE,
                 new ItemStack[] {SlimefunItems.CARBONADO.item(), null, SlimefunItems.CARBONADO.item(), SlimefunItems.CARBONADO.item(), SlimefunItems.LARGE_CAPACITOR.item(), SlimefunItems.CARBONADO.item(), null, SlimefunItems.CARBONADO.item(), null},
-                100, "PORTABLE_CRAFTER", "MAGIC_EYE_OF_ENDER", "STAFF_ELEMENTAL_WIND", "GRAPPLING_HOOK", "GOLD_PAN", "NETHER_GOLD_PAN")
+                100, Stream.concat(multiToolItems.stream(), additionalMultiToolItems.stream()).toList())
                 .register(plugin);
 
         new OreWasher(itemGroups.basicMachines, SlimefunItems.ORE_WASHER).register(plugin);
@@ -805,7 +810,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new GoldIngot(itemGroups.resources, 6, SlimefunItems.GOLD_6K, RecipeType.SMELTERY,
-                new ItemStack[] {SlimefunItems.GOLD_DUST.item(), SlimefunItems.GOLD_4K.item(), null, null, null, null, null, null, null})
+                new ItemStack[] {SlimefunItems.GOLD_DUST.item(), new ItemStack(Material.GOLD_INGOT), null, null, null, null, null, null, null})
                 .register(plugin);
 
         new GoldIngot(itemGroups.resources, 4, SlimefunItems.GOLD_4K, RecipeType.SMELTERY,
@@ -1389,12 +1394,12 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new UnplaceableBlock(itemGroups.technicalComponents, SlimefunItems.COPPER_WIRE, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {null, null, null, SlimefunItems.COPPER_INGOT.item(), SlimefunItems.COPPER_INGOT.item(), SlimefunItems.COPPER_INGOT.item(), null, null, null},
+                new ItemStack[] {null, null, null, new ItemStack(Material.COPPER_INGOT), new ItemStack(Material.COPPER_INGOT), new ItemStack(Material.COPPER_INGOT), null, null, null},
                 new SlimefunItemStack(SlimefunItems.COPPER_WIRE, 8).item())
                 .register(plugin);
 
         new BlockPlacer(itemGroups.basicMachines, SlimefunItems.BLOCK_PLACER, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {SlimefunItems.GOLD_4K.item(), new ItemStack(Material.PISTON), SlimefunItems.GOLD_4K.item(), new ItemStack(Material.IRON_INGOT), SlimefunItems.ELECTRIC_MOTOR.item(), new ItemStack(Material.IRON_INGOT), SlimefunItems.GOLD_4K.item(), new ItemStack(Material.PISTON), SlimefunItems.GOLD_4K.item()})
+                new ItemStack[] {new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.PISTON), new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.IRON_INGOT), SlimefunItems.ELECTRIC_MOTOR.item(), new ItemStack(Material.IRON_INGOT), new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.PISTON), new ItemStack(Material.GOLD_INGOT)})
                 .register(plugin);
 
         new TelepositionScroll(itemGroups.magicalGadgets, SlimefunItems.SCROLL_OF_DIMENSIONAL_TELEPOSITION, RecipeType.MAGIC_WORKBENCH,
@@ -1660,7 +1665,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new ElectricDustWasher(itemGroups.electricity, SlimefunItems.ELECTRIC_DUST_WASHER, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {null, new ItemStack(Material.WATER_BUCKET), null, SlimefunItems.ELECTRO_MAGNET.item(), SlimefunItems.ELECTRIC_GOLD_PAN.item(), SlimefunItems.ELECTRO_MAGNET.item(), SlimefunItems.COPPER_INGOT.item(), SlimefunItems.COPPER_INGOT.item(), SlimefunItems.COPPER_INGOT.item()})
+                new ItemStack[] {null, new ItemStack(Material.WATER_BUCKET), null, SlimefunItems.ELECTRO_MAGNET.item(), SlimefunItems.ELECTRIC_GOLD_PAN.item(), SlimefunItems.ELECTRO_MAGNET.item(), new ItemStack(Material.COPPER_INGOT), new ItemStack(Material.COPPER_INGOT), new ItemStack(Material.COPPER_INGOT)})
                 .setCapacity(128)
                 .setEnergyConsumption(3)
                 .setProcessingSpeed(1)
@@ -1870,7 +1875,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new Multimeter(itemGroups.technicalGadgets, SlimefunItems.MULTIMETER, RecipeType.ENHANCED_CRAFTING_TABLE,
-                new ItemStack[] {SlimefunItems.COPPER_INGOT.item(), null, SlimefunItems.COPPER_INGOT.item(), null, SlimefunItems.REDSTONE_ALLOY.item(), null, null, SlimefunItems.GOLD_6K.item(), null})
+                new ItemStack[] {new ItemStack(Material.COPPER_INGOT), null, new ItemStack(Material.COPPER_INGOT), null, SlimefunItems.REDSTONE_ALLOY.item(), null, null, SlimefunItems.GOLD_6K.item(), null})
                 .register(plugin);
 
         new SlimefunItem(itemGroups.technicalComponents, SlimefunItems.PLASTIC_SHEET, RecipeType.HEATED_PRESSURE_CHAMBER,
@@ -2663,7 +2668,7 @@ public final class SlimefunItemSetup {
                 .register(plugin);
 
         new StrangeNetherGoo(itemGroups.magicalResources, SlimefunItems.STRANGE_NETHER_GOO, RecipeType.BARTER_DROP,
-                new ItemStack[] {null, null, null, null, CustomItemStack.create(HeadTexture.PIGLIN_HEAD.getAsItemStack(), "&fPiglin"), null, null, null, null})
+                new ItemStack[] {null, null, null, null, ItemStackFactory.create(HeadTexture.PIGLIN_HEAD.getAsItemStack(), "&fPiglin"), null, null, null, null})
                 .register(plugin);
 
         if (minecraftVersion.isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
@@ -2710,6 +2715,23 @@ public final class SlimefunItemSetup {
                 .setProcessingSpeed(1)
                 .setEnergyConsumption(16)
                 .register(plugin);
+
+        new CrafterSmartPort(
+            itemGroups.cargo,
+            SlimefunItems.CRAFTER_SMART_PORT,
+            RecipeType.ENHANCED_CRAFTING_TABLE,
+            new ItemStack[] {
+                null,
+                SlimefunItems.CARGO_MOTOR,
+                null,
+                ItemStack.of(Material.CHEST),
+                SlimefunItems.CRAFTING_MOTOR,
+                ItemStack.of(Material.CHEST),
+                null,
+                SlimefunItems.ELECTRIC_MOTOR,
+                null
+            })
+            .register(plugin);
 
         // @formatter:on
     }

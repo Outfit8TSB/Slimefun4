@@ -82,7 +82,7 @@ class ContributionsConnector extends GitHubConnector {
 
     /**
      * This returns whether this {@link ContributionsConnector} has finished its task.
-     * 
+     *
      * @return Whether it is finished
      */
     public boolean hasFinished() {
@@ -96,7 +96,8 @@ class ContributionsConnector extends GitHubConnector {
         if (response.isJsonArray()) {
             computeContributors(response.getAsJsonArray());
         } else {
-            Slimefun.logger().log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
+            Slimefun.logger()
+                    .log(Level.WARNING, "Received an unusual answer from GitHub, possibly a timeout? ({0})", response);
         }
     }
 

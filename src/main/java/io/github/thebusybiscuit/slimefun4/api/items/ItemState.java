@@ -6,9 +6,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
  * Defines whether a SlimefunItem is enabled, disabled or fall-back to its vanilla behavior.
  *
  * @author Poslovitch
- * 
  * @see SlimefunItem
- * 
  */
 public enum ItemState {
 
@@ -32,5 +30,4 @@ public enum ItemState {
      * {@link VanillaItem}.
      */
     VANILLA_FALLBACK;
-
 }

@@ -92,7 +92,7 @@ public class SlimefunCommand implements CommandExecutor, Listener {
 
     public void sendHelp(@Nonnull CommandSender sender) {
         sender.sendMessage("");
-        sender.sendMessage(ChatColors.color("&aSlimefun &2v" + Slimefun.getVersion()));
+        sender.sendMessage(ChatColors.color("&aSlimefun &2" + Slimefun.getVersion()));
         sender.sendMessage("");
 
         for (SubCommand cmd : commands) {
@@ -122,5 +122,4 @@ public class SlimefunCommand implements CommandExecutor, Listener {
                 .collect(Collectors.toList());
         // @formatter:on
     }
-
 }

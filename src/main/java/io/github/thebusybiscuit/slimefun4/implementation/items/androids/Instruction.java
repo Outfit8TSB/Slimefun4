@@ -1,13 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.androids;
 
+import city.norain.slimefun4.api.menu.UniversalMenu;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -18,15 +20,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-
 /**
  * This enum holds every {@link Instruction} for the {@link ProgrammableAndroid}
  * added by Slimefun itself.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -78,7 +75,7 @@ public enum Instruction {
      */
     TURN_LEFT(AndroidType.NONE, HeadTexture.SCRIPT_LEFT, (android, b, inv, face) -> {
         int mod = -1;
-        android.rotate(b, face, mod);
+        android.rotate(b, StorageCacheUtils.getUniversalBlock(inv.getUuid()), face, mod);
     }),
 
     /**
@@ -86,7 +83,7 @@ public enum Instruction {
      */
     TURN_RIGHT(AndroidType.NONE, HeadTexture.SCRIPT_RIGHT, (android, b, inv, face) -> {
         int mod = 1;
-        android.rotate(b, face, mod);
+        android.rotate(b, StorageCacheUtils.getUniversalBlock(inv.getUuid()), face, mod);
     }),
 
     /**
@@ -208,7 +205,7 @@ public enum Instruction {
     /**
      * This {@link Instruction} will make a {@link FarmerAndroid} try to harvest
      * the {@link Block} in front of them.
-     * 
+     *
      * <strong>This includes plants from ExoticGarden.</strong>
      */
     FARM_EXOTIC_FORWARD(AndroidType.ADVANCED_FARMER, HeadTexture.SCRIPT_FARM_FORWARD, (android, b, inv, face) -> {
@@ -219,7 +216,7 @@ public enum Instruction {
     /**
      * This {@link Instruction} will make a {@link FarmerAndroid} try to harvest
      * the {@link Block} below.
-     * 
+     *
      * <strong>This includes plants from ExoticGarden.</strong>
      */
     FARM_EXOTIC_DOWN(AndroidType.ADVANCED_FARMER, HeadTexture.SCRIPT_FARM_DOWN, (android, b, inv, face) -> {
@@ -281,7 +278,7 @@ public enum Instruction {
     }
 
     @ParametersAreNonnullByDefault
-    public void execute(ProgrammableAndroid android, Block b, BlockMenu inventory, BlockFace face) {
+    public void execute(ProgrammableAndroid android, Block b, UniversalMenu inventory, BlockFace face) {
         Validate.notNull(method, "Instruction '" + name() + "' must be executed manually!");
         method.perform(android, b, inventory, face);
     }
@@ -294,11 +291,10 @@ public enum Instruction {
      *
      * @param value
      *            The value which you would like to look up.
-     * 
+     *
      * @return The {@link Instruction} or null if it does not exist.
      */
-    @Nullable
-    public static Instruction getInstruction(@Nonnull String value) {
+    @Nullable public static Instruction getInstruction(@Nonnull String value) {
         Validate.notNull(value, "An Instruction cannot be null!");
         return nameLookup.get(value);
     }

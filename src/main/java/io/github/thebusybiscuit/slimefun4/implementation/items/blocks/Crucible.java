@@ -1,22 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.blocks;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.Tag;
-import org.bukkit.World.Environment;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Levelled;
-import org.bukkit.block.data.Waterlogged;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.bakedlibs.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -31,14 +15,26 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunIte
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedParticle;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.Waterlogged;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * The {@link Crucible} is a machine which turns blocks into liquids.
  * It is a very reliable source of lava and water.
  * The liquids will accumulate over time above the machine.
- * 
+ *
  * @author TheBusyBiscuit
  * @author Sfiguz7
  *
@@ -121,9 +117,14 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
                 Player p = e.getPlayer();
                 Block b = optional.get();
 
-                if (p.hasPermission("slimefun.inventory.bypass") || Slimefun.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK)) {
+                if (p.hasPermission("slimefun.inventory.bypass")
+                        || Slimefun.getProtectionManager()
+                                .hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK)) {
                     ItemStack input = e.getItem();
                     Block block = b.getRelative(BlockFace.UP);
+
+                    // Just ignore slimefun block above.
+                    if (StorageCacheUtils.hasSlimefunBlock(block.getLocation())) return;
 
                     if (craft(p, input)) {
                         boolean water = Tag.LEAVES.isTagged(input.getType());
@@ -155,7 +156,7 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
 
     /**
      * This method starts the process of generating liquids.
-     * 
+     *
      * @param block
      *            The {@link Block} where to generate the liquid
      * @param isWater
@@ -165,7 +166,8 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
         // Fixes #2877 - If water in the nether is disabled, abort and play an effect.
         if (isWater && block.getWorld().getEnvironment() == Environment.NETHER && !allowWaterInNether.getValue()) {
             // We will still consume the items but won't generate water in the Nether.
-            block.getWorld().spawnParticle(VersionedParticle.SMOKE, block.getLocation().add(0.5, 0.5, 0.5), 4);
+            block.getWorld()
+                    .spawnParticle(VersionedParticle.SMOKE, block.getLocation().add(0.5, 0.5, 0.5), 4);
             SoundEffect.CRUCIBLE_GENERATE_LIQUID_SOUND.playAt(block);
             return;
         }
@@ -189,10 +191,16 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
         }
 
         if (level == 0) {
-            Slimefun.runSync(() -> runPostTask(block, water ? SoundEffect.CRUCIBLE_ADD_WATER_SOUND : SoundEffect.CRUCIBLE_ADD_LAVA_SOUND, 1));
+            Slimefun.runSync(() -> runPostTask(
+                    block, water ? SoundEffect.CRUCIBLE_ADD_WATER_SOUND : SoundEffect.CRUCIBLE_ADD_LAVA_SOUND, 1));
         } else {
             int finalLevel = 7 - level;
-            Slimefun.runSync(() -> runPostTask(block, water ? SoundEffect.CRUCIBLE_ADD_WATER_SOUND : SoundEffect.CRUCIBLE_ADD_LAVA_SOUND, finalLevel), 50L);
+            Slimefun.runSync(
+                    () -> runPostTask(
+                            block,
+                            water ? SoundEffect.CRUCIBLE_ADD_WATER_SOUND : SoundEffect.CRUCIBLE_ADD_LAVA_SOUND,
+                            finalLevel),
+                    50L);
         }
     }
 
@@ -206,10 +214,6 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
                 block.setBlockData(waterlogged, false);
                 SoundEffect.CRUCIBLE_PLACE_WATER_SOUND.playAt(block);
                 return;
-            }
-
-            if (BlockStorage.hasBlockInfo(block)) {
-                BlockStorage.clearBlockInfo(block);
             }
         }
         runPostTask(block, water ? SoundEffect.CRUCIBLE_PLACE_WATER_SOUND : SoundEffect.CRUCIBLE_PLACE_LAVA_SOUND, 1);
@@ -233,5 +237,4 @@ public class Crucible extends SimpleSlimefunItem<BlockUseHandler> implements Rec
             SoundEffect.CRUCIBLE_INTERACT_SOUND.playAt(block);
         }
     }
-
 }

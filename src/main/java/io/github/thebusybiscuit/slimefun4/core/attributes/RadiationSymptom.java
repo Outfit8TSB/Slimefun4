@@ -25,7 +25,6 @@ import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedPotionEff
  * @see RadiationUtils
  */
 public enum RadiationSymptom {
-
     SLOW(10, VersionedPotionEffectType.SLOWNESS, 3),
     WITHER_LOW(25, PotionEffectType.WITHER, 0),
     BLINDNESS(50, PotionEffectType.BLINDNESS, 4),
@@ -41,7 +40,8 @@ public enum RadiationSymptom {
         Preconditions.checkArgument(level >= 0, "The status effect level must be non-negative.");
 
         this.minExposure = minExposure;
-        this.potionEffect = new PotionEffect(type, Slimefun.getCfg().getOrSetDefault("options.radiation-update-interval", 1) * 20 + 20, level);
+        this.potionEffect = new PotionEffect(
+                type, Slimefun.getCfg().getOrSetDefault("options.radiation-update-interval", 1) * 20 + 20, level);
     }
 
     /**

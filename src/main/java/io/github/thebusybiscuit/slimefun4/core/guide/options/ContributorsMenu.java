@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import io.github.bakedlibs.dough.common.ChatColors;
 import io.github.bakedlibs.dough.common.CommonPatterns;
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.core.services.github.Contributor;
 import io.github.thebusybiscuit.slimefun4.core.services.sounds.SoundEffect;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;

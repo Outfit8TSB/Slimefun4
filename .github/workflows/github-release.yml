@@ -1,0 +1,32 @@
+# TODO: Create an actual GitHub release with a changelog
+
+# We need this GitHub action to create a JitPack snapshot
+name: Auto tag "master" branch and create a release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # required to push tags
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # required to create tags
+
+      - name: Get Maven project version
+        id: maven_version
+        run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+
+      - name: Create a Git tag
+        run: |
+          TAG="${{ steps.maven_version.outputs.VERSION }}"
+          echo "Tagging with $TAG"
+          git tag "$TAG"
+          git push origin "$TAG"

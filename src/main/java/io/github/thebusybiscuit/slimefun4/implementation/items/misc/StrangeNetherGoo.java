@@ -1,21 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.misc;
 
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.GameMode;
-import org.bukkit.Tag;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Piglin;
-import org.bukkit.entity.Sheep;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import io.github.bakedlibs.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -28,6 +12,19 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.EntityInteractHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.items.magical.runes.VillagerRune;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.GameMode;
+import org.bukkit.Tag;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Piglin;
+import org.bukkit.entity.Sheep;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * This {@link SlimefunItem} can only be obtained via bartering with a {@link Piglin}, its
@@ -83,9 +80,8 @@ public class StrangeNetherGoo extends SimpleSlimefunItem<ItemUseHandler> impleme
                 // Give Sheep color, name and effect
                 sheep.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60, 2));
                 sheep.setColor(DyeColor.PURPLE);
-                sheep.setCustomName(ChatColor.DARK_PURPLE + "Tainted Sheep");
+                sheep.setCustomName(ChatColor.DARK_PURPLE + "Contaminated Sheep");
                 e.setCancelled(true);
-
             }
         };
     }

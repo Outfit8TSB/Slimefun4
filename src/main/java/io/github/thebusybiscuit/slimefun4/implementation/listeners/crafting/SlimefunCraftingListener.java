@@ -1,13 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners.crafting;
 
-import javax.annotation.Nullable;
-
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.implementation.items.VanillaItem;
+import javax.annotation.Nullable;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 interface SlimefunCraftingListener extends Listener {
 
@@ -34,4 +32,16 @@ interface SlimefunCraftingListener extends Listener {
         return item != null && !(item instanceof VanillaItem) && !item.isDisabled();
     }
 
+    default boolean isCraftingUnallowed(@Nullable ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+
+        SlimefunItem sfItem = SlimefunItem.getByItem(item);
+        return isCraftingUnallowed(sfItem);
+    }
+
+    default boolean isCraftingUnallowed(@Nullable SlimefunItem item) {
+        return item != null && !item.isUseableInWorkbench();
+    }
 }

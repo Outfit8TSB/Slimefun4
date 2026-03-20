@@ -7,12 +7,12 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import city.norain.slimefun4.compatibillty.CompatibilityUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemHandler;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -26,7 +26,8 @@ public abstract class MedicalSupply<T extends ItemHandler> extends SimpleSlimefu
     private final int healAmount;
 
     @ParametersAreNonnullByDefault
-    protected MedicalSupply(ItemGroup itemGroup, int healAmount, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected MedicalSupply(
+            ItemGroup itemGroup, int healAmount, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
         this.healAmount = healAmount;
@@ -43,7 +44,7 @@ public abstract class MedicalSupply<T extends ItemHandler> extends SimpleSlimefu
 
     /**
      * This returns the {@link PotionEffect PotionEffects} cured from this {@link MedicalSupply}.
-     * 
+     *
      * @return An immutable {@link Set} of cured {@link PotionEffect PotionEffects}
      */
     @Nonnull
@@ -53,7 +54,7 @@ public abstract class MedicalSupply<T extends ItemHandler> extends SimpleSlimefu
 
     /**
      * This method clears any negative {@link PotionEffect} from the given {@link LivingEntity}.
-     * 
+     *
      * @param n
      *            The {@link LivingEntity} to clear the effects from.
      */
@@ -67,14 +68,13 @@ public abstract class MedicalSupply<T extends ItemHandler> extends SimpleSlimefu
 
     /**
      * This method heals the given {@link LivingEntity} by the amount provided via the constructor.
-     * 
+     *
      * @param n
      *            The {@link LivingEntity} to heal
      */
     public void heal(@Nonnull LivingEntity n) {
         double health = n.getHealth() + healAmount;
-        double maxHealth = n.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double maxHealth = n.getAttribute(CompatibilityUtil.getMaxHealth()).getValue();
         n.setHealth(Math.min(health, maxHealth));
     }
-
 }

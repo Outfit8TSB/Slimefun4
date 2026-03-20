@@ -1,8 +1,7 @@
 package me.mrCookieSlime.CSCoreLibPlugin.general.Inventory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.logging.Level;
+import javax.annotation.Nonnull;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,14 +14,16 @@ import org.bukkit.plugin.Plugin;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.AdvancedMenuClickHandler;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu.MenuClickHandler;
 
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+
 /**
  * An old {@link Listener} for CS-CoreLib
- * This is an old remnant of CS-CoreLib, the last bits of the past. They will be removed once everything is
- *             updated.
+ *
+ * @deprecated This is an old remnant of CS-CoreLib, the last bits of the past. They will be removed once everything is
+ * updated.
  */
+@Deprecated
 public class MenuListener implements Listener {
-
-    static final Map<UUID, ChestMenu> menus = new HashMap<>();
 
     public MenuListener(Plugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -30,32 +31,60 @@ public class MenuListener implements Listener {
 
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
-        ChestMenu menu = menus.remove(e.getPlayer().getUniqueId());
+        // getHolder() involves Block.getState() in BlockInventory cases
+        var holder = e.getInventory().getHolder(false);
 
-        if (menu != null) {
+        if (holder instanceof ChestMenu menu) {
+            menu.removeViewer(e.getPlayer().getUniqueId());
             menu.getMenuCloseHandler().onClose((Player) e.getPlayer());
         }
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        ChestMenu menu = menus.get(e.getWhoClicked().getUniqueId());
+        // getHolder() involves Block.getState() in BlockInventory cases
+        var holder = e.getInventory().getHolder(false);
 
-        if (menu != null) {
-            if (e.getRawSlot() < e.getInventory().getSize()) {
-                MenuClickHandler handler = menu.getMenuClickHandler(e.getSlot());
+        if (holder instanceof ChestMenu menu) {
+            try {
+                if (e.getRawSlot() < e.getInventory().getSize()) {
+                    MenuClickHandler handler = menu.getMenuClickHandler(e.getSlot());
 
-                if (handler == null) {
-                    e.setCancelled(!menu.isEmptySlotsClickable() && (e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR));
-                } else if (handler instanceof AdvancedMenuClickHandler) {
-                    e.setCancelled(!((AdvancedMenuClickHandler) handler).onClick(e, (Player) e.getWhoClicked(), e.getSlot(), e.getCursor(), new ClickAction(e.isRightClick(), e.isShiftClick())));
+                    if (handler == null) {
+                        e.setCancelled(!menu.isEmptySlotsClickable()
+                                && (e.getCurrentItem() == null
+                                        || e.getCurrentItem().getType() == Material.AIR));
+                    } else {
+                        handleEvent(e, handler);
+                    }
+
                 } else {
-                    e.setCancelled(!handler.onClick((Player) e.getWhoClicked(), e.getSlot(), e.getCurrentItem(), new ClickAction(e.isRightClick(), e.isShiftClick())));
+                    MenuClickHandler playerInventoryHandler = menu.getPlayerInventoryClickHandler();
+                    if (playerInventoryHandler != null) {
+                        handleEvent(e, playerInventoryHandler);
+                    }
                 }
-            } else {
-                e.setCancelled(!menu.getPlayerInventoryClickHandler().onClick((Player) e.getWhoClicked(), e.getSlot(), e.getCurrentItem(), new ClickAction(e.isRightClick(), e.isShiftClick())));
+            } catch (Throwable thrown) {
+                e.setCancelled(true);
+                Slimefun.logger().log(Level.SEVERE, "An exception thrown while handling the click: ", thrown);
             }
         }
     }
 
+    private void handleEvent(@Nonnull InventoryClickEvent e, @Nonnull MenuClickHandler handler) {
+        if (handler instanceof AdvancedMenuClickHandler advancedHandler) {
+            e.setCancelled(!advancedHandler.onClick(
+                    e,
+                    (Player) e.getWhoClicked(),
+                    e.getSlot(),
+                    e.getCursor(),
+                    new ClickAction(e.isRightClick(), e.isShiftClick())));
+        } else {
+            e.setCancelled(!handler.onClick(
+                    (Player) e.getWhoClicked(),
+                    e.getSlot(),
+                    e.getCurrentItem(),
+                    new ClickAction(e.isRightClick(), e.isShiftClick())));
+        }
+    }
 }

@@ -13,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import com.google.common.annotations.Beta;
-
 import javax.annotation.Nonnull;
 
 import java.util.HashMap;
@@ -53,11 +52,17 @@ public class LegacyStorage implements Storage {
                     items.put(i, playerFile.getItem("backpacks." + key + ".contents." + i));
                 }
 
+                /*
                 PlayerBackpack backpack = PlayerBackpack.load(uuid, id, size, items);
 
                 backpacks.put(id, backpack);
+                */
             } catch (Exception x) {
-                Slimefun.logger().log(Level.WARNING, x, () -> "Could not load Backpack \"" + key + "\" for Player \"" + uuid + '"');
+                Slimefun.logger()
+                        .log(
+                                Level.WARNING,
+                                x,
+                                () -> "Could not load Backpack \"" + key + "\" for Player \"" + uuid + '"');
             }
         }
 
@@ -65,13 +70,18 @@ public class LegacyStorage implements Storage {
         Set<Waypoint> waypoints = new HashSet<>();
         for (String key : waypointsFile.getKeys()) {
             try {
-                if (waypointsFile.contains(key + ".world") && Bukkit.getWorld(waypointsFile.getString(key + ".world")) != null) {
+                if (waypointsFile.contains(key + ".world")
+                        && Bukkit.getWorld(waypointsFile.getString(key + ".world")) != null) {
                     String waypointName = waypointsFile.getString(key + ".name");
                     Location loc = waypointsFile.getLocation(key);
                     waypoints.add(new Waypoint(uuid, key, loc, waypointName));
                 }
             } catch (Exception x) {
-                Slimefun.logger().log(Level.WARNING, x, () -> "Could not load Waypoint \"" + key + "\" for Player \"" + uuid + '"');
+                Slimefun.logger()
+                        .log(
+                                Level.WARNING,
+                                x,
+                                () -> "Could not load Waypoint \"" + key + "\" for Player \"" + uuid + '"');
             }
         }
 

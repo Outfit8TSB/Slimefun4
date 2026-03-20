@@ -1,35 +1,33 @@
 package io.github.thebusybiscuit.slimefun4.utils;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.core.attributes.MachineTier;
 import io.github.thebusybiscuit.slimefun4.core.attributes.MachineType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.Radioactivity;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+import javax.annotation.Nonnull;
 
 /**
  * This utility class provides a few handy methods and constants to build the lore of any
  * {@link SlimefunItemStack}. It is mostly used directly inside the class {@link SlimefunItems}.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see SlimefunItems
  *
  */
 public final class LoreBuilder {
 
-    public static final String HAZMAT_SUIT_REQUIRED = "&8\u21E8 &4Hazmat Suit required!";
-    public static final String RAINBOW = "&dCycles through all Colors of the Rainbow!";
-    public static final String RIGHT_CLICK_TO_USE = "&eRight Click&7 to use";
-    public static final String RIGHT_CLICK_TO_OPEN = "&eRight Click&7 to open";
-    public static final String CROUCH_TO_USE = "&eCrouch&7 to use";
-
-    private static final DecimalFormat hungerFormat = new DecimalFormat("#.0", DecimalFormatSymbols.getInstance(Locale.ROOT));
+    public static final String HAZMAT_SUIT_REQUIRED = "&8\u21E8 &4Requires Hazmat Suit!";
+    public static final String RAINBOW = "&dShimmers in rainbow colors!";
+    public static final String RIGHT_CLICK_TO_USE = "&eRight Click &7to use";
+    public static final String RIGHT_CLICK_TO_OPEN = "&eRight Click &7to open";
+    public static final String CROUCH_TO_USE = "&eSneak &7to use";
+    private static final DecimalFormat hungerFormat =
+            new DecimalFormat("#.0", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
     private LoreBuilder() {}
 
@@ -61,7 +59,7 @@ public final class LoreBuilder {
         return "&8\u21E8 &e\u26A1 &7" + charge + " / " + capacity + " J";
     }
 
-    public static @Nonnull String material(@Nonnull String material) {
+    public static @Nonnull String material(String material) {
         return "&8\u21E8 &7Material: &b" + material;
     }
 
@@ -74,7 +72,6 @@ public final class LoreBuilder {
     }
 
     public static @Nonnull String usesLeft(int usesLeft) {
-        return "&e" + usesLeft + ' ' + (usesLeft > 1 ? "Uses" : "Use") + " &7left";
+        return "&7Uses left: &e" + usesLeft;
     }
-
 }

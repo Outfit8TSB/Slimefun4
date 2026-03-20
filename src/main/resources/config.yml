@@ -1,37 +1,65 @@
 options:
-  # Instead of disabling Auto Updates consider using the "stable" version of Slimefun.
-  # These builds are much more tested and are far less likely to have any issues.
-  # Note: When running a stable build auto-updates ONLY update to other stable builds! Perfect eh?
-  # You can download the latest stable build here: https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/
+  # IMPORTANT
+  # Auto updates should be disabled for now as automatic updates still haven't been updated
+  # and only include legacy builds
 
-  auto-update: true
-  chat-prefix: '&a&lSlimefun 4&7> '
+  # Auto check and update from GitHub for new versions
+  auto-update: false
+  # Prefix for all Slimefun messages
+  chat-prefix: '&a&lSlimefun United &7> '
+  # Update interval for Slimefun armor effects
   armor-update-interval: 10
+  # Enable/disable armor effects
   enable-armor-effects: true
   enable-radiation: true
   radiation-update-interval: 1
   radiation-grace-period: 15
   rainbow-armor-update-interval: 3
+  # Auto-save data interval in minutes
   auto-save-delay-in-minutes: 10
+  # Use legacy ore washer mechanism
   legacy-ore-washer: false
+  # Use legacy dust washer mechanism
   legacy-dust-washer: false
+  # Use legacy ore grinder mechanism
   legacy-ore-grinder: true
+  # Slimefun text language (excluding items)
   language: en
+  # Enable multi-language support
   enable-translations: true
+  # Log warnings for duplicate block entries
   log-duplicate-block-entries: true
+  # Burn players when exposed to radiation
   burn-players-when-radioactive: true
+  # Drop excess items when giving Slimefun items via command with full inventory
   drop-excess-sf-give-items: false
+  # Auto backup data
   backup-data: true
   drop-block-creative: true
+  # Bypass compatibility check
+  # WARNING: Issues won't be accepted with this enabled
+  bypass-environment-check: false
+  bypass-item-length-check: false
+  max-gps-waypoints: 21
 
 guide:
+  # Show vanilla item recipes in the guide
   show-vanilla-recipes: true
+  # Automatically give the Slimefun guide when a player joins the server for the first time
   receive-on-first-join: true
+  # Show hidden item groups in search
   show-hidden-item-groups-in-search: false
 
 researches:
+  # Allow creative mode players to unlock researches for free
   free-in-creative-mode: true
+  # Enable fireworks when unlocking researches
   enable-fireworks: true
+  # Use money instead of experience to unlock researches
+  use-money-unlock: false
+  # Experience to money conversion rate
+  currency-cost-convert-rate: 25.0
+  # Disable learning animation when unlocking researches
   disable-learning-animation: false
 
 URID:
@@ -49,8 +77,12 @@ talismans:
   use-actionbar: true
 
 metrics:
-  auto-update: true
+  auto-update: false
   analytics: true
+
+backpack:
+  # Allow backpacks to be opened when the owner is offline
+  allow-open-when-owner-offline: true
 
 research-ranks:
 - Chicken

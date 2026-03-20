@@ -1,9 +1,16 @@
 package me.mrCookieSlime.CSCoreLibPlugin.general.Inventory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.annotation.Nonnull;
+import lombok.Getter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,48 +19,69 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import city.norain.slimefun4.holder.SlimefunInventoryHolder;
+import city.norain.slimefun4.utils.InventoryUtil;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+
 /**
  * An old remnant of CS-CoreLib.
- * This will be removed once we updated everything.
+ * This will be removed once we update everything.
  * Don't look at the code, it will be gone soon, don't worry.
  */
-public class ChestMenu {
+@Deprecated
+public class ChestMenu extends SlimefunInventoryHolder {
 
     private boolean clickable;
     private boolean emptyClickable;
+
+    @Getter
     private String title;
-    private Inventory inv;
+
     private List<ItemStack> items;
+    /**
+     * Size of chestmenu
+     * Warning: it DOES NOT present actual size of its inventory!
+     */
+    private int size = -1;
+
     private Map<Integer, MenuClickHandler> handlers;
     private MenuOpeningHandler open;
     private MenuCloseHandler close;
     private MenuClickHandler playerclick;
 
+    @Deprecated(forRemoval = true)
+    private final Set<UUID> viewers = new CopyOnWriteArraySet<>();
+
+    private final AtomicBoolean lock = new AtomicBoolean(false);
+
     /**
      * Creates a new ChestMenu with the specified
      * Title
      *
-     * @param title
-     *            The title of the Menu
+     * @param title The title of the Menu
      */
     public ChestMenu(String title) {
         this.title = ChatColor.translateAlternateColorCodes('&', title);
         this.clickable = false;
         this.emptyClickable = true;
-        this.items = new ArrayList<>();
-        this.handlers = new HashMap<>();
+        this.items = new CopyOnWriteArrayList<>();
+        this.handlers = new ConcurrentHashMap<>();
 
         this.open = p -> {};
         this.close = p -> {};
         this.playerclick = (p, slot, item, action) -> isPlayerInventoryClickable();
     }
 
+    public ChestMenu(String title, int size) {
+        this(title);
+        setSize(size);
+    }
+
     /**
      * Toggles whether Players can access there
      * Inventory while viewing this Menu
      *
-     * @param clickable
-     *            Whether the Player can access his Inventory
+     * @param clickable Whether the Player can access his Inventory
      * @return The ChestMenu Instance
      */
     public ChestMenu setPlayerInventoryClickable(boolean clickable) {
@@ -75,8 +103,7 @@ public class ChestMenu {
      * Toggles whether Players can click the
      * empty menu slots while viewing this Menu
      *
-     * @param emptyClickable
-     *            Whether the Player can click empty slots
+     * @param emptyClickable Whether the Player can click empty slots
      * @return The ChestMenu Instance
      */
     public ChestMenu setEmptySlotsClickable(boolean emptyClickable) {
@@ -98,8 +125,7 @@ public class ChestMenu {
      * Adds a ClickHandler to ALL Slots of the
      * Player's Inventory
      *
-     * @param handler
-     *            The MenuClickHandler
+     * @param handler The MenuClickHandler
      * @return The ChestMenu Instance
      */
     public ChestMenu addPlayerInventoryClickHandler(MenuClickHandler handler) {
@@ -110,22 +136,28 @@ public class ChestMenu {
     /**
      * Adds an Item to the Inventory in that Slot
      *
-     * @param slot
-     *            The Slot in the Inventory
-     * @param item
-     *            The Item for that Slot
+     * @param slot The Slot in the Inventory
+     * @param item The Item for that Slot
      * @return The ChestMenu Instance
      */
     public ChestMenu addItem(int slot, ItemStack item) {
-        final int size = this.items.size();
-        if (size > slot)
-            this.items.set(slot, item);
-        else {
-            for (int i = 0; i < slot - size; i++) {
-                this.items.add(null);
+        // do shallow copy due to Paper ItemStack system change
+        // See also: https://github.com/PaperMC/Paper/pull/10852
+        ItemStack actual = item;
+        if (item instanceof SlimefunItemStack) {
+            ItemStack clone = new ItemStack(item.getType(), item.getAmount());
+
+            if (item.hasItemMeta()) {
+                clone.setItemMeta(item.getItemMeta());
             }
-            this.items.add(item);
+
+            actual = clone;
         }
+
+        setSize((int) (Math.max(getSize(), Math.ceil((slot + 1) / 9d) * 9)));
+
+        this.items.set(slot, actual);
+        this.inventory.setItem(slot, actual);
         return this;
     }
 
@@ -133,12 +165,9 @@ public class ChestMenu {
      * Adds an Item to the Inventory in that Slot
      * as well as a Click Handler
      *
-     * @param slot
-     *            The Slot in the Inventory
-     * @param item
-     *            The Item for that Slot
-     * @param clickHandler
-     *            The MenuClickHandler for that Slot
+     * @param slot         The Slot in the Inventory
+     * @param item         The Item for that Slot
+     * @param clickHandler The MenuClickHandler for that Slot
      * @return The ChestMenu Instance
      */
     public ChestMenu addItem(int slot, ItemStack item, MenuClickHandler clickHandler) {
@@ -150,23 +179,23 @@ public class ChestMenu {
     /**
      * Returns the ItemStack in that Slot
      *
-     * @param slot
-     *            The Slot in the Inventory
+     * @param slot The Slot in the Inventory
      * @return The ItemStack in that Slot
      */
     public ItemStack getItemInSlot(int slot) {
         setup();
-        return this.inv.getItem(slot);
+        if (items.size() - 1 < slot) {
+            addItem(slot, null);
+        }
+        return this.inventory.getItem(slot);
     }
 
     /**
      * Executes a certain Action upon clicking an
      * Item in the Menu
      *
-     * @param slot
-     *            The Slot in the Inventory
-     * @param handler
-     *            The MenuClickHandler
+     * @param slot    The Slot in the Inventory
+     * @param handler The MenuClickHandler
      * @return The ChestMenu Instance
      */
     public ChestMenu addMenuClickHandler(int slot, MenuClickHandler handler) {
@@ -178,8 +207,7 @@ public class ChestMenu {
      * Executes a certain Action upon opening
      * this Menu
      *
-     * @param handler
-     *            The MenuOpeningHandler
+     * @param handler The MenuOpeningHandler
      * @return The ChestMenu Instance
      */
     public ChestMenu addMenuOpeningHandler(MenuOpeningHandler handler) {
@@ -191,8 +219,7 @@ public class ChestMenu {
      * Executes a certain Action upon closing
      * this Menu
      *
-     * @param handler
-     *            The MenuCloseHandler
+     * @param handler The MenuCloseHandler
      * @return The ChestMenu Instance
      */
     public ChestMenu addMenuCloseHandler(MenuCloseHandler handler) {
@@ -217,62 +244,77 @@ public class ChestMenu {
      */
     public ItemStack[] getContents() {
         setup();
-        return this.inv.getContents();
+        return this.inventory.getContents();
+    }
+
+    public void addViewer(@Nonnull UUID uuid) {
+        viewers.add(uuid);
+    }
+
+    public void removeViewer(@Nonnull UUID uuid) {
+        viewers.remove(uuid);
+    }
+
+    public boolean contains(@Nonnull Player viewer) {
+        return viewers.contains(viewer.getUniqueId());
     }
 
     private void setup() {
-        if (this.inv != null)
-            return;
-        this.inv = Bukkit.createInventory(null, ((int) Math.ceil(this.items.size() / 9F)) * 9, title);
+        if (this.inventory != null) return;
+
+        this.inventory = Bukkit.createInventory(this, getSize(), title);
         for (int i = 0; i < this.items.size(); i++) {
-            this.inv.setItem(i, this.items.get(i));
+            this.inventory.setItem(i, this.items.get(i));
         }
     }
 
+    /**
+     * Resets this ChestMenu to a Point BEFORE the User interacted with it
+     */
     public void reset(boolean update) {
-        if (update)
-            this.inv.clear();
-        else
-            this.inv = Bukkit.createInventory(null, ((int) Math.ceil(this.items.size() / 9F)) * 9, title);
+        if (this.inventory == null || this.inventory.getSize() != getSize())
+            this.inventory = Bukkit.createInventory(this, getSize(), title);
+
+        if (update) {
+            this.inventory.clear();
+        } else {
+            this.inventory = Bukkit.createInventory(this, getSize(), title);
+        }
+
         for (int i = 0; i < this.items.size(); i++) {
-            this.inv.setItem(i, this.items.get(i));
+            this.inventory.setItem(i, this.items.get(i));
         }
     }
 
     /**
      * Modifies an ItemStack in an ALREADY OPENED ChestMenu
      *
-     * @param slot
-     *            The Slot of the Item which will be replaced
-     * @param item
-     *            The new Item
+     * @param slot The Slot of the Item which will be replaced
+     * @param item The new Item
      */
     public void replaceExistingItem(int slot, ItemStack item) {
         setup();
-        this.inv.setItem(slot, item);
+        this.inventory.setItem(slot, item);
     }
 
     /**
      * Opens this Menu for the specified Player/s
-     * 
-     * @param players
-     *            The Players who will see this Menu
+     *
+     * @param players The Players who will see this Menu
      */
     public void open(Player... players) {
         setup();
         for (Player p : players) {
-            p.openInventory(this.inv);
-            MenuListener.menus.put(p.getUniqueId(), this);
-            if (open != null)
-                open.onOpen(p);
+            InventoryUtil.openInventory(p, this.inventory);
+            addViewer(p.getUniqueId());
+            if (open != null) open.onOpen(p);
         }
     }
 
     /**
      * Returns the MenuClickHandler which was registered for the specified Slot
      *
-     * @param slot
-     *            The Slot in the Inventory
+     * @param slot The Slot in the Inventory
      * @return The MenuClickHandler registered for the specified Slot
      */
     public MenuClickHandler getMenuClickHandler(int slot) {
@@ -314,7 +356,57 @@ public class ChestMenu {
      * @return The converted Inventory
      */
     public Inventory toInventory() {
-        return this.inv;
+        return this.inventory;
+    }
+
+    public int getSize() {
+        return isSizeAutomaticallyInferred() ? Math.max(9, (int) Math.ceil(this.items.size() / 9F) * 9) : size;
+    }
+
+    public ChestMenu setSize(int size) {
+        if (size % 9 == 0 && size >= 0 && size < 55) {
+            // Resize items list to match actual inventory size in order to reset inventory.
+            // I'm sure that use size of items as inventory size is somehow strange.
+            if (size > items.size()) {
+                while (items.size() < size) {
+                    this.items.add(null);
+                }
+            } else if (size < items.size()) {
+                while (items.size() > size) {
+                    this.items.remove(items.size() - 1);
+                }
+            } else {
+                return this;
+            }
+
+            this.size = size;
+
+            reset(false);
+
+            return this;
+        } else {
+            throw new IllegalArgumentException(
+                    "The size of a ChestMenu must be a multiple of 9 and within the bounds 0-54,"
+                            + " received: "
+                            + size);
+        }
+    }
+
+    public boolean isSizeAutomaticallyInferred() {
+        return size == -1;
+    }
+
+    public boolean locked() {
+        return lock.get();
+    }
+
+    public void lock() {
+        lock.getAndSet(true);
+        InventoryUtil.closeInventory(this.inventory);
+    }
+
+    public void unlock() {
+        lock.getAndSet(false);
     }
 
     @FunctionalInterface

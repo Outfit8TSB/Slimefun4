@@ -1,25 +1,24 @@
 package io.github.thebusybiscuit.slimefun4.core.services.sounds;
 
+import city.norain.slimefun4.SlimefunExtended;
+import com.google.common.base.Preconditions;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedSound;
 import java.util.Locale;
 import java.util.logging.Level;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import com.google.common.base.Preconditions;
-
 /**
  * This enum holds references to all our sounds.
- * 
+ *
  * @author TheBusyBiscuit
  * @author J3fftw1
  *
@@ -28,7 +27,6 @@ import com.google.common.base.Preconditions;
  *
  */
 public enum SoundEffect {
-
     ANCIENT_ALTAR_ITEM_CHECK_SOUND(Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 2F),
     ANCIENT_ALTAR_ITEM_DROP_SOUND(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1F, 1F),
     ANCIENT_ALTAR_ITEM_PICK_UP_SOUND(Sound.ENTITY_ITEM_PICKUP, 1F, 1F),
@@ -50,11 +48,11 @@ public enum SoundEffect {
     COMPRESSOR_CRAFT_EXTEND_SOUND(Sound.BLOCK_PISTON_EXTEND, 1F, 1F),
     COOLER_CONSUME_SOUND(Sound.ENTITY_GENERIC_DRINK, 1F, 1F),
     CRUCIBLE_ADD_WATER_SOUND(Sound.ENTITY_PLAYER_SPLASH, 1F, 1F),
-    CRUCIBLE_ADD_LAVA_SOUND(Sound.BLOCK_LAVA_POP, 1F , 1F),
+    CRUCIBLE_ADD_LAVA_SOUND(Sound.BLOCK_LAVA_POP, 1F, 1F),
     CRUCIBLE_BLOCK_BREAK_SOUND(Sound.BLOCK_METAL_BREAK, 1F, 1F),
     CRUCIBLE_GENERATE_LIQUID_SOUND(Sound.BLOCK_LAVA_EXTINGUISH, 1F, 1F),
     CRUCIBLE_INTERACT_SOUND(Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F),
-    CRUCIBLE_PLACE_LAVA_SOUND(Sound.BLOCK_LAVA_POP, 1F , 1F),
+    CRUCIBLE_PLACE_LAVA_SOUND(Sound.BLOCK_LAVA_POP, 1F, 1F),
     CRUCIBLE_PLACE_WATER_SOUND(Sound.ENTITY_PLAYER_SPLASH, 1F, 1F),
     DEBUG_FISH_CLICK_SOUND(Sound.BLOCK_BAMBOO_PLACE, 1F, 1F),
     DIET_COOKIE_CONSUME_SOUND(Sound.ENTITY_GENERIC_EAT, 1F, 1F),
@@ -130,7 +128,7 @@ public enum SoundEffect {
         Preconditions.checkArgument(volume >= 0, "The volume cannot be a negative number.");
         Preconditions.checkArgument(pitch >= 0.5, "A pitch below 0.5 has no effect on the sound.");
 
-        this.defaultSound = sound.getKey().getKey();
+        this.defaultSound = VersionedSound.getSoundName(sound);
         this.defaultVolume = volume;
         this.defaultPitch = pitch;
     }
@@ -158,7 +156,14 @@ public enum SoundEffect {
 
         if (config != null) {
             Location loc = player.getEyeLocation();
-            player.playSound(loc, config.getSoundId(), SoundCategory.PLAYERS, config.getVolume(), config.getPitch());
+
+            Sound playSound = getPlaySound(config.getSoundId());
+
+            if (playSound == null) {
+                return;
+            }
+
+            player.playSound(loc, playSound, SoundCategory.PLAYERS, config.getVolume(), config.getPitch());
         }
     }
 
@@ -174,7 +179,13 @@ public enum SoundEffect {
         SoundConfiguration config = getConfiguration();
 
         if (config != null && loc.getWorld() != null) {
-            loc.getWorld().playSound(loc, config.getSoundId(), category, config.getVolume(), config.getPitch());
+            Sound playSound = getPlaySound(config.getSoundId());
+
+            if (playSound == null) {
+                return;
+            }
+
+            loc.getWorld().playSound(loc, playSound, category, config.getVolume(), config.getPitch());
         }
     }
 
@@ -214,5 +225,27 @@ public enum SoundEffect {
      */
     public float getDefaultPitch() {
         return defaultPitch;
+    }
+
+    private Sound getPlaySound(String soundId) {
+        Sound playSound = null;
+
+        if (SlimefunExtended.getMinecraftVersion().isAtLeast(1, 21, 3)) {
+            playSound = Registry.SOUNDS.get(NamespacedKey.minecraft(soundId.toLowerCase(Locale.ROOT)));
+        }
+
+        if (playSound == null) {
+            try {
+                playSound = VersionedSound.valueOf(soundId);
+            } catch (IllegalArgumentException e) {
+                Slimefun.logger().log(Level.SEVERE, e, e::getMessage);
+            }
+        }
+
+        if (playSound == null) {
+            Slimefun.logger().log(Level.WARNING, "Could not find sound: {0} for {1}.", new Object[] {soundId, name()});
+        }
+
+        return playSound;
     }
 }

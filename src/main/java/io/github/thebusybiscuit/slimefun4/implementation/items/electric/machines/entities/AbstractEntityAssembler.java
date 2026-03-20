@@ -16,8 +16,11 @@ import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.bakedlibs.dough.protection.Interaction;
+
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.events.BlockPlacerPlaceEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -33,9 +36,7 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
@@ -44,13 +45,15 @@ import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 /**
  * This is an abstract super class for Entity Assemblers.
  *
+ * @param <T> the type of {@link Entity} this assembler spawns
  * @author TheBusyBiscuit
- *
+ * 
  * @see WitherAssembler
  * @see IronGolemAssembler
  *
  */
-public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSlimefunItem<BlockTicker> implements EnergyNetComponent {
+public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSlimefunItem<BlockTicker>
+        implements EnergyNetComponent {
 
     private static final String KEY_ENABLED = "enabled";
     private static final String KEY_OFFSET = "offset";
@@ -66,8 +69,17 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
 
     private int lifetime = 0;
 
+    /**
+     * Constructs a new AbstractEntityAssembler.
+     *
+     * @param itemGroup   The item group this item belongs to
+     * @param item        The item stack for this entity assembler
+     * @param recipeType  The recipe type used to craft this item
+     * @param recipe      The recipe to craft this item
+     */
     @ParametersAreNonnullByDefault
-    protected AbstractEntityAssembler(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected AbstractEntityAssembler(
+            ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
         new BlockMenuPreset(getId(), item.getItemMetaSnapshot().getDisplayName().orElse("Entity Assembler")) {
@@ -75,8 +87,8 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
             @Override
             public void init() {
                 drawBackground(border);
-                drawBackground(CustomItemStack.create(getHeadBorder(), " "), headBorder);
-                drawBackground(CustomItemStack.create(getBodyBorder(), " "), bodyBorder);
+                drawBackground(ItemStackFactory.create(getHeadBorder(), " "), headBorder);
+                drawBackground(ItemStackFactory.create(getBodyBorder(), " "), bodyBorder);
 
                 constructMenu(this);
             }
@@ -88,7 +100,9 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                return p.hasPermission("slimefun.inventory.bypass") || Slimefun.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK);
+                return p.hasPermission("slimefun.inventory.bypass")
+                        || Slimefun.getProtectionManager()
+                                .hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK);
             }
 
             @Override
@@ -134,8 +148,9 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
             }
 
             private void onPlace(BlockEvent e) {
-                BlockStorage.addBlockInfo(e.getBlock(), KEY_OFFSET, "3.0");
-                BlockStorage.addBlockInfo(e.getBlock(), KEY_ENABLED, String.valueOf(false));
+                var blockData = StorageCacheUtils.getBlock(e.getBlock().getLocation());
+                blockData.setData(KEY_OFFSET, "3.0");
+                blockData.setData(KEY_ENABLED, String.valueOf(false));
             }
         };
     }
@@ -147,7 +162,7 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
             @Override
             public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
                 Block b = e.getBlock();
-                BlockMenu inv = BlockStorage.getInventory(b);
+                BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
 
                 if (inv != null) {
                     inv.dropItems(b.getLocation(), headSlots);
@@ -158,28 +173,34 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
     }
 
     private void updateBlockInventory(BlockMenu menu, Block b) {
-        if (!BlockStorage.hasBlockInfo(b) || BlockStorage.getLocationInfo(b.getLocation(), KEY_ENABLED) == null || BlockStorage.getLocationInfo(b.getLocation(), KEY_ENABLED).equals(String.valueOf(false))) {
-            menu.replaceExistingItem(22, CustomItemStack.create(Material.GUNPOWDER, "&7Enabled: &4\u2718", "", "&e> Click to enable this Machine"));
+        var blockData = StorageCacheUtils.getBlock(b.getLocation());
+        String val;
+        if (blockData == null || (val = blockData.getData(KEY_ENABLED)) == null || val.equals(String.valueOf(false))) {
+            menu.replaceExistingItem(22, ItemStackFactory.create(Material.GUNPOWDER, "&7Status: &4\u2718", "", "&e> Click to enable machine"));
             menu.addMenuClickHandler(22, (p, slot, item, action) -> {
-                BlockStorage.addBlockInfo(b, KEY_ENABLED, String.valueOf(true));
+                StorageCacheUtils.setData(b.getLocation(), KEY_ENABLED, String.valueOf(true));
                 updateBlockInventory(menu, b);
                 return false;
             });
         } else {
-            menu.replaceExistingItem(22, CustomItemStack.create(Material.REDSTONE, "&7Enabled: &2\u2714", "", "&e> Click to disable this Machine"));
+            menu.replaceExistingItem(22, ItemStackFactory.create(Material.REDSTONE, "&7Enabled: &2\u2714", "", "&e> Click to disable this Machine"));
             menu.addMenuClickHandler(22, (p, slot, item, action) -> {
-                BlockStorage.addBlockInfo(b, KEY_ENABLED, String.valueOf(false));
+                StorageCacheUtils.setData(b.getLocation(), KEY_ENABLED, String.valueOf(false));
                 updateBlockInventory(menu, b);
                 return false;
             });
         }
 
-        double offset = (!BlockStorage.hasBlockInfo(b) || BlockStorage.getLocationInfo(b.getLocation(), KEY_OFFSET) == null) ? 3.0F : Double.valueOf(BlockStorage.getLocationInfo(b.getLocation(), KEY_OFFSET));
+        val = null;
+        double offset =
+                (blockData == null || (val = blockData.getData(KEY_OFFSET)) == null) ? 3.0F : Double.parseDouble(val);
 
-        menu.replaceExistingItem(31, CustomItemStack.create(Material.PISTON, "&7Offset: &3" + offset + " Block(s)", "", "&fLeft Click: &7+0.1", "&fRight Click: &7-0.1"));
+        menu.replaceExistingItem(31, ItemStackFactory.create(Material.PISTON, "&7Offset: &3" + offset + " Block(s)", "", "&fLeft Click: &7+0.1", "&fRight Click: &7-0.1"));
         menu.addMenuClickHandler(31, (p, slot, item, action) -> {
-            double offsetv = NumberUtils.reparseDouble(Double.valueOf(BlockStorage.getLocationInfo(b.getLocation(), KEY_OFFSET)) + (action.isRightClicked() ? -0.1F : 0.1F));
-            BlockStorage.addBlockInfo(b, KEY_OFFSET, String.valueOf(offsetv));
+            double offsetv =
+                    NumberUtils.reparseDouble(Double.parseDouble(StorageCacheUtils.getData(b.getLocation(), KEY_OFFSET))
+                            + (action.isRightClicked() ? -0.1F : 0.1F));
+            StorageCacheUtils.setData(b.getLocation(), KEY_OFFSET, String.valueOf(offsetv));
             updateBlockInventory(menu, b);
             return false;
         });
@@ -190,13 +211,13 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
         return new BlockTicker() {
 
             @Override
-            public void tick(Block b, SlimefunItem sf, Config data) {
-                if ("false".equals(BlockStorage.getLocationInfo(b.getLocation(), KEY_ENABLED))) {
+            public void tick(Block b, SlimefunItem sf, SlimefunBlockData data) {
+                if ("false".equals(data.getData(KEY_ENABLED))) {
                     return;
                 }
 
                 if (lifetime % 60 == 0 && getCharge(b.getLocation(), data) >= getEnergyConsumption()) {
-                    BlockMenu menu = BlockStorage.getInventory(b);
+                    BlockMenu menu = data.getBlockMenu();
 
                     boolean hasBody = findResource(menu, getBody(), bodySlots);
                     boolean hasHead = findResource(menu, getHead(), headSlots);
@@ -205,7 +226,7 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
                         consumeResources(menu);
 
                         removeCharge(b.getLocation(), getEnergyConsumption());
-                        double offset = Double.parseDouble(BlockStorage.getLocationInfo(b.getLocation(), KEY_OFFSET));
+                        double offset = Double.parseDouble(data.getData(KEY_OFFSET));
 
                         Slimefun.runSync(() -> {
                             Location loc = new Location(b.getWorld(), b.getX() + 0.5D, b.getY() + offset, b.getZ() + 0.5D);
@@ -278,10 +299,15 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
         }
     }
 
+    /**
+     * Constructs the menu preset for this entity assembler.
+     *
+     * @param preset The {@link BlockMenuPreset} to construct
+     */
     protected void constructMenu(BlockMenuPreset preset) {
-        preset.addItem(1, CustomItemStack.create(getHead(), "&7Head Slot", "", "&fThis Slot accepts the head type"), ChestMenuUtils.getEmptyClickHandler());
-        preset.addItem(7, CustomItemStack.create(getBody(), "&7Body Slot", "", "&fThis Slot accepts the body type"), ChestMenuUtils.getEmptyClickHandler());
-        preset.addItem(13, CustomItemStack.create(Material.CLOCK, "&7Cooldown: &b30 Seconds", "", "&fThis Machine takes up to half a Minute to operate", "&fso give it some Time!"), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(1, ItemStackFactory.create(getHead(), "&7Head Slot", "", "&fThis Slot accepts the head type"), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(7, ItemStackFactory.create(getBody(), "&7Body Slot", "", "&fThis Slot accepts the body type"), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(13, ItemStackFactory.create(Material.CLOCK, "&7Cooldown: &b30 Seconds", "", "&fThis Machine takes up to half a Minute to operate", "&fso give it some Time!"), ChestMenuUtils.getEmptyClickHandler());
     }
 
     @Override
@@ -289,16 +315,46 @@ public abstract class AbstractEntityAssembler<T extends Entity> extends SimpleSl
         return EnergyNetComponentType.CONSUMER;
     }
 
+    /**
+     * Returns the amount of energy consumed per assembly operation.
+     *
+     * @return The energy consumption
+     */
     public abstract int getEnergyConsumption();
 
+    /**
+     * Returns the item used as the head/ingredient for entity assembly.
+     *
+     * @return The head item
+     */
     public abstract ItemStack getHead();
 
+    /**
+     * Returns the item used as the body/ingredient for entity assembly.
+     *
+     * @return The body item
+     */
     public abstract ItemStack getBody();
 
+    /**
+     * Returns the material used for the head border in the GUI.
+     *
+     * @return The head border material
+     */
     public abstract Material getHeadBorder();
 
+    /**
+     * Returns the material used for the body border in the GUI.
+     *
+     * @return The body border material
+     */
     public abstract Material getBodyBorder();
 
+    /**
+     * Spawns the entity at the given location.
+     *
+     * @param l The location to spawn the entity
+     * @return The spawned entity
+     */
     public abstract T spawnEntity(Location l);
-
 }

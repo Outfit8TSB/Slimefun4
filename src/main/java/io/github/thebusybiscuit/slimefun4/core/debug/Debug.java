@@ -1,11 +1,11 @@
 package io.github.thebusybiscuit.slimefun4.core.debug;
 
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
 /**
  * This class is responsible for debug logging.
@@ -17,7 +17,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
  */
 public final class Debug {
 
-    private static String testCase = null;
+    private static final List<String> testCase = new ArrayList<>();
 
     private Debug() {}
 
@@ -70,15 +70,15 @@ public final class Debug {
      *            The variables to replace, use "{}" in the message and have it replaced with a specified thing
      */
     public static void log(@Nonnull String test, @Nonnull String msg, @Nonnull Object... vars) {
-        if (testCase == null || !testCase.equals(test)) {
+        if (testCase == null || !testCase.contains(test)) {
             return;
         }
 
         if (vars.length > 0) {
             String formatted = formatMessage(msg, vars);
-            Slimefun.logger().log(Level.INFO, "[DEBUG {0}] {1}", new Object[] { test, formatted });
+            Slimefun.logger().log(Level.INFO, "[DEBUG {0}] {1}", new Object[] {test, formatted});
         } else {
-            Slimefun.logger().log(Level.INFO, "[DEBUG {0}] {1}", new Object[] { test, msg });
+            Slimefun.logger().log(Level.INFO, "[DEBUG {0}] {1}", new Object[] {test, msg});
         }
     }
 
@@ -95,7 +95,7 @@ public final class Debug {
      *            The message to send. For variables, you can pass "{}"
      * @param vars
      *            A varargs of the variables you wish to use
-     * 
+     *
      * @return The resulting String
      */
     private static @Nonnull String formatMessage(@Nonnull String msg, @Nonnull Object... vars) {
@@ -104,7 +104,8 @@ public final class Debug {
 
         // Find an opening curly brace `{` and validate the next char is a closing one `}`
         while ((i = msg.indexOf('{', i)) != -1 && msg.charAt(i + 1) == '}') {
-            // Substring up to the opening brace `{`, add the variable for this and add the rest of the message
+            // Substring up to the opening brace `{`, add the variable for this and add the rest of the
+            // message
             msg = msg.substring(0, i) + vars[idx] + msg.substring(i + 2);
             i += String.valueOf(vars[idx++]).length();
         }
@@ -116,11 +117,10 @@ public final class Debug {
      * Set the current test case for this server.
      * This will enable debug logging for this specific case which can be helpful by Slimefun or addon developers.
      *
-     * @param test
-     *            The test case to enable or null to disable it
+     * @param test The test case to enable or null to disable it
      */
-    public static void setTestCase(@Nullable String test) {
-        testCase = test;
+    public static void addTestCase(@Nullable String test) {
+        testCase.add(test);
     }
 
     /**
@@ -128,7 +128,15 @@ public final class Debug {
      *
      * @return The current test case to enable or null if disabled
      */
-    public static @Nullable String getTestCase() {
+    public static @Nonnull List<String> getTestCase() {
         return testCase;
+    }
+
+    public static boolean hasTestCase(TestCase tc) {
+        return testCase.contains(tc.toString());
+    }
+
+    public static void disableTestCase() {
+        testCase.clear();
     }
 }

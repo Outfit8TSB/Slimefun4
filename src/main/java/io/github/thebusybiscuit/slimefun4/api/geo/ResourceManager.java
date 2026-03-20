@@ -1,14 +1,28 @@
 package io.github.thebusybiscuit.slimefun4.api.geo;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.callback.IAsyncReadCallback;
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunChunkData;
+import io.github.bakedlibs.dough.blocks.BlockPosition;
+import io.github.bakedlibs.dough.config.Config;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
+import io.github.thebusybiscuit.slimefun4.api.events.GEOResourceGenerationEvent;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.geo.GEOMiner;
+import io.github.thebusybiscuit.slimefun4.implementation.items.geo.GEOScanner;
+import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.OptionalInt;
 import java.util.concurrent.ThreadLocalRandom;
-
 import javax.annotation.Nonnull;
-
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,21 +33,6 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import io.github.bakedlibs.dough.blocks.BlockPosition;
-import io.github.bakedlibs.dough.config.Config;
-import io.github.bakedlibs.dough.items.CustomItemStack;
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
-import io.github.thebusybiscuit.slimefun4.api.events.GEOResourceGenerationEvent;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.geo.GEOMiner;
-import io.github.thebusybiscuit.slimefun4.implementation.items.geo.GEOScanner;
-import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
-
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * The {@link ResourceManager} is responsible for registering and managing a {@link GEOResource}.
@@ -48,7 +47,9 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
  */
 public class ResourceManager {
 
-    private final int[] backgroundSlots = { 0, 1, 2, 3, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 48, 49, 50, 52, 53 };
+    private final int[] backgroundSlots = {
+        0, 1, 2, 3, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 48, 49, 50, 52, 53
+    };
     private final Config config;
 
     /**
@@ -74,7 +75,8 @@ public class ResourceManager {
 
         // Resources may only be registered once
         if (Slimefun.getRegistry().getGEOResources().containsKey(resource.getKey())) {
-            throw new IllegalArgumentException("GEO-Resource \"" + resource.getKey() + "\" has already been registered!");
+            throw new IllegalArgumentException(
+                    "GEO-Resource \"" + resource.getKey() + "\" has already been registered!");
         }
 
         String key = resource.getKey().getNamespace() + '.' + resource.getKey().getKey();
@@ -110,13 +112,41 @@ public class ResourceManager {
         Validate.notNull(world, "World must not be null");
 
         String key = resource.getKey().toString().replace(':', '-');
-        String value = BlockStorage.getChunkInfo(world, x, z, key);
+        var chunkData = Slimefun.getDatabaseManager().getBlockDataController().getChunkData(world.getChunkAt(x, z));
+        if (chunkData == null) {
+            return OptionalInt.empty();
+        }
+        String value = chunkData.getData(key);
 
         if (value != null) {
             return OptionalInt.of(Integer.parseInt(value));
         } else {
             return OptionalInt.empty();
         }
+    }
+
+    public void getSuppliesAsync(GEOResource resource, Chunk chunk, IAsyncReadCallback<Integer> callback) {
+        Slimefun.getDatabaseManager().getBlockDataController().getChunkDataAsync(chunk, new IAsyncReadCallback<>() {
+            @Override
+            public boolean runOnMainThread() {
+                return callback.runOnMainThread();
+            }
+
+            @Override
+            public void onResult(SlimefunChunkData result) {
+                String value = result.getData(resource.getKey().toString().replace(':', '-'));
+                if (value == null) {
+                    callback.onResultNotFound();
+                } else {
+                    callback.onResult(Integer.parseInt(value));
+                }
+            }
+
+            @Override
+            public void onResultNotFound() {
+                callback.onResultNotFound();
+            }
+        });
     }
 
     /**
@@ -138,7 +168,12 @@ public class ResourceManager {
         Validate.notNull(world, "World cannot be null");
 
         String key = resource.getKey().toString().replace(':', '-');
-        BlockStorage.setChunkInfo(world, x, z, key, String.valueOf(value));
+        Slimefun.getDatabaseManager()
+                .getBlockDataController()
+                .getChunkDataAsync(world.getChunkAt(x, z))
+                // fix issue 1147 : when chunkdata is loaded, this cf method will return completedFuture and data will
+                // be updated at current thread to avoid async readwrite on supply numbers
+                .thenAccept(result -> result.setData(key, String.valueOf(value)));
     }
 
     /**
@@ -181,7 +216,9 @@ public class ResourceManager {
             int max = resource.getMaxDeviation();
 
             if (max <= 0) {
-                throw new IllegalStateException("GEO Resource \"" + resource.getKey() + "\" was misconfigured! getMaxDeviation() must return a value higher than zero!");
+                throw new IllegalStateException("GEO Resource \""
+                        + resource.getKey()
+                        + "\" was misconfigured! getMaxDeviation() must return a value higher than zero!");
             }
 
             value += ThreadLocalRandom.current().nextInt(max);
@@ -209,11 +246,12 @@ public class ResourceManager {
      * @param block
      *            The {@link Block} which the scan starts at
      * @param page
-     *            The page to display
+     *            The zero-based page to display
      */
     public void scan(@Nonnull Player p, @Nonnull Block block, int page) {
         if (Slimefun.getGPSNetwork().getNetworkComplexity(p.getUniqueId()) < 600) {
-            Slimefun.getLocalization().sendMessages(p, "gps.insufficient-complexity", true, msg -> msg.replace("%complexity%", "600"));
+            Slimefun.getLocalization()
+                    .sendMessages(p, "gps.insufficient-complexity", true, msg -> msg.replace("%complexity%", "600"));
             return;
         }
 
@@ -227,20 +265,42 @@ public class ResourceManager {
             menu.addItem(slot, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
         }
 
-        menu.addItem(4, CustomItemStack.create(HeadTexture.MINECRAFT_CHUNK.getAsItemStack(), ChatColor.YELLOW + Slimefun.getLocalization().getResourceString(p, "tooltips.chunk"), "", "&8\u21E8 &7" + Slimefun.getLocalization().getResourceString(p, "tooltips.world") + ": " + block.getWorld().getName(), "&8\u21E8 &7X: " + x + " Z: " + z), ChestMenuUtils.getEmptyClickHandler());
-        List<GEOResource> resources = new ArrayList<>(Slimefun.getRegistry().getGEOResources().values());
+        menu.addItem(
+                4,
+                ItemStackFactory.create(
+                        HeadTexture.MINECRAFT_CHUNK.getAsItemStack(),
+                        ChatColor.YELLOW + Slimefun.getLocalization().getResourceString(p, "tooltips.chunk"),
+                        "",
+                        "&8\u21E8 &7"
+                                + Slimefun.getLocalization().getResourceString(p, "tooltips.world")
+                                + ": "
+                                + block.getWorld().getName(),
+                        "&8\u21E8 &7X: " + x + " Z: " + z),
+                ChestMenuUtils.getEmptyClickHandler());
+        List<GEOResource> resources =
+                new ArrayList<>(Slimefun.getRegistry().getGEOResources().values());
         resources.sort(Comparator.comparing(a -> a.getName(p).toLowerCase(Locale.ROOT)));
 
         int index = 10;
-        int pages = (resources.size() - 1) / 36 + 1;
+        int pages = (int) (Math.ceil((double) resources.size() / 28) + 1);
+
+        Map<GEOResource, Integer> supplyMap = new HashMap<>();
+
+        // if resource is not generated, generate the first
+        resources.forEach(resource -> {
+            OptionalInt optional = getSupplies(resource, block.getWorld(), x, z);
+            int supplies = optional.orElseGet(() -> generate(resource, block.getWorld(), x, block.getY(), z));
+            supplyMap.put(resource, supplies);
+        });
 
         for (int i = page * 28; i < resources.size() && i < (page + 1) * 28; i++) {
             GEOResource resource = resources.get(i);
-            OptionalInt optional = getSupplies(resource, block.getWorld(), x, z);
-            int supplies = optional.orElseGet(() -> generate(resource, block.getWorld(), x, block.getY(), z));
-            String suffix = Slimefun.getLocalization().getResourceString(p, ChatUtils.checkPlurality("tooltips.unit", supplies));
+            int supplies = supplyMap.get(resource);
+            String suffix = Slimefun.getLocalization()
+                    .getResourceString(p, ChatUtils.checkPlurality("tooltips.unit", supplies));
 
-            ItemStack item = CustomItemStack.create(resource.getItem(), "&f" + resource.getName(p), "&8\u21E8 &e" + supplies + ' ' + suffix);
+            ItemStack item = ItemStackFactory.create(
+                    resource.getItem(), "&f" + resource.getName(p), "&8\u21E8 &e" + supplies + ' ' + suffix);
 
             if (supplies > 1) {
                 item.setAmount(Math.min(supplies, item.getMaxStackSize()));
@@ -274,5 +334,4 @@ public class ResourceManager {
 
         menu.open(p);
     }
-
 }

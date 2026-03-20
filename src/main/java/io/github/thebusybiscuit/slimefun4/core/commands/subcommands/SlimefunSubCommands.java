@@ -1,20 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  * This class holds the implementations of every {@link SubCommand}.
  * The implementations themselves are package-private, this class only provides
  * a static setup method
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -42,7 +40,13 @@ public final class SlimefunSubCommands {
         commands.add(new BackpackCommand(plugin, cmd));
         commands.add(new ChargeCommand(plugin, cmd));
         commands.add(new DebugCommand(plugin, cmd));
-
+        commands.add(new ItemIdCommand(plugin, cmd));
+        commands.add(new ReloadCommand(plugin, cmd));
+        commands.add(new MigrateCommand(plugin, cmd));
+        commands.add(new BlockDataCommand(plugin, cmd));
+        commands.add(new BanItemCommand(plugin, cmd));
+        commands.add(new UnbanItemCommand(plugin, cmd));
+        commands.add(new ClearDataCommand(plugin, cmd));
         return commands;
     }
 }

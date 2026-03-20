@@ -142,7 +142,8 @@ public class BiomeMap<T> implements Keyed {
 
     @Nonnull
     @ParametersAreNonnullByDefault
-    public static <T> BiomeMap<T> fromJson(NamespacedKey key, String json, BiomeDataConverter<T> valueConverter) throws BiomeMapException {
+    public static <T> BiomeMap<T> fromJson(
+            NamespacedKey key, String json, BiomeDataConverter<T> valueConverter) throws BiomeMapException {
         // All parameters are validated by the Parser.
         BiomeMapParser<T> parser = new BiomeMapParser<>(key, valueConverter);
         parser.read(json);
@@ -151,7 +152,9 @@ public class BiomeMap<T> implements Keyed {
 
     @Nonnull
     @ParametersAreNonnullByDefault
-    public static <T> BiomeMap<T> fromJson(NamespacedKey key, String json, BiomeDataConverter<T> valueConverter, boolean isLenient) throws BiomeMapException {
+    public static <T> BiomeMap<T> fromJson(
+            NamespacedKey key, String json, BiomeDataConverter<T> valueConverter, boolean isLenient)
+            throws BiomeMapException {
         // All parameters are validated by the Parser.
         BiomeMapParser<T> parser = new BiomeMapParser<>(key, valueConverter);
         parser.setLenient(isLenient);
@@ -161,12 +164,15 @@ public class BiomeMap<T> implements Keyed {
 
     @Nonnull
     @ParametersAreNonnullByDefault
-    public static <T> BiomeMap<T> fromResource(NamespacedKey key, JavaPlugin plugin, String path, BiomeDataConverter<T> valueConverter) throws BiomeMapException {
+    public static <T> BiomeMap<T> fromResource(
+            NamespacedKey key, JavaPlugin plugin, String path, BiomeDataConverter<T> valueConverter)
+            throws BiomeMapException {
         Validate.notNull(key, "The key shall not be null.");
         Validate.notNull(plugin, "The plugin shall not be null.");
         Validate.notNull(path, "The path should not be null!");
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(plugin.getClass().getResourceAsStream(path), StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(plugin.getClass().getResourceAsStream(path), StandardCharsets.UTF_8))) {
             return fromJson(key, reader.lines().collect(Collectors.joining("")), valueConverter);
         } catch (IOException x) {
             throw new BiomeMapException(key, x);
@@ -174,17 +180,20 @@ public class BiomeMap<T> implements Keyed {
     }
 
     @ParametersAreNonnullByDefault
-    public static @Nonnull BiomeMap<Integer> getIntMapFromResource(NamespacedKey key, JavaPlugin plugin, String path) throws BiomeMapException {
+    public static @Nonnull BiomeMap<Integer> getIntMapFromResource(NamespacedKey key, JavaPlugin plugin, String path)
+            throws BiomeMapException {
         return fromResource(key, plugin, path, JsonElement::getAsInt);
     }
 
     @ParametersAreNonnullByDefault
-    public static @Nonnull BiomeMap<Long> getLongMapFromResource(NamespacedKey key, JavaPlugin plugin, String path) throws BiomeMapException {
+    public static @Nonnull BiomeMap<Long> getLongMapFromResource(NamespacedKey key, JavaPlugin plugin, String path)
+            throws BiomeMapException {
         return fromResource(key, plugin, path, JsonElement::getAsLong);
     }
 
     @ParametersAreNonnullByDefault
-    public static @Nonnull BiomeMap<String> getStringMapFromResource(NamespacedKey key, JavaPlugin plugin, String path) throws BiomeMapException {
+    public static @Nonnull BiomeMap<String> getStringMapFromResource(NamespacedKey key, JavaPlugin plugin, String path)
+            throws BiomeMapException {
         return fromResource(key, plugin, path, JsonElement::getAsString);
     }
 }

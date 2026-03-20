@@ -23,15 +23,15 @@ import io.papermc.lib.PaperLib;
  * that uses the vanilla {@link Inventory} from the {@link BlockState}.
  * <p>
  * The default behaviour is the following:
- * 
+ *
  * <pre>
-| Broken by... | Behaviour                |
-| ------------ | ------------------------ |
-| Player       | Drop inventory contents. |
-| Android      | Not allowed.             |
-| Explosions   | Delete contents.         |
+ * | Broken by... | Behaviour                |
+ * | ------------ | ------------------------ |
+ * | Player       | Drop inventory contents. |
+ * | Android      | Not allowed.             |
+ * | Explosions   | Delete contents.         |
  * </pre>
- * 
+ *
  * @author TheBusyBiscuit
  *
  * @param <T>
@@ -43,7 +43,7 @@ public class VanillaInventoryDropHandler<T extends BlockState & InventoryHolder>
 
     /**
      * This creates a new {@link VanillaInventoryDropHandler} for the given {@link BlockState} {@link Class}.
-     * 
+     *
      * @param blockStateClass
      *            The class of the block's {@link BlockState}
      */
@@ -84,5 +84,4 @@ public class VanillaInventoryDropHandler<T extends BlockState & InventoryHolder>
             return inventoryHolder.getInventory();
         }
     }
-
 }

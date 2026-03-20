@@ -33,7 +33,7 @@ public class VersionedPotionType {
         HEALING = version.isAtLeast(MinecraftVersion.MINECRAFT_1_20_5)
             ? PotionType.HEALING
             : getKey("INSTANT_HEAL");
-        
+
         HARMING = version.isAtLeast(MinecraftVersion.MINECRAFT_1_20_5)
             ? PotionType.HARMING
             : getKey("INSTANT_DAMAGE");
@@ -48,7 +48,7 @@ public class VersionedPotionType {
         try {
             Field field = PotionType.class.getDeclaredField(key);
             return (PotionType) field.get(null);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }

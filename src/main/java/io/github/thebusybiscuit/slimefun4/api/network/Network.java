@@ -4,28 +4,26 @@ import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.World;
 
-import io.github.bakedlibs.dough.blocks.BlockPosition;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.LocationUtils;
+import io.github.thebusybiscuit.slimefun4.core.debug.Debug;
+import io.github.thebusybiscuit.slimefun4.core.debug.TestCase;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.NetworkListener;
 
 /**
  * An abstract Network class to manage networks in a stateful way
- * 
+ *
  * @author meiamsome
- * @author TheBusyBiscuit
- * 
+ *
  * @see NetworkListener
  * @see NetworkManager
  *
@@ -42,26 +40,15 @@ public abstract class Network {
      */
     protected Location regulator;
 
-    /**
-     * The {@link UUID} of the {@link World} this {@link Network} exists within.
-     */
-    private final UUID worldId;
-
-    /**
-     * This {@link Set} holds all {@link Network} positions that are part of this {@link Network}.
-     * The {@link World} should be equal for all positions, therefore we can save memory by simply
-     * storing {@link BlockPosition#getAsLong(int, int, int)}.
-     */
-    private final Set<Long> positions = new HashSet<>();
-
     private final Queue<Location> nodeQueue = new ArrayDeque<>();
+    protected final Set<Location> connectedLocations = new HashSet<>();
     protected final Set<Location> regulatorNodes = new HashSet<>();
     protected final Set<Location> connectorNodes = new HashSet<>();
     protected final Set<Location> terminusNodes = new HashSet<>();
 
     /**
      * This constructs a new {@link Network} at the given {@link Location}.
-     * 
+     *
      * @param manager
      *            The {@link NetworkManager} instance
      * @param regulator
@@ -73,9 +60,8 @@ public abstract class Network {
 
         this.manager = manager;
         this.regulator = regulator;
-        this.worldId = regulator.getWorld().getUID();
 
-        positions.add(BlockPosition.getAsLong(regulator));
+        connectedLocations.add(regulator);
         nodeQueue.add(regulator.clone());
     }
 
@@ -83,9 +69,9 @@ public abstract class Network {
      * This method returns the range of the {@link Network}.
      * The range determines how far the {@link Network} will search for
      * nearby nodes from any given node.
-     * 
+     *
      * It basically translates to the maximum distance between nodes.
-     * 
+     *
      * @return the range of this {@link Network}
      */
     public abstract int getRange();
@@ -93,18 +79,18 @@ public abstract class Network {
     /**
      * This method assigns the given {@link Location} a type of {@link NetworkComponent}
      * for classification.
-     * 
+     *
      * @param l
      *            The {@link Location} to classify
-     * 
+     *
      * @return The assigned type of {@link NetworkComponent} for this {@link Location}
      */
-    public abstract @Nullable NetworkComponent classifyLocation(@Nonnull Location l);
+    @Nullable public abstract NetworkComponent classifyLocation(@Nonnull Location l);
 
     /**
      * This method is called whenever a {@link Location} in this {@link Network} changes
      * its classification.
-     * 
+     *
      * @param l
      *            The {@link Location} that is changing its classification
      * @param from
@@ -117,7 +103,7 @@ public abstract class Network {
     /**
      * This returns the size of this {@link Network}. It is equivalent to the amount
      * of {@link Location Locations} connected to this {@link Network}.
-     * 
+     *
      * @return The size of this {@link Network}
      */
     public int getSize() {
@@ -126,15 +112,12 @@ public abstract class Network {
 
     /**
      * This method adds the given {@link Location} to this {@link Network}.
-     * 
+     *
      * @param l
      *            The {@link Location} to add
      */
     protected void addLocationToNetwork(@Nonnull Location l) {
-        Validate.notNull(l, "You cannot add a Location to a Network which is null!");
-        Validate.isTrue(l.getWorld().getUID().equals(worldId), "Networks cannot exist in multiple worlds!");
-
-        if (positions.add(BlockPosition.getAsLong(l))) {
+        if (connectedLocations.add(l.clone())) {
             markDirty(l);
         }
     }
@@ -142,11 +125,13 @@ public abstract class Network {
     /**
      * This method marks the given {@link Location} as dirty and adds it to a {@link Queue}
      * to handle this update.
-     * 
+     *
      * @param l
      *            The {@link Location} to update
      */
     public void markDirty(@Nonnull Location l) {
+        Debug.log(TestCase.ENERGYNET, "Mark location " + LocationUtils.locationToString(l) + " as dirty block");
+
         if (regulator.equals(l)) {
             manager.unregisterNetwork(this);
         } else {
@@ -156,25 +141,21 @@ public abstract class Network {
 
     /**
      * This method checks whether the given {@link Location} is part of this {@link Network}.
-     * 
+     *
      * @param l
      *            The {@link Location} to check for
-     * 
+     *
      * @return Whether the given {@link Location} is part of this {@link Network}
      */
     public boolean connectsTo(@Nonnull Location l) {
-        Validate.notNull(l, "The Location cannot be null.");
-
-        if (this.regulator.equals(l)) {
+        if (regulator.equals(l)) {
             return true;
-        } else if (!l.getWorld().getUID().equals(this.worldId)) {
-            return false;
         } else {
-            return positions.contains(BlockPosition.getAsLong(l));
+            return connectedLocations.contains(l);
         }
     }
 
-    private @Nullable NetworkComponent getCurrentClassification(@Nonnull Location l) {
+    @Nullable private NetworkComponent getCurrentClassification(@Nonnull Location l) {
         if (regulatorNodes.contains(l)) {
             return NetworkComponent.REGULATOR;
         } else if (connectorNodes.contains(l)) {
@@ -196,7 +177,8 @@ public abstract class Network {
             NetworkComponent classification = classifyLocation(l);
 
             if (classification != currentAssignment) {
-                if (currentAssignment == NetworkComponent.REGULATOR || currentAssignment == NetworkComponent.CONNECTOR) {
+                if (currentAssignment == NetworkComponent.REGULATOR
+                        || currentAssignment == NetworkComponent.CONNECTOR) {
                     // Requires a complete rebuild of the network, so we just throw the current one away.
                     manager.unregisterNetwork(this);
                     return;
@@ -254,10 +236,11 @@ public abstract class Network {
 
     /**
      * This returns the {@link Location} of the regulator block for this {@link Network}
-     * 
+     *
      * @return The {@link Location} of our regulator
      */
-    public @Nonnull Location getRegulator() {
+    @Nonnull
+    public Location getRegulator() {
         return regulator;
     }
 

@@ -17,6 +17,7 @@ class ItemStackAndInteger {
         Validate.notNull(item, "Item cannot be null!");
         this.number = amount;
         this.item = item;
+        initializeItem();
     }
 
     public int getInt() {
@@ -24,13 +25,13 @@ class ItemStackAndInteger {
     }
 
     public @Nonnull ItemStack getItem() {
-        initializeItem();
         return item;
     }
 
     public @Nonnull ItemStackWrapper getItemStackWrapper() {
         if (wrapper == null) {
-            wrapper = ItemStackWrapper.wrap(item);
+            // if the item is already a wrapper, we reuse it
+            wrapper = (item instanceof ItemStackWrapper) ? (ItemStackWrapper) item : ItemStackWrapper.wrap(item);
         }
 
         return wrapper;

@@ -1,28 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.api.gps;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.bakedlibs.dough.chat.ChatInput;
 import io.github.bakedlibs.dough.common.ChatColors;
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.events.WaypointCreateEvent;
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.api.geo.ResourceManager;
@@ -36,9 +17,26 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.teleporter.Telepo
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Server;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * The {@link GPSNetwork} is a manager class for all {@link GPSTransmitter Transmitters} and waypoints.
@@ -52,14 +50,23 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
  *
  */
 public class GPSNetwork {
+    private static final int PREV_SLOT = 46;
+    private static final int NEXT_SLOT = 52;
 
-    private final int[] border = { 0, 1, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53 };
-    private final int[] inventory = { 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43 };
+    private final int[] border = {
+        0, 1, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 27, 35, 36, 44, 45, 47, 48, 49, 50, 51, 53
+    };
+    private final int[] inventory = {19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43
+    };
 
-    private final Map<UUID, Set<Location>> transmitters = new HashMap<>();
+    private final Map<UUID, Set<Location>> transmitters = new ConcurrentHashMap<>();
     private final TeleportationManager teleportation = new TeleportationManager();
 
     private final ResourceManager resourceManager;
+
+    private final Map<UUID, Integer> pages = new ConcurrentHashMap<>();
+
+    private final int maxWaypoints;
 
     /**
      * This constructs a new {@link GPSNetwork}.
@@ -70,6 +77,7 @@ public class GPSNetwork {
      */
     public GPSNetwork(@Nonnull Slimefun plugin) {
         resourceManager = new ResourceManager(plugin);
+        maxWaypoints = plugin.getConfig().getInt("options.max-gps-waypoints", 21);
     }
 
     /**
@@ -111,7 +119,7 @@ public class GPSNetwork {
 
         int level = 0;
         for (Location l : locations) {
-            SlimefunItem item = BlockStorage.check(l);
+            SlimefunItem item = StorageCacheUtils.getSlimefunItem(l);
 
             if (item instanceof GPSTransmitter transmitter) {
                 level += transmitter.getMultiplier(Math.max(l.getBlockY(), 0));
@@ -143,28 +151,45 @@ public class GPSNetwork {
      *            The {@link Player}
      */
     public void openTransmitterControlPanel(@Nonnull Player p) {
-        ChestMenu menu = new ChestMenu(ChatColor.BLUE + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.title"));
+        ChestMenu menu = new ChestMenu(
+                ChatColor.BLUE + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.title"));
 
         for (int slot : border) {
             menu.addItem(slot, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
         }
 
-        menu.addItem(2, CustomItemStack.create(SlimefunItems.GPS_TRANSMITTER.item(), im -> {
-            im.setDisplayName(ChatColor.GRAY + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.transmitters"));
+        menu.addItem(2, ItemStackFactory.create(SlimefunItems.GPS_TRANSMITTER, im -> {
+            im.setDisplayName(ChatColor.GRAY
+                    + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.transmitters"));
             im.setLore(null);
         }));
 
         menu.addMenuClickHandler(2, ChestMenuUtils.getEmptyClickHandler());
 
         int complexity = getNetworkComplexity(p.getUniqueId());
-        menu.addItem(4, CustomItemStack.create(SlimefunItems.GPS_CONTROL_PANEL.item(), "&7Network Info", "", "&8\u21E8 &7Status: " + getStatusText(p, complexity), "&8\u21E8 &7Complexity: &f" + complexity));
-        menu.addMenuClickHandler(4, ChestMenuUtils.getEmptyClickHandler());
+    menu.addItem(
+        4,
+        ItemStackFactory.create(
+            SlimefunItems.GPS_CONTROL_PANEL,
+            "&7Network Info",
+            "",
+            "&8\u21E8 &7State: " + getStatusText(p, complexity),
+            "&8\u21E8 &7Complexity: &f" + complexity));
+    menu.addMenuClickHandler(4, ChestMenuUtils.getEmptyClickHandler());
 
-        menu.addItem(6, CustomItemStack.create(HeadTexture.GLOBE_OVERWORLD.getAsItemStack(), "&7" + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.waypoints"), "", ChatColor.GRAY + "\u21E8 " + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-itemgroup")));
-        menu.addMenuClickHandler(6, (pl, slot, item, action) -> {
-            openWaypointControlPanel(pl);
-            return false;
-        });
+    menu.addItem(
+        6,
+        ItemStackFactory.create(
+            HeadTexture.GLOBE_OVERWORLD.getAsItemStack(),
+            "&7" + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.waypoints"),
+            "",
+            ChatColor.GRAY
+                + "\u21E8 "
+                + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-itemgroup")));
+    menu.addMenuClickHandler(6, (pl, slot, item, action) -> {
+        openWaypointControlPanel(pl);
+        return false;
+    });
 
         int index = 0;
         for (Location l : getTransmitters(p.getUniqueId())) {
@@ -172,17 +197,31 @@ public class GPSNetwork {
                 break;
             }
 
-            SlimefunItem sfi = BlockStorage.check(l);
+            SlimefunItem sfi = StorageCacheUtils.getSlimefunItem(l);
 
             if (sfi instanceof GPSTransmitter transmitter) {
                 int slot = inventory[index];
 
-                menu.addItem(slot, CustomItemStack.create(SlimefunItems.GPS_TRANSMITTER.item(), "&bGPS Transmitter", "&8\u21E8 &7World: &f" + l.getWorld().getName(), "&8\u21E8 &7X: &f" + l.getX(), "&8\u21E8 &7Y: &f" + l.getY(), "&8\u21E8 &7Z: &f" + l.getZ(), "", "&8\u21E8 &7Signal Strength: &f" + transmitter.getMultiplier(l.getBlockY()), "&8\u21E8 &7Ping: &f" + NumberUtils.roundDecimalNumber(1000D / l.getY()) + "ms"));
+                menu.addItem(
+                        slot,
+                        ItemStackFactory.create(
+                                SlimefunItems.GPS_TRANSMITTER,
+                                "&bGPS Transmitter",
+                                "&8\u21E8 &7World: &f" + l.getWorld().getName(),
+                                "&8\u21E8 &7X: &f" + l.getX(),
+                                "&8\u21E8 &7Y: &f" + l.getY(),
+                                "&8\u21E8 &7Z: &f" + l.getZ(),
+                                "",
+                                "&8\u21E8 &7Signal Strength: &f" + transmitter.getMultiplier(l.getBlockY()),
+                                "&8\u21E8 &7Delay: &f" + NumberUtils.roundDecimalNumber(1000D / l.getY()) + "ms"));
                 menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
 
                 index++;
             }
         }
+
+        menu.addItem(PREV_SLOT, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
+        menu.addItem(NEXT_SLOT, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
 
         menu.open(p);
     }
@@ -226,48 +265,96 @@ public class GPSNetwork {
 
     public void openWaypointControlPanel(@Nonnull Player p) {
         PlayerProfile.get(p, profile -> {
-            ChestMenu menu = new ChestMenu(ChatColor.BLUE + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.title"));
+            ChestMenu menu = new ChestMenu(
+                    ChatColor.BLUE + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.title"));
+
+            menu.addMenuCloseHandler((pl) -> {
+                pages.remove(pl.getUniqueId());
+            });
 
             for (int slot : border) {
                 menu.addItem(slot, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
             }
 
-            menu.addItem(2, CustomItemStack.create(SlimefunItems.GPS_TRANSMITTER.item(), "&7" + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.transmitters"), "", ChatColor.GRAY + "\u21E8 " + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-itemgroup")));
+            menu.addItem(
+                    2,
+                    ItemStackFactory.create(
+                            SlimefunItems.GPS_TRANSMITTER,
+                            "&7" + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.transmitters"),
+                            "",
+                            ChatColor.GRAY
+                                    + "\u21E8 "
+                                    + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-itemgroup")));
             menu.addMenuClickHandler(2, (pl, slot, item, action) -> {
                 openTransmitterControlPanel(pl);
                 return false;
             });
 
             int complexity = getNetworkComplexity(p.getUniqueId());
-            menu.addItem(4, CustomItemStack.create(SlimefunItems.GPS_CONTROL_PANEL.item(), "&7Network Info", "", "&8\u21E8 &7Status: " + (complexity > 0 ? "&2&lONLINE" : "&4&lOFFLINE"), "&8\u21E8 &7Complexity: &f" + complexity));
-            menu.addMenuClickHandler(4, ChestMenuUtils.getEmptyClickHandler());
+        menu.addItem(
+            4,
+            ItemStackFactory.create(
+                SlimefunItems.GPS_CONTROL_PANEL,
+                "&7Network Info",
+                "",
+                "&8\u21E8 &7State: " + (complexity > 0 ? "&2&lOnline" : "&4&lOffline"),
+                "&8\u21E8 &7Complexity: &f" + complexity));
+        menu.addMenuClickHandler(4, ChestMenuUtils.getEmptyClickHandler());
 
-            menu.addItem(6, CustomItemStack.create(HeadTexture.GLOBE_OVERWORLD.getAsItemStack(), "&7" + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.waypoints")));
+            menu.addItem(
+                    6,
+                    ItemStackFactory.create(
+                            HeadTexture.GLOBE_OVERWORLD.getAsItemStack(),
+                            "&7" + Slimefun.getLocalization().getMessage(p, "machines.GPS_CONTROL_PANEL.waypoints")));
             menu.addMenuClickHandler(6, ChestMenuUtils.getEmptyClickHandler());
 
-            int index = 0;
-            for (Waypoint waypoint : profile.getWaypoints()) {
-                if (index >= inventory.length) {
-                    break;
-                }
+            List<Waypoint> all = new ArrayList<>(profile.getWaypoints());
+            int pageSize = inventory.length;
+            int page = pages.getOrDefault(p.getUniqueId(), 1);
+            PageRange pr = PageRange.compute(all.size(), pageSize, page);
+            pages.put(p.getUniqueId(), pr.getCurrentPage());
 
-                int slot = inventory[index];
+            int index = 0;
+            for (int i = pr.getFromIndex(); i < pr.getToIndex(); i++) {
+                Waypoint waypoint = all.get(i);
+                int slot = inventory[index++];
 
                 Location l = waypoint.getLocation();
-                menu.addItem(slot, CustomItemStack.create(waypoint.getIcon(), waypoint.getName().replace("player:death ", ""), "&8\u21E8 &7World: &f" + l.getWorld().getName(), "&8\u21E8 &7X: &f" + l.getX(), "&8\u21E8 &7Y: &f" + l.getY(), "&8\u21E8 &7Z: &f" + l.getZ(), "", "&8\u21E8 &cClick to delete"));
+                menu.addItem(
+                        slot,
+                        ItemStackFactory.create(
+                                waypoint.getIcon(),
+                                waypoint.getName().replace("player:death ", ""),
+                                "&8\u21E8 &7world: &f" + l.getWorld().getName(),
+                                "&8\u21E8 &7X: &f" + l.getX(),
+                                "&8\u21E8 &7Y: &f" + l.getY(),
+                                "&8\u21E8 &7Z: &f" + l.getZ(),
+                                "",
+                                "&8\u21E8 &cClick to delete"));
                 menu.addMenuClickHandler(slot, (pl, s, item, action) -> {
                     profile.removeWaypoint(waypoint);
                     SoundEffect.GPS_NETWORK_OPEN_PANEL_SOUND.playFor(p);
-
                     openWaypointControlPanel(pl);
                     return false;
                 });
-
-                index++;
             }
 
+            PageHelper.renderPageButton(
+                    menu, PREV_SLOT, NEXT_SLOT, pr, getWaypointPageHandler(pr, -1), getWaypointPageHandler(pr, 1));
             menu.open(p);
         });
+    }
+
+    private ChestMenu.MenuClickHandler getWaypointPageHandler(PageRange pr, int delta) {
+        return (pl, s, i, a) -> {
+            setPage(pl, pr.getCurrentPage() + delta, pr.getTotalPages());
+            openWaypointControlPanel(pl);
+            return false;
+        };
+    }
+
+    private void setPage(Player p, int page, int totalPages) {
+        pages.put(p.getUniqueId(), Math.max(1, Math.min(page, totalPages)));
     }
 
     /**
@@ -284,7 +371,7 @@ public class GPSNetwork {
         Validate.notNull(l, "Waypoint Location cannot be null!");
 
         PlayerProfile.get(p, profile -> {
-            if ((profile.getWaypoints().size() + 2) > inventory.length) {
+            if (profile.getWaypoints().size() >= maxWaypoints) {
                 Slimefun.getLocalization().sendMessage(p, "gps.waypoint.max", true);
                 return;
             }
@@ -312,7 +399,7 @@ public class GPSNetwork {
         Validate.notNull(l, "Waypoint Location cannot be null!");
 
         PlayerProfile.get(p, profile -> {
-            if ((profile.getWaypoints().size() + 2) > inventory.length) {
+            if (profile.getWaypoints().size() >= maxWaypoints) {
                 Slimefun.getLocalization().sendMessage(p, "gps.waypoint.max", true);
                 return;
             }
@@ -322,11 +409,18 @@ public class GPSNetwork {
                 Bukkit.getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
-                    String id = ChatColor.stripColor(ChatColors.color(event.getName())).toUpperCase(Locale.ROOT).replace(' ', '_');
+                    String id = ChatColor.stripColor(ChatColors.color(event.getName()))
+                            .toUpperCase(Locale.ROOT)
+                            .replace(' ', '_');
 
                     for (Waypoint wp : profile.getWaypoints()) {
                         if (wp.getId().equals(id)) {
-                            Slimefun.getLocalization().sendMessage(p, "gps.waypoint.duplicate", true, msg -> msg.replace("%waypoint%", event.getName()));
+                            Slimefun.getLocalization()
+                                    .sendMessage(
+                                            p,
+                                            "gps.waypoint.duplicate",
+                                            true,
+                                            msg -> msg.replace("%waypoint%", event.getName()));
                             return;
                         }
                     }
@@ -376,4 +470,12 @@ public class GPSNetwork {
         return resourceManager;
     }
 
+    /**
+     * This returns the max waypoints amount for this {@link GPSNetwork}.
+     *
+     * @return The max waypoints amount for this {@link GPSNetwork}
+     */
+    public int getMaxWaypoints() {
+        return maxWaypoints;
+    }
 }

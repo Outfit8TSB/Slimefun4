@@ -33,7 +33,7 @@ import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
  * The {@link ArmorTask} is responsible for handling {@link PotionEffect PotionEffects} for
  * {@link Radioactive} items or any {@link SlimefunArmorPiece}.
  * It also handles the prevention of radiation through a Hazmat Suit
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -44,7 +44,7 @@ public class ArmorTask implements Runnable {
 
     /**
      * This creates a new {@link ArmorTask}.
-     * 
+     *
      * @param radioactiveFire
      *            Whether radiation also causes a {@link Player} to burn
      */
@@ -64,7 +64,7 @@ public class ArmorTask implements Runnable {
     /**
      * This returns a {@link Set} of {@link PotionEffect PotionEffects} which get applied to
      * a {@link Player} when they are exposed to deadly radiation.
-     * 
+     *
      * @return The {@link Set} of {@link PotionEffect PotionEffects} applied upon radioactive contact
      */
     @Nonnull
@@ -143,7 +143,8 @@ public class ArmorTask implements Runnable {
             return false;
         }
 
-        return (world.getTime() < 12300 || world.getTime() > 23850) && p.getEyeLocation().getBlock().getLightFromSky() == 15;
+        return (world.getTime() < 12300 || world.getTime() > 23850)
+                && p.getEyeLocation().getBlock().getLightFromSky() == 15;
     }
 
     private void checkForRadiation(@Nonnull Player p, @Nonnull PlayerProfile profile) {

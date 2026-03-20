@@ -1,0 +1,91 @@
+#########################################################################
+# Database type, optional values include SQLITE, MYSQL, POSTGRESQL
+# Note: When switching database types, we will **not** automatically migrate your data :)
+storageType: SQLITE
+
+# Use Base64 encoding for data fields
+base64EncodeVal: true
+
+# Chunk data loading mode
+# Available options:
+# - LOAD_WITH_CHUNK: Load Slime chunk data when a chunk is first loaded during this server session
+# - LOAD_ON_STARTUP: Load all chunk data at once when the server starts (may cause longer startup time)
+# By default, **LOAD_WITH_CHUNK** is recommended to save unnecessary memory usage
+# If you experience noticeable lag when loading chunks, switch to **LOAD_ON_STARTUP**
+dataLoadMode: LOAD_WITH_CHUNK
+#########################################################################
+
+#########################################################################
+# Database read/write thread count
+# When using MySQL, it is recommended to set **max connections = read + write threads**,
+# and **read threads should be greater than write threads**.
+# Note: More threads ≠ better performance. Too many can degrade performance. Allocate appropriately.
+
+# Number of read threads
+readExecutorThread: 10
+# Number of write threads
+writeExecutorThread: 5
+#########################################################################
+
+#########################################################################
+# Delayed writing feature
+# This feature prevents excessive meaningless write requests caused by frequent data updates.
+# When enabled, after data changes, it waits for **delayedSecond** seconds before writing to the database
+# if no further changes occur.
+# Forced saves will immediately push pending data into the write queue.
+delayedWriting:
+  # Whether to enable delayed writing
+  enable: true
+  # Delay in seconds before writing
+  delayedSecond: 5
+  # Forced save interval (in seconds)
+  forceSavePeriod: 300
+#########################################################################
+
+#########################################################################
+# Sqlite configuration
+sqlite:
+  maxConnection: 5
+#########################################################################
+
+#########################################################################
+# MySQL configuration
+mysql:
+  # Database host address
+  host: "127.0.0.1"
+  # Database port
+  port: 3306
+  # Database name
+  database: ""
+  # Table prefix
+  tablePrefix: ""
+  # Username for connection
+  user: ""
+  # Password for connection
+  password: ""
+  # Use SSL encrypted connection
+  useSSL: false
+  # Maximum connection pool size
+  maxConnection: 15
+#########################################################################
+
+#########################################################################
+# PostgreSQL configuration
+postgresql:
+  # Database host address
+  host: "127.0.0.1"
+  # Database port
+  port: 3306
+  # Database name
+  database: ""
+  # Table prefix
+  tablePrefix: ""
+  # Username for connection
+  user: ""
+  # Password for connection
+  password: ""
+  # Use SSL encrypted connection
+  useSSL: false
+  # Maximum connection pool size
+  maxConnection: 15
+#########################################################################

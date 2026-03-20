@@ -1,14 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.seasonal;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.bakedlibs.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSpawnReason;
@@ -19,23 +10,33 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.FireworkUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import java.util.concurrent.ThreadLocalRandom;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * This {@link SlimefunItem} represents an {@link EasterEgg}.
  * The {@link EasterEgg} can be activated upon Right-Click and will
  * spawn a random {@link ItemStack} from the {@link ItemStack} Array specified in the constructor.
- * 
- * @author TheBusyBiscuit
- * 
- * @see ChristmasPresent
  *
+ * @author TheBusyBiscuit
+ * @see ChristmasPresent
  */
 public class EasterEgg extends SimpleSlimefunItem<ItemUseHandler> {
 
     private final ItemStack[] gifts;
 
     @ParametersAreNonnullByDefault
-    public EasterEgg(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput, ItemStack... gifts) {
+    public EasterEgg(
+            ItemGroup itemGroup,
+            SlimefunItemStack item,
+            RecipeType recipeType,
+            ItemStack[] recipe,
+            ItemStack recipeOutput,
+            ItemStack... gifts) {
         super(itemGroup, item, recipeType, recipe, recipeOutput);
 
         this.gifts = gifts;
@@ -53,8 +54,11 @@ public class EasterEgg extends SimpleSlimefunItem<ItemUseHandler> {
             }
 
             FireworkUtils.launchRandom(p, 2);
-            SlimefunUtils.spawnItem(p.getLocation(), gifts[ThreadLocalRandom.current().nextInt(gifts.length)].clone(), ItemSpawnReason.EASTER_EGG_OPENED, true);
+            SlimefunUtils.spawnItem(
+                    p.getLocation(),
+                    gifts[ThreadLocalRandom.current().nextInt(gifts.length)].clone(),
+                    ItemSpawnReason.EASTER_EGG_OPENED,
+                    true);
         };
     }
-
 }

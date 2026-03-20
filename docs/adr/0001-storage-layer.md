@@ -1,7 +1,7 @@
 # 1. Storage layer
 
 Date: 2023-11-15
-Last update: 2023-12-27
+Last update: 2026-01-30
 
 **DO NOT rely on any APIs introduced until we finish the work completely!**
 
@@ -33,7 +33,7 @@ This ADR talks about the future of our data persistence.
 
 We want to create a new storage layer abstraction and implementations
 which will be backwards-compatible but open up new ways of storing data
-within Slimefun. The end end goal is we can quickly and easily support
+within Slimefun. The end goal is we can quickly and easily support
 new storage backends (such as binary storage, SQL, etc.) for things like
 [PlayerProfile](https://github.com/Slimefun/Slimefun4/blob/bbfb9734b9f549d7e82291eff041f9b666a61b63/src/main/java/io/github/thebusybiscuit/slimefun4/api/player/PlayerProfile.java), [BlockStorage](https://github.com/Slimefun/Slimefun4/blob/bbfb9734b9f549d7e82291eff041f9b666a61b63/src/main/java/me/mrCookieSlime/Slimefun/api/BlockStorage.java), etc.
 
@@ -102,8 +102,8 @@ The current plan looks like this:
   * Create a migration path for users currently using "legacy".
   * Enable by default for new servers
 * Phase 4 - Move [`BlockStorage`](https://github.com/Slimefun/Slimefun4/blob/bbfb9734b9f549d7e82291eff041f9b666a61b63/src/main/java/me/mrCookieSlime/Slimefun/api/BlockStorage.java) to new storage layer.
-  * The big one! We're gonna tackle adding this to BlockStorage.
-    This will probably be a large change and we'll want to be as 
+  * The big one! We're going to tackle adding this to BlockStorage.
+    This will probably be a large change, and we'll want to be as 
     careful as possible here.
   * Implement `legacy` and `binary` as experimental storage backends
     for BlockStorage and allow users to opt-in
@@ -115,7 +115,7 @@ The current plan looks like this:
   * Enable by default for new servers
 * Phase 6 - Finish up and move anything else we want over
   * Move over any other data stores we have to the new layer
-  * We should probably still do experimental -> stable but it should have
+  * We should probably still do experimental -> stable, but it should have
     less of a lead time.
 
 ## State of work

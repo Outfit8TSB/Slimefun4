@@ -1,28 +1,27 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionType;
-
+import city.norain.slimefun4.SlimefunExtended;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.bakedlibs.dough.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotHopperable;
 import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedPotionType;
+import java.util.EnumMap;
+import java.util.Map;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
 /**
  *
@@ -33,8 +32,8 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
  */
 public class AutoBrewer extends AContainer implements NotHopperable {
 
-    private static final Map<Material, PotionType> potionRecipes = new HashMap<>();
-    private static final Map<PotionType, PotionType> fermentations = new HashMap<>();
+    private static final Map<Material, PotionType> potionRecipes = new EnumMap<>(Material.class);
+    private static final Map<PotionType, PotionType> fermentations = new EnumMap<>(PotionType.class);
 
     static {
         potionRecipes.put(Material.SUGAR, VersionedPotionType.SWIFTNESS);
@@ -54,11 +53,49 @@ public class AutoBrewer extends AContainer implements NotHopperable {
         fermentations.put(VersionedPotionType.HEALING, VersionedPotionType.HARMING);
         fermentations.put(PotionType.POISON, VersionedPotionType.HARMING);
         fermentations.put(PotionType.NIGHT_VISION, PotionType.INVISIBILITY);
+
+        if (SlimefunExtended.getMinecraftVersion().isAtLeast(1, 21)) {
+            potionRecipes.put(Material.BREEZE_ROD, PotionType.WIND_CHARGED);
+            potionRecipes.put(Material.COBWEB, PotionType.WEAVING);
+            potionRecipes.put(Material.SLIME_BLOCK, PotionType.OOZING);
+            potionRecipes.put(Material.STONE, PotionType.INFESTED);
+        }
     }
 
     @ParametersAreNonnullByDefault
     public AutoBrewer(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
+    }
+
+    private void tryPushingRedundantPotion(BlockMenu menu) {
+        int left = getInputSlots()[0];
+        int right = getInputSlots()[1];
+
+        ItemStack leftStack = menu.getItemInSlot(left);
+        ItemStack rightStack = menu.getItemInSlot(right);
+
+        boolean leftPotion = leftStack != null && isPotion(leftStack.getType());
+        boolean rightPotion = rightStack != null && isPotion(rightStack.getType());
+
+        if (leftPotion && rightPotion) {
+            int before = rightStack.getAmount();
+            ItemStack copy = rightStack.clone();
+            ItemStack remaining = menu.pushItem(copy, getOutputSlots());
+            int after = remaining != null ? remaining.getAmount() : 0;
+            if (after == 0) {
+                menu.replaceExistingItem(right, null);
+            } else if (after < before) {
+                rightStack.setAmount(after);
+                menu.replaceExistingItem(right, rightStack);
+            }
+        }
+    }
+
+    @Override
+    protected void tick(Block b) {
+        BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
+        tryPushingRedundantPotion(inv);
+        super.tick(b);
     }
 
     @Override
@@ -97,7 +134,7 @@ public class AutoBrewer extends AContainer implements NotHopperable {
                 menu.consumeItem(slot);
             }
 
-            return new MachineRecipe(30, new ItemStack[] { input1, input2 }, new ItemStack[] { output });
+            return new MachineRecipe(30, new ItemStack[] {input1, input2}, new ItemStack[] {output});
         } else {
             return null;
         }
@@ -105,9 +142,31 @@ public class AutoBrewer extends AContainer implements NotHopperable {
 
     @ParametersAreNonnullByDefault
     private @Nullable ItemStack brew(Material input, Material potionType, PotionMeta potion) {
-        if (Slimefun.getMinecraftVersion().isBefore(20,2)) {
+        if (SlimefunExtended.getMinecraftVersion().isAtLeast(1, 20, 2)) {
+            return brewPostBasePotionType(input, potionType, potion);
+        } else {
             return brewPreBasePotionType(input, potionType, potion);
         }
+    }
+
+    private PotionType getExtendedPotionType(PotionType type) {
+        try {
+            return PotionType.valueOf("LONG_" + type.name());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private PotionType getStrengthenPotionType(PotionType type) {
+        try {
+            return PotionType.valueOf("STRONG_" + type.name());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    private ItemStack brewPostBasePotionType(Material input, Material potionType, PotionMeta potion) {
         PotionType type = potion.getBasePotionType();
         if (type == PotionType.WATER) {
             if (input == Material.FERMENTED_SPIDER_EYE) {
@@ -130,12 +189,16 @@ public class AutoBrewer extends AContainer implements NotHopperable {
             }
         } else if (input == Material.REDSTONE && type.isExtendable() && !type.isUpgradeable()) {
             // Fixes #3390 - Potions can only be either extended or upgraded. Not both.
-            potion.setBasePotionType(type);
+            potion.setBasePotionType(getExtendedPotionType(type));
             return new ItemStack(potionType);
         } else if (input == Material.GLOWSTONE_DUST && type.isUpgradeable() && !type.isExtendable()) {
             // Fixes #3390 - Potions can only be either extended or upgraded. Not both.
-            potion.setBasePotionType(type);
+            potion.setBasePotionType(getStrengthenPotionType(type));
             return new ItemStack(potionType);
+        } else if (input == Material.GUNPOWDER && potionType == Material.POTION) {
+            return new ItemStack(Material.SPLASH_POTION);
+        } else if (input == Material.DRAGON_BREATH && potionType == Material.SPLASH_POTION) {
+            return new ItemStack(Material.LINGERING_POTION);
         } else if (type == PotionType.AWKWARD) {
             PotionType potionRecipe = potionRecipes.get(input);
 

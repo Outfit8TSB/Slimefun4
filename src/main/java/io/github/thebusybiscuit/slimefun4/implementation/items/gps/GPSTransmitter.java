@@ -1,38 +1,37 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.gps;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.rotations.NotDiagonallyRotatable;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
+import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import java.util.List;
 import java.util.UUID;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
+import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
-import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-
-public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker> implements EnergyNetComponent {
+public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker>
+        implements EnergyNetComponent, NotDiagonallyRotatable {
 
     private final int capacity;
 
     @ParametersAreNonnullByDefault
-    protected GPSTransmitter(ItemGroup itemGroup, int tier, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected GPSTransmitter(
+            ItemGroup itemGroup, int tier, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
         this.capacity = 4 << (2 * tier);
 
@@ -50,7 +49,10 @@ public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker> imp
 
             @Override
             public void onPlayerPlace(BlockPlaceEvent e) {
-                BlockStorage.addBlockInfo(e.getBlock(), "owner", e.getPlayer().getUniqueId().toString());
+                StorageCacheUtils.setData(
+                        e.getBlock().getLocation(),
+                        "owner",
+                        e.getPlayer().getUniqueId().toString());
             }
         };
     }
@@ -62,7 +64,7 @@ public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker> imp
             @Override
             public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
                 Location l = e.getBlock().getLocation();
-                UUID owner = UUID.fromString(BlockStorage.getLocationInfo(l, "owner"));
+                UUID owner = UUID.fromString(StorageCacheUtils.getData(l, "owner"));
                 Slimefun.getGPSNetwork().updateTransmitter(l, owner, false);
             }
         };
@@ -77,9 +79,9 @@ public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker> imp
         return new BlockTicker() {
 
             @Override
-            public void tick(Block b, SlimefunItem item, Config data) {
+            public void tick(Block b, SlimefunItem item, SlimefunBlockData data) {
                 int charge = getCharge(b.getLocation(), data);
-                UUID owner = UUID.fromString(BlockStorage.getLocationInfo(b.getLocation(), "owner"));
+                UUID owner = UUID.fromString(data.getData("owner"));
 
                 if (charge >= getEnergyConsumption()) {
                     Slimefun.getGPSNetwork().updateTransmitter(b.getLocation(), owner, true);
@@ -100,5 +102,4 @@ public abstract class GPSTransmitter extends SimpleSlimefunItem<BlockTicker> imp
     public EnergyNetComponentType getEnergyComponentType() {
         return EnergyNetComponentType.CONSUMER;
     }
-
 }

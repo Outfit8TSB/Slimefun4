@@ -3,7 +3,6 @@ package io.github.thebusybiscuit.slimefun4.core.attributes;
 import javax.annotation.Nonnull;
 
 public enum MachineType {
-
     CAPACITOR("Capacitor"),
     GENERATOR("Generator"),
     MACHINE("Machine");
@@ -18,5 +17,4 @@ public enum MachineType {
     public String toString() {
         return suffix;
     }
-
 }

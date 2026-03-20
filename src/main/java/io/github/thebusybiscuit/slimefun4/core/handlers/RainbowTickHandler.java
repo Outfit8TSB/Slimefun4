@@ -13,22 +13,22 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.GlassPane;
 
 import io.github.bakedlibs.dough.collections.LoopIterator;
+
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RainbowBlock;
 import io.github.thebusybiscuit.slimefun4.utils.ColoredMaterial;
-
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 
 /**
  * This is a {@link BlockTicker} that is exclusively used for Rainbow blocks.
  * On every tick it cycles through the {@link LoopIterator} and chooses the next {@link Material}
  * and sets itself to that.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see RainbowBlock
  *
  */
@@ -63,10 +63,10 @@ public class RainbowTickHandler extends BlockTicker {
      * that would result in a {@link GlassPane} {@link BlockData}.
      * This is done to save performance, so we don't have to validate {@link BlockData} at
      * runtime.
-     * 
+     *
      * @param materials
      *            The {@link Material} Array to check
-     * 
+     *
      * @return Whether the array contained any {@link GlassPane} materials
      */
     private boolean containsGlassPanes(@Nonnull List<Material> materials) {
@@ -90,7 +90,7 @@ public class RainbowTickHandler extends BlockTicker {
     }
 
     @Override
-    public void tick(Block b, SlimefunItem item, Config data) {
+    public void tick(Block b, SlimefunItem item, SlimefunBlockData data) {
         if (b.getType().isAir()) {
             /*
               The block was broken, setting the Material now would result in a
@@ -130,5 +130,4 @@ public class RainbowTickHandler extends BlockTicker {
     public boolean isSynchronized() {
         return true;
     }
-
 }

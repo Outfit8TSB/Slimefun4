@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.bakedlibs.dough.blocks.Vein;
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.bakedlibs.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -63,7 +63,7 @@ public class PickaxeOfVeinMining extends SimpleSlimefunItem<ToolUseHandler> {
                     b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(b.getType()));
                 } else {
                     for (ItemStack drop : b.getDrops(tool)) {
-                        b.getWorld().dropItemNaturally(b.getLocation(), drop.getType().isBlock() ? drop : CustomItemStack.create(drop, fortune));
+                        b.getWorld().dropItemNaturally(b.getLocation(), drop.getType().isBlock() ? drop : ItemStackFactory.create(drop, fortune));
                     }
                 }
 

@@ -16,9 +16,9 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 /**
  * Represents a {@link ItemGroup} that is only displayed in the Guide during
  * a specified {@link Month}.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see ItemGroup
  * @see LockedItemGroup
  */
@@ -28,7 +28,7 @@ public class SeasonalItemGroup extends ItemGroup {
 
     /**
      * The constructor for a {@link SeasonalItemGroup}.
-     * 
+     *
      * @param key
      *            The {@link NamespacedKey} that is used to identify this {@link ItemGroup}
      * @param month
@@ -48,7 +48,7 @@ public class SeasonalItemGroup extends ItemGroup {
 
     /**
      * This method returns the {@link Month} in which this {@link SeasonalItemGroup} will appear.
-     * 
+     *
      * @return the {@link Month} in which this {@link SeasonalItemGroup} appears
      */
     public @Nonnull Month getMonth() {

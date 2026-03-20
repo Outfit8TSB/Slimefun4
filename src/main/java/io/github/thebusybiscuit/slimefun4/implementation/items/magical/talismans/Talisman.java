@@ -26,7 +26,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.bakedlibs.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.events.TalismanActivateEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -40,7 +40,7 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 
 public class Talisman extends SlimefunItem {
 
-    protected static final ItemGroup TALISMANS_ITEMGROUP = new ItemGroup(new NamespacedKey(Slimefun.instance(), "talismans"), CustomItemStack.create(SlimefunItems.COMMON_TALISMAN.item(), "&7Talismans - &aTier I"), 2);
+    protected static final ItemGroup TALISMANS_ITEMGROUP = new ItemGroup(new NamespacedKey(Slimefun.instance(), "talismans"), ItemStackFactory.create(SlimefunItems.COMMON_TALISMAN.item(), "&7Talismans - &aTier I"), 2);
     private static final String WIKI_PAGE = "Talismans";
 
     private final SlimefunItemStack enderTalisman;
@@ -52,23 +52,49 @@ public class Talisman extends SlimefunItem {
     protected final int chance;
 
     @ParametersAreNonnullByDefault
-    public Talisman(SlimefunItemStack item, ItemStack[] recipe, boolean consumable, boolean cancelEvent, @Nullable String messageSuffix, PotionEffect... effects) {
+    public Talisman(
+            SlimefunItemStack item,
+            ItemStack[] recipe,
+            boolean consumable,
+            boolean cancelEvent,
+            @Nullable String messageSuffix,
+            PotionEffect... effects) {
         this(item, recipe, consumable, cancelEvent, messageSuffix, 100, effects);
     }
 
     @ParametersAreNonnullByDefault
-    public Talisman(SlimefunItemStack item, ItemStack[] recipe, @Nullable String messageSuffix, int chance, PotionEffect... effects) {
+    public Talisman(
+            SlimefunItemStack item,
+            ItemStack[] recipe,
+            @Nullable String messageSuffix,
+            int chance,
+            PotionEffect... effects) {
         this(item, recipe, true, true, messageSuffix, chance, effects);
     }
 
     @ParametersAreNonnullByDefault
-    public Talisman(SlimefunItemStack item, ItemStack[] recipe, boolean consumable, boolean cancelEvent, @Nullable String messageSuffix, int chance, PotionEffect... effects) {
+    public Talisman(
+            SlimefunItemStack item,
+            ItemStack[] recipe,
+            boolean consumable,
+            boolean cancelEvent,
+            @Nullable String messageSuffix,
+            int chance,
+            PotionEffect... effects) {
         this(TALISMANS_ITEMGROUP, item, recipe, consumable, cancelEvent, messageSuffix, chance, effects);
     }
 
     @ParametersAreNonnullByDefault
-    protected Talisman(ItemGroup itemGroup, SlimefunItemStack item, ItemStack[] recipe, boolean consumable, boolean cancelEvent, @Nullable String messageSuffix, int chance, PotionEffect... effects) {
-        super(itemGroup, item, RecipeType.MAGIC_WORKBENCH, recipe, CustomItemStack.create(item.item(), consumable ? 4 : 1));
+    protected Talisman(
+            ItemGroup itemGroup,
+            SlimefunItemStack item,
+            ItemStack[] recipe,
+            boolean consumable,
+            boolean cancelEvent,
+            @Nullable String messageSuffix,
+            int chance,
+            PotionEffect... effects) {
+        super(itemGroup, item, RecipeType.MAGIC_WORKBENCH, recipe, ItemStackFactory.create(item, consumable ? 4 : 1));
 
         this.consumable = consumable;
         this.cancel = cancelEvent;
@@ -84,10 +110,14 @@ public class Talisman extends SlimefunItem {
             lore.add("");
 
             for (String line : getItem().getItemMeta().getLore()) {
+                if (line.contains("Backpack")) {
+                    line = line.replace("Backpack", "Ender Chest");
+                }
                 lore.add(line);
             }
 
-            enderTalisman = new SlimefunItemStack("ENDER_" + getId(), getItem().getType(), name, lore.toArray(new String[0]));
+            enderTalisman =
+                    new SlimefunItemStack("ENDER_" + getId(), getItem().getType(), name, lore.toArray(new String[0]));
         } else {
             enderTalisman = null;
         }
@@ -128,8 +158,10 @@ public class Talisman extends SlimefunItem {
 
     @Override
     public void postRegister() {
+        addWikiPage(WIKI_PAGE);
         EnderTalisman talisman = new EnderTalisman(this, getEnderVariant());
         talisman.register(getAddon());
+        talisman.addWikiPage(WIKI_PAGE);
     }
 
     @Override
@@ -208,7 +240,8 @@ public class Talisman extends SlimefunItem {
     }
 
     @ParametersAreNonnullByDefault
-    private static void activateTalisman(Event e, Player p, Inventory inv, Talisman talisman, ItemStack talismanItem, boolean sendMessage) {
+    private static void activateTalisman(
+            Event e, Player p, Inventory inv, Talisman talisman, ItemStack talismanItem, boolean sendMessage) {
         TalismanActivateEvent talismanEvent = new TalismanActivateEvent(p, talisman, talismanItem);
         Bukkit.getPluginManager().callEvent(talismanEvent);
         if (!talismanEvent.isCancelled()) {
@@ -287,7 +320,7 @@ public class Talisman extends SlimefunItem {
             try {
                 String messageKey = "messages.talisman." + getMessageSuffix();
 
-                if (Slimefun.getRegistry().useActionbarForTalismans()) {
+                if (Slimefun.getConfigManager().useActionbarForTalismans()) {
                     // Use the actionbar
                     Slimefun.getLocalization().sendActionbarMessage(p, messageKey, false);
                 } else {

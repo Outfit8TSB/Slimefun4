@@ -5,12 +5,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
+import io.github.thebusybiscuit.slimefun4.core.attributes.rotations.NotDiagonallyRotatable;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 
@@ -23,7 +24,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
  * @author TheBusyBiscuit
  *
  */
-public class ElectricPress extends AContainer implements RecipeDisplayItem {
+public class ElectricPress extends AContainer implements RecipeDisplayItem, NotDiagonallyRotatable {
 
     @ParametersAreNonnullByDefault
     public ElectricPress(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -44,15 +45,15 @@ public class ElectricPress extends AContainer implements RecipeDisplayItem {
         addRecipe(3, new ItemStack(Material.CLAY_BALL, 4), new ItemStack(Material.CLAY));
         addRecipe(3, new ItemStack(Material.BRICK, 4), new ItemStack(Material.BRICKS));
 
-        addRecipe(6, SlimefunItems.COPPER_INGOT.item(), CustomItemStack.create(SlimefunItems.COPPER_WIRE.item(), 3));
+        addRecipe(6, new ItemStack(Material.COPPER_INGOT), ItemStackFactory.create(SlimefunItems.COPPER_WIRE.item(), 3));
         addRecipe(16, new SlimefunItemStack(SlimefunItems.STEEL_INGOT, 8), SlimefunItems.STEEL_PLATE);
         addRecipe(18, new SlimefunItemStack(SlimefunItems.REINFORCED_ALLOY_INGOT, 8), SlimefunItems.REINFORCED_PLATE);
 
-        addRecipe(8, new ItemStack(Material.NETHER_WART), CustomItemStack.create(SlimefunItems.MAGIC_LUMP_1.item(), 2));
+        addRecipe(8, new ItemStack(Material.NETHER_WART), ItemStackFactory.create(SlimefunItems.MAGIC_LUMP_1.item(), 2));
         addRecipe(10, new SlimefunItemStack(SlimefunItems.MAGIC_LUMP_1, 4), SlimefunItems.MAGIC_LUMP_2);
         addRecipe(12, new SlimefunItemStack(SlimefunItems.MAGIC_LUMP_2, 4), SlimefunItems.MAGIC_LUMP_3);
 
-        addRecipe(10, new ItemStack(Material.ENDER_EYE), CustomItemStack.create(SlimefunItems.ENDER_LUMP_1.item(), 2));
+        addRecipe(10, new ItemStack(Material.ENDER_EYE), ItemStackFactory.create(SlimefunItems.ENDER_LUMP_1.item(), 2));
         addRecipe(12, new SlimefunItemStack(SlimefunItems.ENDER_LUMP_1, 4), SlimefunItems.ENDER_LUMP_2);
         addRecipe(14, new SlimefunItemStack(SlimefunItems.ENDER_LUMP_2, 4), SlimefunItems.ENDER_LUMP_3);
 
@@ -100,12 +101,10 @@ public class ElectricPress extends AContainer implements RecipeDisplayItem {
     @Override
     public ItemStack getProgressBar() {
         return new ItemStack(Material.IRON_HOE);
-
     }
 
     @Override
     public String getMachineIdentifier() {
         return "ELECTRIC_PRESS";
-
     }
 }

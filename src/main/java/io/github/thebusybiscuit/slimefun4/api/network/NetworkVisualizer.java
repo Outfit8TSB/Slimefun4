@@ -11,7 +11,7 @@ import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedParticle;
 
 /**
  * This class represents the visualizer task of a given {@link Network}.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -29,7 +29,7 @@ class NetworkVisualizer implements Runnable {
 
     /**
      * This creates a new {@link NetworkVisualizer} for the given {@link Network}.
-     * 
+     *
      * @param network
      *            The {@link Network} to visualize
      */
@@ -54,12 +54,22 @@ class NetworkVisualizer implements Runnable {
 
     /**
      * This method will spawn the actual particles.
-     * 
+     *
      * @param l
      *            The {@link Location} of our node
      */
     private void spawnParticles(@Nonnull Location l) {
-        l.getWorld().spawnParticle(VersionedParticle.DUST, l.getX() + 0.5, l.getY() + 0.5, l.getZ() + 0.5, 1, 0, 0, 0, 1, particleOptions);
+        l.getWorld()
+                .spawnParticle(
+                        VersionedParticle.DUST,
+                        l.getX() + 0.5,
+                        l.getY() + 0.5,
+                        l.getZ() + 0.5,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        particleOptions);
     }
-
 }

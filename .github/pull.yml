@@ -1,0 +1,6 @@
+version: "1"
+rules:
+  - base: dev
+    upstream: SlimefunGuguProject:dev
+    mergeMethod: merge
+label: ":arrow_heading_down: pull changes from GuguProject"

@@ -1,27 +1,22 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.enchanting;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Material;
-import org.bukkit.entity.Item;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import io.github.bakedlibs.dough.common.ChatColors;
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-
+import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * This is a super class of the {@link AutoEnchanter} and {@link AutoDisenchanter} which is
@@ -29,7 +24,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
  *
  * @author TheBusyBiscuit
  * @author Rothes
- * @author J3fftw1
  *
  * @see AutoEnchanter
  * @see AutoDisenchanter
@@ -39,25 +33,32 @@ abstract class AbstractEnchantmentMachine extends AContainer {
 
     private final ItemSetting<Boolean> useLevelLimit = new ItemSetting<>(this, "use-enchant-level-limit", false);
     private final IntRangeSetting levelLimit = new IntRangeSetting(this, "enchant-level-limit", 0, 10, Short.MAX_VALUE);
-    private final ItemSetting<Integer> maxEnchants = new IntRangeSetting(this, "max-enchants", 0, 10, Short.MAX_VALUE);
-    private final ItemSetting<Boolean> useMaxEnchants= new ItemSetting<>(this, "use-max-enchants", false);
     private final ItemSetting<Boolean> useIgnoredLores = new ItemSetting<>(this, "use-ignored-lores", false);
-    private final ItemSetting<List<String>> ignoredLores = new ItemSetting<>(this, "ignored-lores", Collections.singletonList("&7- &cCan't be used in " + this.getItemName()));
+    private final ItemSetting<List<String>> ignoredLores = new ItemSetting<>(
+        this, "ignored-lores", Collections.singletonList("&7- &cCan't be used in " + this.getItemName()));
+    private final ItemSetting<Integer> enchantLimit =
+            new IntRangeSetting(this, "enchant-limit", 0, 10, Short.MAX_VALUE);
+    private final ItemSetting<Boolean> useEnchantLimit = new ItemSetting<>(this, "use-enchant-limit", false);
 
     @ParametersAreNonnullByDefault
-    protected AbstractEnchantmentMachine(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected AbstractEnchantmentMachine(
+            ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
         addItemSetting(useLevelLimit);
         addItemSetting(levelLimit);
         addItemSetting(useIgnoredLores);
         addItemSetting(ignoredLores);
-        addItemSetting(maxEnchants);
-        addItemSetting(useMaxEnchants);
+        addItemSetting(enchantLimit);
+        addItemSetting(useEnchantLimit);
     }
 
     protected boolean isEnchantmentLevelAllowed(int enchantmentLevel) {
         return !useLevelLimit.getValue() || levelLimit.getValue() >= enchantmentLevel;
+    }
+
+    protected boolean isEnchantmentCountAllowed(int count) {
+        return !useEnchantLimit.getValue() || enchantLimit.getValue() >= count;
     }
 
     protected void showEnchantmentLevelWarning(@Nonnull BlockMenu menu) {
@@ -67,7 +68,18 @@ abstract class AbstractEnchantmentMachine extends AContainer {
 
         String notice = ChatColors.color(Slimefun.getLocalization().getMessage("messages.above-limit-level"));
         notice = notice.replace("%level%", String.valueOf(levelLimit.getValue()));
-        ItemStack progressBar = CustomItemStack.create(Material.BARRIER, " ", notice);
+        ItemStack progressBar = ItemStackFactory.create(Material.BARRIER, " ", notice);
+        menu.replaceExistingItem(22, progressBar);
+    }
+
+    protected void showEnchantmentLimitWarning(@Nonnull BlockMenu menu) {
+        if (!useEnchantLimit.getValue()) {
+            throw new IllegalStateException("Enchantment limit for the auto enchanter/disenchanter is not enabled, cannot display warning info.");
+        }
+
+        String notice = ChatColors.color(Slimefun.getLocalization().getMessage("messages.above-enchant-limit"));
+        notice = notice.replace("%max%", String.valueOf(enchantLimit.getValue()));
+        ItemStack progressBar = ItemStackFactory.create(Material.BARRIER, " ", notice);
         menu.replaceExistingItem(22, progressBar);
     }
 
@@ -89,12 +101,5 @@ abstract class AbstractEnchantmentMachine extends AContainer {
         }
 
         return false;
-    }
-
-    protected boolean isEnchantmentAmountAllowed(int numberOfEnchants) {
-        if (!useMaxEnchants.getValue()) {
-            return true;
-        }
-        return numberOfEnchants <= maxEnchants.getValue();
     }
 }

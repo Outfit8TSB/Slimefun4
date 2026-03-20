@@ -34,14 +34,22 @@ import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedParticle;
 public class VillagerRune extends SimpleSlimefunItem<EntityInteractHandler> {
 
     @ParametersAreNonnullByDefault
-    public VillagerRune(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
+    public VillagerRune(
+            ItemGroup itemGroup,
+            SlimefunItemStack item,
+            RecipeType recipeType,
+            ItemStack[] recipe,
+            ItemStack recipeOutput) {
         super(itemGroup, item, recipeType, recipe, recipeOutput);
     }
 
     @Override
     public @Nonnull EntityInteractHandler getItemHandler() {
         return (e, item, offhand) -> {
-            if (e.isCancelled() || !Slimefun.getProtectionManager().hasPermission(e.getPlayer(), e.getRightClicked().getLocation(), Interaction.INTERACT_ENTITY)) {
+            if (e.isCancelled()
+                    || !Slimefun.getProtectionManager()
+                            .hasPermission(
+                                    e.getPlayer(), e.getRightClicked().getLocation(), Interaction.INTERACT_ENTITY)) {
                 // They don't have permission to use it in this area
                 return;
             }
@@ -64,7 +72,8 @@ public class VillagerRune extends SimpleSlimefunItem<EntityInteractHandler> {
                 double offset = ThreadLocalRandom.current().nextDouble(0.5);
 
                 SoundEffect.VILLAGER_RUNE_TRANSFORM_SOUND.playAt(villager.getLocation(), SoundCategory.NEUTRAL);
-                villager.getWorld().spawnParticle(Particle.CRIMSON_SPORE, villager.getLocation(), 10, 0, offset / 2, 0, 0);
+                villager.getWorld()
+                        .spawnParticle(Particle.CRIMSON_SPORE, villager.getLocation(), 10, 0, offset / 2, 0, 0);
                 villager.getWorld().spawnParticle(VersionedParticle.ENCHANT, villager.getLocation(), 5, 0.04, 1, 0.04);
             }
         };

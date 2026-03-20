@@ -32,11 +32,11 @@ import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedParticle;
 /**
  * The {@link AncientAltarTask} is responsible for the animation that happens when a ritual
  * involving the {@link AncientAltar} is started.
- * 
+ *
  * @author dniym
  * @author meiamsome
  * @author TheBusyBiscuit
- * 
+ *
  * @see AncientAltar
  * @see AncientAltarListener
  *
@@ -61,7 +61,14 @@ public class AncientAltarTask implements Runnable {
     private final Player player;
 
     @ParametersAreNonnullByDefault
-    public AncientAltarTask(AncientAltarListener listener, Block altar, int stepDelay, ItemStack output, List<Block> pedestals, List<ItemStack> items, Player player) {
+    public AncientAltarTask(
+            AncientAltarListener listener,
+            Block altar,
+            int stepDelay,
+            ItemStack output,
+            List<Block> pedestals,
+            List<ItemStack> items,
+            Player player) {
         this.listener = listener;
         this.dropLocation = altar.getLocation().add(0.5, 1.3, 0.5);
         this.stepDelay = stepDelay;
@@ -137,8 +144,19 @@ public class AncientAltarTask implements Runnable {
             items.add(pedestalItem.getOriginalItemStack(entity));
             SoundEffect.ANCIENT_ALTAR_ITEM_CHECK_SOUND.playAt(pedestal);
 
-            dropLocation.getWorld().spawnParticle(VersionedParticle.ENCHANT, pedestal.getLocation().add(0.5, 1.5, 0.5), 16, 0.3F, 0.2F, 0.3F);
-            dropLocation.getWorld().spawnParticle(VersionedParticle.ENCHANTED_HIT, pedestal.getLocation().add(0.5, 1.5, 0.5), 8, 0.3F, 0.2F, 0.3F);
+            dropLocation
+                    .getWorld()
+                    .spawnParticle(
+                            VersionedParticle.ENCHANT, pedestal.getLocation().add(0.5, 1.5, 0.5), 16, 0.3F, 0.2F, 0.3F);
+            dropLocation
+                    .getWorld()
+                    .spawnParticle(
+                            VersionedParticle.ENCHANTED_HIT,
+                            pedestal.getLocation().add(0.5, 1.5, 0.5),
+                            8,
+                            0.3F,
+                            0.2F,
+                            0.3F);
 
             positionLock.remove(entity);
             entity.remove();

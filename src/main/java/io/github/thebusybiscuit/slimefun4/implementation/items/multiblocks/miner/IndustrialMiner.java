@@ -22,7 +22,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import io.github.bakedlibs.dough.common.ChatColors;
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
+
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -31,7 +33,6 @@ import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 
 /**
@@ -42,7 +43,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
  * long-time deprecated Digital Miner.</i>
  *
  * @author TheBusyBiscuit
- *
+ * 
  * @see AdvancedIndustrialMiner
  * @see MiningTask
  *
@@ -59,13 +60,24 @@ public class IndustrialMiner extends MultiBlockMachine {
     private final int range;
 
     @ParametersAreNonnullByDefault
-    public IndustrialMiner(ItemGroup itemGroup, SlimefunItemStack item, Material baseMaterial, boolean silkTouch, int range) {
+    public IndustrialMiner(
+            ItemGroup itemGroup, SlimefunItemStack item, Material baseMaterial, boolean silkTouch, int range) {
         // @formatter:off
-        super(itemGroup, item, new ItemStack[] {
-            null, null, null,
-            CustomItemStack.create(Material.PISTON, "Piston (facing up)"), new ItemStack(Material.CHEST), CustomItemStack.create(Material.PISTON, "Piston (facing up)"),
-            new ItemStack(baseMaterial), new ItemStack(Material.BLAST_FURNACE), new ItemStack(baseMaterial)
-        }, BlockFace.UP);
+        super(
+                itemGroup,
+                item,
+                new ItemStack[] {
+                    null,
+                    null,
+                    null,
+                    ItemStackFactory.create(Material.PISTON, "Piston (Facing Up)"),
+                    new ItemStack(Material.CHEST),
+                    ItemStackFactory.create(Material.PISTON, "Piston (Facing Up)"),
+                    new ItemStack(baseMaterial),
+                    new ItemStack(Material.BLAST_FURNACE),
+                    new ItemStack(baseMaterial)
+                },
+                BlockFace.UP);
         // @formatter:on
 
         this.oreDictionary = OreDictionary.forVersion(Slimefun.getMinecraftVersion());
@@ -165,7 +177,7 @@ public class IndustrialMiner extends MultiBlockMachine {
             ItemStack item = fuel.getInput().clone();
             ItemMeta im = item.getItemMeta();
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColors.color("&8\u21E8 &7Lasts for max. " + fuel.getTicks() + " Ores"));
+            lore.add(ChatColors.color("&8\u21E8 &7Up to " + fuel.getTicks() + " ores remaining"));
             im.setLore(lore);
             item.setItemMeta(im);
             list.add(item);
@@ -215,12 +227,12 @@ public class IndustrialMiner extends MultiBlockMachine {
         Material type = block.getType();
 
         if (type == Material.ANCIENT_DEBRIS) {
-            return canMineAncientDebris.getValue() && !BlockStorage.hasBlockInfo(block);
+            return canMineAncientDebris.getValue() && !StorageCacheUtils.hasSlimefunBlock(block.getLocation());
         } else if (version.isAtLeast(MinecraftVersion.MINECRAFT_1_17) && SlimefunTag.DEEPSLATE_ORES.isTagged(type)) {
-            return canMineDeepslateOres.getValue() && !BlockStorage.hasBlockInfo(block);
+            return canMineDeepslateOres.getValue() && !StorageCacheUtils.hasSlimefunBlock(block.getLocation());
         } else {
-            return SlimefunTag.INDUSTRIAL_MINER_ORES.isTagged(type) && !BlockStorage.hasBlockInfo(block);
+            return SlimefunTag.INDUSTRIAL_MINER_ORES.isTagged(type)
+                    && !StorageCacheUtils.hasSlimefunBlock(block.getLocation());
         }
     }
-
 }

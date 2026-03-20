@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.events.MultiBlockCraftEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -32,7 +32,21 @@ public class Compressor extends MultiBlockMachine {
 
     @ParametersAreNonnullByDefault
     public Compressor(ItemGroup itemGroup, SlimefunItemStack item) {
-        super(itemGroup, item, new ItemStack[] { null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.PISTON), CustomItemStack.create(Material.DISPENSER, "Dispenser (Facing up)"), new ItemStack(Material.PISTON) }, BlockFace.SELF);
+        super(
+                itemGroup,
+                item,
+                new ItemStack[] {
+                    null,
+                    null,
+                    null,
+                    null,
+                    new ItemStack(Material.NETHER_BRICK_FENCE),
+                    null,
+                    new ItemStack(Material.PISTON),
+                    ItemStackFactory.create(Material.DISPENSER, "Dispenser (Facing Up)"),
+                    new ItemStack(Material.PISTON)
+                },
+                BlockFace.SELF);
     }
 
     @Override
@@ -99,17 +113,19 @@ public class Compressor extends MultiBlockMachine {
         for (int i = 0; i < 4; i++) {
             int j = i;
 
-            Slimefun.runSync(() -> {
-                if (j < 3) {
-                    if (j == 1) {
-                        SoundEffect.COMPRESSOR_CRAFT_CONTRACT_SOUND.playFor(p);
-                    } else {
-                        SoundEffect.COMPRESSOR_CRAFT_EXTEND_SOUND.playFor(p);
-                    }
-                 } else {
-                    handleCraftedItem(output, dispenser, dispInv);
-                }
-            }, i * 20L);
+            Slimefun.runSync(
+                    () -> {
+                        if (j < 3) {
+                            if (j == 1) {
+                                SoundEffect.COMPRESSOR_CRAFT_CONTRACT_SOUND.playFor(p);
+                            } else {
+                                SoundEffect.COMPRESSOR_CRAFT_EXTEND_SOUND.playFor(p);
+                            }
+                        } else {
+                            handleCraftedItem(output, dispenser, dispInv);
+                        }
+                    },
+                    i * 20L);
         }
     }
 }

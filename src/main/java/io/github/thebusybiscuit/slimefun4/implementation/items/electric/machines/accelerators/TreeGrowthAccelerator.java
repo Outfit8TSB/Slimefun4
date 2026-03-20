@@ -10,25 +10,24 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Sapling;
 import org.bukkit.inventory.ItemStack;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.OrganicFertilizer;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedParticle;
-import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 
 /**
  * The {@link TreeGrowthAccelerator} is an electrical machine that works similar to
  * the {@link CropGrowthAccelerator} but boosts the growth of nearby trees.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see CropGrowthAccelerator
  * @see AnimalGrowthAccelerator
  *
@@ -38,11 +37,9 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
     private static final int ENERGY_CONSUMPTION = 24;
     private static final int RADIUS = 9;
 
-    // We wanna strip the Slimefun Item id here
-    private static final ItemStack organicFertilizer = ItemStackWrapper.wrap(SlimefunItems.FERTILIZER.item());
-
     @ParametersAreNonnullByDefault
-    public TreeGrowthAccelerator(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    public TreeGrowthAccelerator(
+            ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
     }
 
@@ -53,7 +50,7 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
 
     @Override
     protected void tick(@Nonnull Block b) {
-        BlockMenu inv = BlockStorage.getInventory(b);
+        BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
 
         if (getCharge(b.getLocation()) >= ENERGY_CONSUMPTION) {
             for (int x = -RADIUS; x <= RADIUS; x++) {
@@ -80,7 +77,8 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
             return applyBoneMeal(machine, sapling, inv);
         } else {
             Sapling saplingData = (Sapling) sapling.getBlockData();
-            return saplingData.getStage() < saplingData.getMaximumStage() && updateSaplingData(machine, sapling, inv, saplingData);
+            return saplingData.getStage() < saplingData.getMaximumStage()
+                    && updateSaplingData(machine, sapling, inv, saplingData);
         }
     }
 
@@ -93,7 +91,14 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
                 sapling.applyBoneMeal(BlockFace.UP);
 
                 inv.consumeItem(slot);
-                sapling.getWorld().spawnParticle(VersionedParticle.HAPPY_VILLAGER, sapling.getLocation().add(0.5D, 0.5D, 0.5D), 4, 0.1F, 0.1F, 0.1F);
+                sapling.getWorld()
+                        .spawnParticle(
+                                VersionedParticle.HAPPY_VILLAGER,
+                                sapling.getLocation().add(0.5D, 0.5D, 0.5D),
+                                4,
+                                0.1F,
+                                0.1F,
+                                0.1F);
                 return true;
             }
         }
@@ -111,7 +116,14 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
                 block.setBlockData(sapling, false);
 
                 inv.consumeItem(slot);
-                block.getWorld().spawnParticle(VersionedParticle.HAPPY_VILLAGER, block.getLocation().add(0.5D, 0.5D, 0.5D), 4, 0.1F, 0.1F, 0.1F);
+                block.getWorld()
+                        .spawnParticle(
+                                VersionedParticle.HAPPY_VILLAGER,
+                                block.getLocation().add(0.5D, 0.5D, 0.5D),
+                                4,
+                                0.1F,
+                                0.1F,
+                                0.1F);
                 return true;
             }
         }
@@ -120,7 +132,6 @@ public class TreeGrowthAccelerator extends AbstractGrowthAccelerator {
     }
 
     protected boolean isFertilizer(@Nullable ItemStack item) {
-        return SlimefunUtils.isItemSimilar(item, organicFertilizer, false, false);
+        return SlimefunItem.getByItem(item) instanceof OrganicFertilizer;
     }
-
 }

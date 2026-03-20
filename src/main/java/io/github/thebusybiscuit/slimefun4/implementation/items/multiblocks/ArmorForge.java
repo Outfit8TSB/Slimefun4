@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.bakedlibs.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.events.MultiBlockCraftEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -29,7 +29,21 @@ public class ArmorForge extends AbstractCraftingTable {
 
     @ParametersAreNonnullByDefault
     public ArmorForge(ItemGroup itemGroup, SlimefunItemStack item) {
-        super(itemGroup, item, new ItemStack[] { null, null, null, null, new ItemStack(Material.ANVIL), null, null, CustomItemStack.create(Material.DISPENSER, "Dispenser (Facing up)"), null }, BlockFace.SELF);
+        super(
+                itemGroup,
+                item,
+                new ItemStack[] {
+                    null,
+                    null,
+                    null,
+                    null,
+                    new ItemStack(Material.ANVIL),
+                    null,
+                    null,
+                    ItemStackFactory.create(Material.DISPENSER, "Dispenser (Facing Up)"),
+                    null
+                },
+                BlockFace.SELF);
     }
 
     @Override
@@ -43,7 +57,8 @@ public class ArmorForge extends AbstractCraftingTable {
 
             for (ItemStack[] input : inputs) {
                 if (isCraftable(inv, input)) {
-                    ItemStack output = RecipeType.getRecipeOutputList(this, input).clone();
+                    ItemStack output =
+                            RecipeType.getRecipeOutputList(this, input).clone();
                     MultiBlockCraftEvent event = new MultiBlockCraftEvent(p, this, input, output);
 
                     Bukkit.getPluginManager().callEvent(event);
@@ -90,14 +105,16 @@ public class ArmorForge extends AbstractCraftingTable {
             for (int j = 0; j < 4; j++) {
                 int current = j;
 
-                Slimefun.runSync(() -> {
-                    if (current < 3) {
-                        SoundEffect.ARMOR_FORGE_WORKING_SOUND.playAt(dispenser);
-                    } else {
-                        SoundEffect.ARMOR_FORGE_FINISH_SOUND.playAt(dispenser);
-                        handleCraftedItem(output, dispenser, inv);
-                    }
-                }, j * 20L);
+                Slimefun.runSync(
+                        () -> {
+                            if (current < 3) {
+                                SoundEffect.ARMOR_FORGE_WORKING_SOUND.playAt(dispenser);
+                            } else {
+                                SoundEffect.ARMOR_FORGE_FINISH_SOUND.playAt(dispenser);
+                                handleCraftedItem(output, dispenser, inv);
+                            }
+                        },
+                        j * 20L);
             }
 
         } else {

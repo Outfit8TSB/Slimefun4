@@ -1,27 +1,22 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.accelerators;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.items.misc.OrganicFertilizer;
+import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedParticle;
+import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+import javax.annotation.Nullable;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedParticle;
-import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
-
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-
 public abstract class CropGrowthAccelerator extends AbstractGrowthAccelerator {
-
-    // We wanna strip the Slimefun Item id here
-    private static final ItemStack organicFertilizer = ItemStackWrapper.wrap(SlimefunItems.FERTILIZER.item());
-
-    protected CropGrowthAccelerator(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    protected CropGrowthAccelerator(
+            ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
     }
 
@@ -38,7 +33,7 @@ public abstract class CropGrowthAccelerator extends AbstractGrowthAccelerator {
 
     @Override
     protected void tick(Block b) {
-        BlockMenu inv = BlockStorage.getInventory(b);
+        BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
 
         if (getCharge(b.getLocation()) >= getEnergyConsumption()) {
             for (int x = -getRadius(); x <= getRadius(); x++) {
@@ -58,14 +53,21 @@ public abstract class CropGrowthAccelerator extends AbstractGrowthAccelerator {
 
         if (ageable.getAge() < ageable.getMaximumAge()) {
             for (int slot : getInputSlots()) {
-                if (SlimefunUtils.isItemSimilar(inv.getItemInSlot(slot), organicFertilizer, false, false)) {
+                if (isFertilizer(inv.getItemInSlot(slot))) {
                     removeCharge(machine.getLocation(), getEnergyConsumption());
                     inv.consumeItem(slot);
 
                     ageable.setAge(ageable.getAge() + 1);
                     crop.setBlockData(ageable);
 
-                    crop.getWorld().spawnParticle(VersionedParticle.HAPPY_VILLAGER, crop.getLocation().add(0.5D, 0.5D, 0.5D), 4, 0.1F, 0.1F, 0.1F);
+                    crop.getWorld()
+                            .spawnParticle(
+                                    VersionedParticle.HAPPY_VILLAGER,
+                                    crop.getLocation().add(0.5D, 0.5D, 0.5D),
+                                    4,
+                                    0.1F,
+                                    0.1F,
+                                    0.1F);
                     return true;
                 }
             }
@@ -74,4 +76,7 @@ public abstract class CropGrowthAccelerator extends AbstractGrowthAccelerator {
         return false;
     }
 
+    protected boolean isFertilizer(@Nullable ItemStack item) {
+        return SlimefunItem.getByItem(item) instanceof OrganicFertilizer;
+    }
 }

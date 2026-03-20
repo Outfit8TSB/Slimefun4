@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.FlexItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
@@ -25,7 +25,7 @@ class RickFlexGroup extends FlexItemGroup {
 
     // Never instantiate more than once.
     RickFlexGroup(@Nonnull NamespacedKey key) {
-        super(key, CustomItemStack.create(Material.NETHER_STAR, "&6&lSuper secret items"), 1);
+        super(key, ItemStackFactory.create(Material.NETHER_STAR, "&6&lSuper secret items"), 1);
     }
 
     // Gonna override this method
@@ -42,7 +42,7 @@ class RickFlexGroup extends FlexItemGroup {
     public void open(Player p, PlayerProfile profile, SlimefunGuideMode layout) {
         // Up the game with this easter egg
         ChatUtils.sendURL(p, "https://youtu.be/dQw4w9WgXcQ");
+        ChatUtils.sendURL(p, "https://www.bilibili.com/video/BV1GJ411x7h7");
         p.closeInventory();
     }
-
 }

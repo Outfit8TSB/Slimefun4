@@ -1,22 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.api.events;
 
+import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
+import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
 import javax.annotation.Nonnull;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import io.github.thebusybiscuit.slimefun4.core.services.LocalizationService;
-import io.github.thebusybiscuit.slimefun4.core.services.localization.Language;
-
 /**
  * This {@link Event} gets called when a {@link Player} has switched their {@link Language}.
- * 
+ *
  * @author TheBusyBiscuit
- * 
  * @see Language
  * @see LocalizationService
- *
  */
 public class PlayerLanguageChangeEvent extends Event {
 
@@ -35,7 +31,7 @@ public class PlayerLanguageChangeEvent extends Event {
     /**
      * Returns the {@link Player} who triggered this {@link Event},
      * the {@link Player} who switched his {@link Language} to be precise.
-     * 
+     *
      * @return The {@link Player} who switched his {@link Language}
      */
     @Nonnull
@@ -45,7 +41,7 @@ public class PlayerLanguageChangeEvent extends Event {
 
     /**
      * This returns the {@link Language} that this {@link Player} was using before.
-     * 
+     *
      * @return The previous {@link Language} of our {@link Player}
      */
     @Nonnull
@@ -55,7 +51,7 @@ public class PlayerLanguageChangeEvent extends Event {
 
     /**
      * This returns the {@link Language} that this {@link Player} wants to switch to.
-     * 
+     *
      * @return The new {@link Language}
      */
     @Nonnull
@@ -71,5 +67,4 @@ public class PlayerLanguageChangeEvent extends Event {
     public HandlerList getHandlers() {
         return getHandlerList();
     }
-
 }

@@ -1,20 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-
-import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.attributes.DamageableItem;
@@ -23,6 +8,17 @@ import io.github.thebusybiscuit.slimefun4.core.services.sounds.SoundEffect;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.armor.ElytraCap;
 import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import javax.annotation.Nonnull;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 
 /**
@@ -30,12 +26,12 @@ import org.bukkit.event.entity.EntityToggleGlideEvent;
  *
  * @author Seggan
  * @author J3fftw1
- * 
+ *
  * @see ElytraCap
  */
 public class ElytraImpactListener implements Listener {
 
-    private final Set<UUID> gliding =  new HashSet<>();
+    private final Set<UUID> gliding = new HashSet<>();
 
     public ElytraImpactListener(@Nonnull Slimefun plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -60,8 +56,7 @@ public class ElytraImpactListener implements Listener {
         }
 
         if ((e.getCause() == DamageCause.FALL || e.getCause() == DamageCause.FLY_INTO_WALL)
-            && (p.isGliding() || gliding.contains(p.getUniqueId()))
-        ) {
+                && (p.isGliding() || gliding.contains(p.getUniqueId()))) {
             Optional<PlayerProfile> optional = PlayerProfile.find(p);
 
             if (optional.isEmpty()) {

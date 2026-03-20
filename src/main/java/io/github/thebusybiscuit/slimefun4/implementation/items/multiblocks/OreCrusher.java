@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.events.MultiBlockCraftEvent;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -45,7 +45,21 @@ public class OreCrusher extends MultiBlockMachine {
 
     @ParametersAreNonnullByDefault
     public OreCrusher(ItemGroup itemGroup, SlimefunItemStack item) {
-        super(itemGroup, item, new ItemStack[] { null, null, null, null, new ItemStack(Material.NETHER_BRICK_FENCE), null, new ItemStack(Material.IRON_BARS), CustomItemStack.create(Material.DISPENSER, "Dispenser (Facing up)"), new ItemStack(Material.IRON_BARS) }, BlockFace.SELF);
+        super(
+                itemGroup,
+                item,
+                new ItemStack[] {
+                    null,
+                    null,
+                    null,
+                    null,
+                    new ItemStack(Material.NETHER_BRICK_FENCE),
+                    null,
+                    new ItemStack(Material.IRON_BARS),
+                    ItemStackFactory.create(Material.DISPENSER, "Dispenser (Facing Up)"),
+                    new ItemStack(Material.IRON_BARS)
+                },
+                BlockFace.SELF);
 
         addItemSetting(doubleOres);
     }
@@ -58,7 +72,7 @@ public class OreCrusher extends MultiBlockMachine {
         recipes.add(new ItemStack(Material.COBBLESTONE, 8));
         recipes.add(new ItemStack(Material.SAND, 1));
 
-        recipes.add(SlimefunItems.GOLD_4K.item());
+        recipes.add(new ItemStack(Material.GOLD_INGOT));
         recipes.add(SlimefunItems.GOLD_DUST.item());
 
         recipes.add(SlimefunItems.GOLD_6K.item());
@@ -289,7 +303,5 @@ public class OreCrusher extends MultiBlockMachine {
         public @Nonnull ItemStack getGoldNuggets() {
             return goldNuggets;
         }
-
     }
-
 }

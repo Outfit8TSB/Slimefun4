@@ -1,20 +1,25 @@
 package io.github.thebusybiscuit.slimefun4.core.commands.subcommands;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import io.github.thebusybiscuit.slimefun4.core.commands.SlimefunCommand;
 import io.github.thebusybiscuit.slimefun4.core.commands.SubCommand;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 class DebugFishCommand extends SubCommand {
 
     @ParametersAreNonnullByDefault
     DebugFishCommand(Slimefun plugin, SlimefunCommand cmd) {
-        super(plugin, cmd, "debug_fish", true);
+        super(plugin, cmd, "debug_fish", false);
+    }
+
+    @Override
+    protected @Nonnull String getDescription() {
+        return "commands.debug_fish";
     }
 
     @Override
@@ -25,5 +30,4 @@ class DebugFishCommand extends SubCommand {
             Slimefun.getLocalization().sendMessage(sender, "messages.no-permission", true);
         }
     }
-
 }

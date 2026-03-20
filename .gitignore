@@ -7,8 +7,7 @@
 /.vscode/
 /data-storage/
 /javadocs/
-
-dependency-reduced-pom.xml
+/local-deps/
 
 .classpath
 .factorypath
@@ -16,3 +15,8 @@ dependency-reduced-pom.xml
 *.iml
 *.bak
 .DS_Store
+
+dependency-reduced-pom.xml
+/.git-versioned-pom.xml
+
+*.db

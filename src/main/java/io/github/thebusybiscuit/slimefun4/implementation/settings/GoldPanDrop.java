@@ -1,12 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.implementation.settings;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.implementation.items.tools.GoldPan;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.bukkit.inventory.ItemStack;
 
 public class GoldPanDrop extends ItemSetting<Integer> {
 
@@ -36,5 +34,4 @@ public class GoldPanDrop extends ItemSetting<Integer> {
         super.update(newValue);
         goldPan.updateRandomizer();
     }
-
 }

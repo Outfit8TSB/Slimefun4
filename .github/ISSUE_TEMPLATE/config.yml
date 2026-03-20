@@ -1,11 +1,9 @@
 blank_issues_enabled: false
+
 contact_links:
-  - name: Code of Conduct
-    url: https://github.com/Slimefun/Slimefun4/blob/master/.github/CODE_OF_CONDUCT.md
-    about: Please read this before posting
-  - name: Bug Report Guidelines
-    url: https://github.com/Slimefun/Slimefun4/wiki/How-to-report-bugs
-    about: Guidelines on how to make good Bug reports
-  - name: Discord Server (for Questions and Suggestions)
-    url: https://discord.gg/slimefun
-    about: Please ask and answer questions here.
+  - name: Our Discord server
+    url: https://discord.gg/C8M6nPyDu6
+    about: Click here to join our Discord server and ask for help!
+#  - name: No GitHub account? Not sure how to use GitHub?
+#    url: https://docs.qq.com/form/page/DSlFOZmpTQ1JsZ2FD
+#    about: Click here to submit a bug report using Tencent Docs

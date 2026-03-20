@@ -1,4 +1,10 @@
 ---
+sf-cn:
+  timings:
+    started: '&a性能分析器已启动.'
+    running: '&a性能分析器正在运行中, 如需获取数据请停止后查阅.'
+    stopped: '&a性能分析器已停止, 请在此处查看报告: &f{0}'
+    warning: '&c在生成性能报告时出现问题! 请查看后台报错了解更多详情.'
 commands:
   help: 显示帮助文本
   cheat: 通过作弊模式直接拿取 Slimefun 物品
@@ -9,6 +15,20 @@ commands:
   search: 搜索 Slimefun 物品
   open_guide: 使用命令打开 Slimefun 指南
   stats: 查看玩家的统计数据
+  id: 获取手持物品的 Slimefun ID
+  cleardata:
+    description: 清理世界数据
+    success: '&a已清除&c {0} &a的&c {1} &a数据'
+    block: 方块
+    oil: 石油
+    worldNotFound: '&c未找到世界'
+    confirm: '&e 输入命令/sf cleardata <World> <Type> confirm 来确认操作 &c此操作不可恢复!'
+  banitem:
+    description: 禁用 Slimefun 物品
+    success: '&a禁用成功'
+  unbanitem:
+    description: 启用 Slimefun 物品
+    success: '&a启用成功'
   research:
     description: 解锁/重置玩家的研究进度
     reset: '&c你已重置了 %player% 的研究进度'
@@ -17,7 +37,8 @@ commands:
     description: 获取你丢失的背包
     invalid-id: '&4背包 ID 必须为非负数!'
     player-never-joined: '&4找不到叫这个名字的玩家!'
-    backpack-does-not-exist: '&4你指定的背包不存在!'
+    backpack-does-not-exist: '&4该玩家没有任何背包!'
+    searching: '&e查询中...'
     restored-backpack-given: '&a你的背包已被恢复并且已经放入了你的物品栏!'
   charge:
     description: 为你手持的物品充电
@@ -34,6 +55,20 @@ commands:
     none-running: '&7当前没有运行的测试项!'
     running: '&7正在调试模式中运行该测试项: &6%test%'
     disabled: '&7已禁用调试模式'
+  reload:
+    description: "重载 Slimefun 配置文件"
+    success: "&a成功重载配置文件."
+    failed: "&c重载配置文件失败! 你可能需要重启服务器以应用更改, 查看后台输出信息了解更多."
+  migrate:
+    description: "迁移旧数据"
+    confirm: "&c你确定要进行数据迁移吗? 确认请输入 /sf migrate confirm 开始迁移\n迁移过程中请不要让玩家进入服务器操作 Slimefun 相关机器及物品!"
+    started: "&a正在迁移旧数据..."
+    success: "&a迁移旧数据 (%migrate_type%) 至数据库成功."
+    failed: "&c迁移数据过程中出现了问题, 请查看后台."
+    already-migrated: "&a暂无可迁移数据."
+    in-progress: "&a迁移正在进行中..."
+  blockdata:
+    description: '操作粘液方块数据'
 placeholderapi:
   profile-loading: '加载中...'
 guide:
@@ -51,7 +86,7 @@ guide:
   tooltips:
     open-itemgroup: '单击打开'
     versions-notice: '在反馈问题时这些很重要!'
-    wiki: '在官方 Slimefun 维基上查看此物品'
+    wiki: '在非官方中文 Slimefun 维基上查看此物品'
     recipes:
       machine: '此机器可用的合成配方'
       miner: '此采矿机可以获得的资源'
@@ -147,6 +182,7 @@ guide:
 actionbar:
   radiation: '&6辐射暴露等级：&c%level%&7/&e100'
 messages:
+  android-no-permission: "&c你的机器人在某个你没有权限的领地/地皮中无法工作, 机器人已自动暂停运行."
   not-researched: '&4你的知识还不足以理解这个物品. &c你需要先解锁 &f"%item%"&f'
   not-enough-xp: '&4你没有足够的经验来解锁这个研究'
   unlocked: '&b成功解锁研究 &7"%research%"'
@@ -157,13 +193,14 @@ messages:
   not-online: '&4%player% &c不在线'
   invalid-item: '&4%item% &c不是一个有效的物品名!'
   invalid-amount: '&4%amount% &ci不是一个有效的数字 : 它必须大于 0!'
+  invalid-item-in-hand: '&e你手中拿的不是粘液科技的物品!'
   given-item: '&b你获得了 &a%amount% &7"%item%&7"'
   give-item: '&b成功给予玩家 %player% &a%amount% &7"%item%&7"'
   invalid-research: '&4%research% &c不是一个有效的研究名!'
   give-research: '&b你成功解锁了玩家 %player% 的研究 &7"%research%&7"'
   hungry: '&c你太饿了, 先吃点东西再试试吧!'
-  disabled-in-world: '&4&l这个物品在此世界已被禁用'
-  disabled-item: '&4&l这个物品已经被禁用了! 你是怎么得到它的?'
+  disabled-in-world: '&4&l%item_name% 在此世界已被禁用'
+  disabled-item: '&4&l%item_name% 已经被禁用了! 你是怎么得到它的?'
   no-tome-yourself: '&c你不能对你自己使用 &4学识巨著 &c...'
   multimeter: '&b已储存的能源: &3%stored% &b/ &3%capacity%'
   piglin-barter: '&4你不能使用 Slimefun 的物品和猪灵易物'
@@ -273,6 +310,7 @@ machines:
     unknown-recipe: '&4未知合成表! &c请按照合成配方正确摆放物品!'
   ANCIENT_PEDESTAL:
     obstructed: '&4基座被挡住了! &c把基座上面的东西移开!'
+    in-use: "&4基座上还有东西没拿下来!"
   HOLOGRAM_PROJECTOR:
     enter-text: '&7请写下想显示在全息文本上的话. &r(支持颜色代码)'
     inventory-title: '全息图像编辑器'
@@ -310,6 +348,8 @@ machines:
     full-chest: '&c你的工业矿机的箱子已经满了!'
     no-permission: '&4你没有权限操作这台工业矿机!'
     finished: '&e你的工业矿机采矿已完成! 总共开采了 %ores% 个矿石!'
+  TABLE_SAW:
+    no-slimefun-item: '&c你不能在台锯 (Table Saw) 上使用 Slimefun 物品!'
 anvil:
   not-working: '&4你不能在铁砧里使用 Slimefun 的物品'
   mcmmo-salvaging: '&4你不能分解 Slimefun 物品!'
@@ -324,10 +364,15 @@ villagers:
 backpack:
   already-open: '&c抱歉, 这个背包已在别处打开了!'
   no-stack: '&c你不能同时手持两个背包'
+  set-name: '&e请输入背包名称'
+  not-backpack-owner: '&c该背包的所有者不在线，你无权使用!'
+  not-original-item: '&c输入名字时请不要切换手上的物品!'
 workbench:
   not-enhanced: '&4你不能在普通的工作台上使用 Slimefun 物品'
 cauldron:
   no-discoloring: '&4你不能用炼药锅洗去 Slimefun 物品的颜色'
+crafter:
+  not-working: '&4你不能在合成机上用 Slimefun 物品合成'
 gps:
   deathpoint: '&4死亡点 &7%date%'
   status-online: '在线'
@@ -389,6 +434,24 @@ android:
     rating:
       own: '&4你不能评价你自己的脚本!'
       already: '&4你已经给这个脚本留下评价了!'
+  access-manager:
+    title: '&b机器人权限管理器'
+    subtitle: '&8⇨ &7单击打开管理器'
+
+    menu:
+      add-player-title: '&a添加信任玩家'
+      add-player: '&a左键 > 添加信任玩家'
+      delete-player: '&c左键 > 删除信任玩家'
+
+    messages:
+      input: '请输入你想要添加的信任玩家的 ID.'
+      cannot-find-player: '&c找不到你要添加的玩家: %player%'
+      is-trusted-player: '&a%player% 已经是你信任的玩家了!'
+      is-not-trusted-player: "&c%player% 不是你信任的玩家!"
+      cannot-add-yourself: '&c你不能信任你自己!'
+      add-success: '&a成功添加信任玩家 %player%.'
+      delete-success: '&a成功删除信任玩家 %player%.'
+      reach-limit: '&c信任玩家个数已达上限 (10), 请先删除已有玩家再添加!'
 languages:
   default: '服务器默认语言'
   en: '英语'
@@ -418,7 +481,7 @@ languages:
   fi: '芬兰语'
   uk: '乌克兰语'
   ms: '马来西亚语'
-  'no': '挪威语'
+  no: '挪威语'
   ja: '日语'
   fa: '波斯语'
   th: '泰语'

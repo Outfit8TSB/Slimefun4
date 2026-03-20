@@ -5,11 +5,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import city.norain.slimefun4.compatibillty.CompatibilityUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -22,7 +22,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunIte
 /**
  * The {@link VampireBlade} is a weapon that applies a Healing effect to any {@link Player}
  * who damages another {@link LivingEntity} with this sword.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -45,7 +45,8 @@ public class VampireBlade extends SimpleSlimefunItem<WeaponUseHandler> {
             if (ThreadLocalRandom.current().nextInt(100) < getChance()) {
                 SoundEffect.VAMPIRE_BLADE_HEALING_SOUND.playFor(p);
                 double health = p.getHealth() + HEALING_AMOUNT;
-                double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                double maxHealth =
+                        p.getAttribute(CompatibilityUtil.getMaxHealth()).getValue();
                 p.setHealth(Math.min(health, maxHealth));
             }
         };
@@ -53,7 +54,7 @@ public class VampireBlade extends SimpleSlimefunItem<WeaponUseHandler> {
 
     /**
      * This method returns the chance of a {@link VampireBlade} to apply its healing effect.
-     * 
+     *
      * @return The chance for a healing effect
      */
     public int getChance() {

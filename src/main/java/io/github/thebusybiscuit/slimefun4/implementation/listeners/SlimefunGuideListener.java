@@ -1,17 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Result;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
-
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.SlimefunGuideOpenEvent;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
@@ -19,6 +7,17 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.core.guide.options.SlimefunGuideSettings;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class SlimefunGuideListener implements Listener {
 
@@ -55,7 +54,11 @@ public class SlimefunGuideListener implements Listener {
             }
         } else if (tryOpenGuide(p, e, SlimefunGuideMode.CHEAT_MODE) == Result.ALLOW) {
             if (p.isSneaking()) {
-                SlimefunGuideSettings.openSettings(p, e.getItem());
+                SlimefunGuideSettings.openSettings(
+                        p,
+                        p.hasPermission("slimefun.cheat.items")
+                                ? e.getItem()
+                                : SlimefunGuide.getItem(SlimefunGuideMode.SURVIVAL_MODE));
             } else {
                 /*
                  * We rather just run the command here, all
@@ -84,7 +87,15 @@ public class SlimefunGuideListener implements Listener {
         if (SlimefunUtils.isItemSimilar(item, SlimefunGuide.getItem(layout), false, false)) {
 
             if (!Slimefun.getWorldSettingsService().isWorldEnabled(p.getWorld())) {
-                Slimefun.getLocalization().sendMessage(p, "messages.disabled-item", true);
+                Slimefun.getLocalization().sendMessage(p, "messages.disabled-item", true, msg -> {
+                    if (item.hasItemMeta()) {
+                        return msg.replace(
+                                "%item_name%",
+                                ChatColor.stripColor(item.getItemMeta().getDisplayName()));
+                    } else {
+                        return msg;
+                    }
+                });
                 return Result.DENY;
             }
 
@@ -93,5 +104,4 @@ public class SlimefunGuideListener implements Listener {
 
         return Result.DEFAULT;
     }
-
 }

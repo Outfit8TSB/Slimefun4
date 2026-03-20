@@ -13,9 +13,9 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecip
 
 /**
  * An {@link AnimalProduce} can be obtained via the {@link ProduceCollector}.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see ProduceCollector
  *
  */
@@ -35,5 +35,4 @@ public class AnimalProduce extends MachineRecipe implements Predicate<LivingEnti
     public boolean test(@Nonnull LivingEntity entity) {
         return predicate.test(entity);
     }
-
 }

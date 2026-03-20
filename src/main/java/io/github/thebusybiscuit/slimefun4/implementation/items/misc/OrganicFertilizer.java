@@ -15,9 +15,9 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines
 /**
  * {@link OrganicFertilizer} is used to fuel a {@link CropGrowthAccelerator}
  * or {@link TreeGrowthAccelerator}. And can be crafted using a {@link FoodComposter}.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see CropGrowthAccelerator
  * @see TreeGrowthAccelerator
  *
@@ -28,7 +28,11 @@ public class OrganicFertilizer extends SlimefunItem {
 
     @ParametersAreNonnullByDefault
     public OrganicFertilizer(ItemGroup itemGroup, SlimefunItemStack item, SlimefunItemStack ingredient) {
-        super(itemGroup, item, RecipeType.FOOD_COMPOSTER, new ItemStack[] { ingredient.item(), null, null, null, null, null, null, null, null }, new SlimefunItemStack(item, OUTPUT).item());
+        super(
+                itemGroup,
+                item,
+                RecipeType.FOOD_COMPOSTER,
+                new ItemStack[] {ingredient.item(), null, null, null, null, null, null, null, null},
+                new SlimefunItemStack(item, OUTPUT));
     }
-
 }

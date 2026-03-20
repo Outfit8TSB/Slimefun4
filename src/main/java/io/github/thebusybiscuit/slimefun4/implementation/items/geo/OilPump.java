@@ -17,6 +17,7 @@ import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.rotations.NotDiagonallyRotatable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
@@ -28,7 +29,7 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
-public class OilPump extends AContainer implements RecipeDisplayItem {
+public class OilPump extends AContainer implements RecipeDisplayItem, NotDiagonallyRotatable {
 
     private final GEOResource oil;
 
@@ -38,7 +39,10 @@ public class OilPump extends AContainer implements RecipeDisplayItem {
     public OilPump(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
-        oil = Slimefun.getRegistry().getGEOResources().get(new NamespacedKey(Slimefun.instance(), "oil")).orElse(null);
+        oil = Slimefun.getRegistry()
+                .getGEOResources()
+                .get(new NamespacedKey(Slimefun.instance(), "oil"))
+                .orElse(null);
 
         new BlockMenuPreset(getId(), getInventoryTitle()) {
 
@@ -100,7 +104,9 @@ public class OilPump extends AContainer implements RecipeDisplayItem {
                         MachineRecipe recipe = new MachineRecipe(26, new ItemStack[] { emptyBucket }, new ItemStack[] { SlimefunItems.OIL_BUCKET.item() });
 
                         inv.consumeItem(slot);
-                        Slimefun.getGPSNetwork().getResourceManager().setSupplies(oil, b.getWorld(), b.getX() >> 4, b.getZ() >> 4, supplies.getAsInt() - 1);
+                        Slimefun.getGPSNetwork()
+                                .getResourceManager()
+                                .setSupplies(oil, b.getWorld(), b.getX() >> 4, b.getZ() >> 4, supplies.getAsInt() - 1);
                         return recipe;
                     } else {
                         /*

@@ -27,7 +27,8 @@ class GitHubActivityConnector extends GitHubConnector {
         JsonObject object = response.getAsJsonObject();
         int forks = object.get("forks").getAsInt();
         int stars = object.get("stargazers_count").getAsInt();
-        LocalDateTime lastPush = NumberUtils.parseGitHubDate(object.get("pushed_at").getAsString());
+        LocalDateTime lastPush =
+                NumberUtils.parseGitHubDate(object.get("pushed_at").getAsString());
 
         callback.accept(forks, stars, lastPush);
     }
@@ -46,5 +47,4 @@ class GitHubActivityConnector extends GitHubConnector {
     public Map<String, Object> getParameters() {
         return new HashMap<>();
     }
-
 }

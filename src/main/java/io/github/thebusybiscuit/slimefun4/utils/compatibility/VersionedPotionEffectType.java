@@ -68,7 +68,7 @@ public class VersionedPotionEffectType {
         try {
             Field field = PotionEffectType.class.getDeclaredField(key);
             return (PotionEffectType) field.get(null);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }

@@ -41,9 +41,9 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 /**
  * A {@link MultiBlockMachine} is a {@link SlimefunItem} that is built in the {@link World}.
  * It holds recipes and a {@link MultiBlock} object which represents its structure.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see MultiBlock
  *
  */
@@ -54,7 +54,12 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
     protected final MultiBlock multiblock;
 
     @ParametersAreNonnullByDefault
-    protected MultiBlockMachine(ItemGroup itemGroup, SlimefunItemStack item, ItemStack[] recipe, ItemStack[] machineRecipes, BlockFace trigger) {
+    protected MultiBlockMachine(
+            ItemGroup itemGroup,
+            SlimefunItemStack item,
+            ItemStack[] recipe,
+            ItemStack[] machineRecipes,
+            BlockFace trigger) {
         super(itemGroup, item, RecipeType.MULTIBLOCK, recipe);
         this.recipes = new ArrayList<>();
         this.displayRecipes = new ArrayList<>();
@@ -93,6 +98,10 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
         recipes.add(new ItemStack[] { output });
     }
 
+    public void clearRecipe() {
+        recipes.clear();
+    }
+
     @Override
     public void register(@Nonnull SlimefunAddon addon) {
         addItemHandler(getInteractionHandler());
@@ -108,7 +117,8 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
     public void load() {
         super.load();
 
-        Preconditions.checkArgument(displayRecipes.size() % 2 == 0, "This MultiBlockMachine's display recipes were illegally modified!");
+        Preconditions.checkArgument(
+                displayRecipes.size() % 2 == 0, "This MultiBlockMachine's display recipes were illegally modified!");
 
         for (int i = 0; i < displayRecipes.size(); i += 2) {
             ItemStack inputStack = displayRecipes.get(i);
@@ -130,7 +140,9 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
     protected @Nonnull MultiBlockInteractionHandler getInteractionHandler() {
         return (p, mb, b) -> {
             if (mb.equals(getMultiBlock())) {
-                if (canUse(p, true) && Slimefun.getProtectionManager().hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK)) {
+                if (canUse(p, true)
+                        && Slimefun.getProtectionManager()
+                                .hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK)) {
                     onInteract(p, b);
                 }
 
@@ -148,24 +160,24 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
      * Fallbacks to the old system of putting the adding back into the dispenser.
      * Optional last argument Inventory placeCheckerInv is for a {@link MultiBlockMachine} that create
      * a dummy inventory to check if there's a space for the adding, i.e. Enhanced crafting table
-     * 
+     *
      * @param adding
      *            The {@link ItemStack} that should be added
      * @param dispBlock
      *            The {@link Block} of our {@link Dispenser}
      * @param dispInv
      *            The {@link Inventory} of our {@link Dispenser}
-     * 
+     *
      * @return The target {@link Inventory}
      */
-
     @ParametersAreNonnullByDefault
     protected @Nullable Inventory findOutputInventory(ItemStack adding, Block dispBlock, Inventory dispInv) {
         return findOutputInventory(adding, dispBlock, dispInv, dispInv);
     }
 
     @ParametersAreNonnullByDefault
-    protected @Nullable Inventory findOutputInventory(ItemStack product, Block dispBlock, Inventory dispInv, Inventory placeCheckerInv) {
+    protected @Nullable Inventory findOutputInventory(
+            ItemStack product, Block dispBlock, Inventory dispInv, Inventory placeCheckerInv) {
         Optional<Inventory> outputChest = OutputChest.findOutputChestFor(dispBlock, product);
 
         /*
@@ -222,5 +234,4 @@ public abstract class MultiBlockMachine extends SlimefunItem implements NotPlace
 
         return materials.toArray(new Material[0]);
     }
-
 }

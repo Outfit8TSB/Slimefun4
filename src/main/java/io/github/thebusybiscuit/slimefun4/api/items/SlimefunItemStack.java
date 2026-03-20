@@ -1,80 +1,72 @@
 package io.github.thebusybiscuit.slimefun4.api.items;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import io.papermc.paper.inventory.ItemRarity;
-import io.papermc.paper.inventory.tooltip.TooltipContext;
-import io.papermc.paper.registry.set.RegistryKeySet;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
-import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.material.MaterialData;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import io.github.bakedlibs.dough.common.CommonPatterns;
 import io.github.bakedlibs.dough.items.ItemMetaSnapshot;
 import io.github.bakedlibs.dough.skins.PlayerHead;
 import io.github.bakedlibs.dough.skins.PlayerSkin;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.PrematureCodeException;
+import io.github.thebusybiscuit.slimefun4.api.exceptions.WrongItemStackException;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedItemFlag;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
+ * @deprecated Use {@link SlimefunItemDefinition} instead.
  * The {@link SlimefunItemStack} functions as the base for any
  * {@link SlimefunItem}.
- * 
+ *
  * @author TheBusyBiscuit
  * @author Walshy
  *
  */
-public class SlimefunItemStack {
-    private ItemStack delegate;
+@Deprecated(forRemoval = false, since = "4.10.0")
+public class SlimefunItemStack extends ItemStack {
 
     private String id;
     private ItemMetaSnapshot itemMetaSnapshot;
 
+    private boolean locked = false;
     private String texture = null;
 
     public SlimefunItemStack(@Nonnull String id, @Nonnull ItemStack item) {
-        delegate = new ItemStack(item);
+        super(item.getType(), item.getAmount());
+
+        if (item.hasItemMeta()) {
+            setItemMeta(item.getItemMeta());
+        }
 
         Validate.notNull(id, "The Item id must never be null!");
-        Validate.isTrue(id.equals(id.toUpperCase(Locale.ROOT)), "Slimefun Item Ids must be uppercase! (e.g. 'MY_ITEM_ID')");
+        Validate.isTrue(
+            id.equals(id.toUpperCase(Locale.ROOT)), "Slimefun Item Ids must be uppercase! (e.g. 'MY_ITEM_ID')");
 
         if (Slimefun.instance() == null) {
-            throw new PrematureCodeException("A SlimefunItemStack must never be be created before your Plugin was enabled.");
+            throw new PrematureCodeException(
+                "A SlimefunItemStack must never be be created before your Plugin was enabled.");
         }
 
         this.id = id;
 
-        ItemMeta meta = delegate.getItemMeta();
+        ItemMeta meta = getItemMeta();
 
         Slimefun.getItemDataService().setItemData(meta, id);
         Slimefun.getItemTextureService().setTexture(meta, id);
@@ -85,7 +77,7 @@ public class SlimefunItemStack {
     public SlimefunItemStack(@Nonnull String id, @Nonnull ItemStack item, @Nonnull Consumer<ItemMeta> consumer) {
         this(id, item);
 
-        ItemMeta im = delegate.getItemMeta();
+        ItemMeta im = getItemMeta();
         consumer.accept(im);
         setItemMeta(im);
     }
@@ -94,7 +86,8 @@ public class SlimefunItemStack {
         this(id, new ItemStack(type), consumer);
     }
 
-    public SlimefunItemStack(@Nonnull String id, @Nonnull Material type, @Nullable String name, @Nonnull Consumer<ItemMeta> consumer) {
+    public SlimefunItemStack(
+        @Nonnull String id, @Nonnull Material type, @Nullable String name, @Nonnull Consumer<ItemMeta> consumer) {
         this(id, type, meta -> {
             if (name != null) {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
@@ -125,7 +118,8 @@ public class SlimefunItemStack {
         this(id, new ItemStack(type), name, lore);
     }
 
-    public SlimefunItemStack(@Nonnull String id, @Nonnull Material type, @Nonnull Color color, @Nullable String name, String... lore) {
+    public SlimefunItemStack(
+        @Nonnull String id, @Nonnull Material type, @Nonnull Color color, @Nullable String name, String... lore) {
         this(id, type, im -> {
             if (name != null) {
                 im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
@@ -151,7 +145,12 @@ public class SlimefunItemStack {
         });
     }
 
-    public SlimefunItemStack(@Nonnull String id, @Nonnull Color color, @Nonnull PotionEffect effect, @Nullable String name, String... lore) {
+    public SlimefunItemStack(
+        @Nonnull String id,
+        @Nonnull Color color,
+        @Nonnull PotionEffect effect,
+        @Nullable String name,
+        String... lore) {
         this(id, Material.POTION, im -> {
             if (name != null) {
                 im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
@@ -179,7 +178,7 @@ public class SlimefunItemStack {
     }
 
     public SlimefunItemStack(@Nonnull SlimefunItemStack item, int amount) {
-        this(item.getItemId(), item.item());
+        this(item.getItemId(), item);
         setAmount(amount);
     }
 
@@ -192,7 +191,8 @@ public class SlimefunItemStack {
         this(id, head.getTexture(), name, lore);
     }
 
-    public SlimefunItemStack(@Nonnull String id, @Nonnull String texture, @Nullable String name, @Nonnull Consumer<ItemMeta> consumer) {
+    public SlimefunItemStack(
+        @Nonnull String id, @Nonnull String texture, @Nullable String name, @Nonnull Consumer<ItemMeta> consumer) {
         this(id, getSkull(id, texture), meta -> {
             if (name != null) {
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
@@ -211,7 +211,7 @@ public class SlimefunItemStack {
 
     /**
      * Returns the id that was given to this {@link SlimefunItemStack}.
-     * 
+     *
      * @return The {@link SlimefunItem} id for this {@link SlimefunItemStack}
      */
     public final @Nonnull String getItemId() {
@@ -231,18 +231,17 @@ public class SlimefunItemStack {
     /**
      * This method returns the associated {@link SlimefunItem} and casts it to the provided
      * {@link Class}.
-     * 
+     *
      * If no item was found or the found {@link SlimefunItem} is not of the requested type,
      * the method will return null.
-     * 
+     *
      * @param <T>
      *            The type of {@link SlimefunItem} to cast this to
      * @param type
      *            The {@link Class} of the target {@link SlimefunItem}
-     * 
+     *
      * @return The {@link SlimefunItem} this {@link SlimefunItem} represents, casted to the given type
      */
-
     public @Nullable <T extends SlimefunItem> T getItem(@Nonnull Class<T> type) {
         SlimefunItem item = getItem();
         return type.isInstance(item) ? type.cast(item) : null;
@@ -252,18 +251,34 @@ public class SlimefunItemStack {
         return itemMetaSnapshot;
     }
 
+    @Override
     public boolean setItemMeta(ItemMeta meta) {
+        validate();
         itemMetaSnapshot = new ItemMetaSnapshot(meta);
 
-        return delegate.setItemMeta(meta);
+        return super.setItemMeta(meta);
     }
 
+    @Override
     public void setType(Material type) {
-        delegate.setType(type);
+        validate();
+        super.setType(type);
     }
 
+    @Override
     public void setAmount(int amount) {
-        delegate.setAmount(amount);
+        validate();
+        super.setAmount(amount);
+    }
+
+    private void validate() {
+        if (locked) {
+            throw new WrongItemStackException(id + " is not mutable.");
+        }
+    }
+
+    public void lock() {
+        locked = true;
     }
 
     public @Nonnull Optional<String> getSkullTexture() {
@@ -295,21 +310,23 @@ public class SlimefunItemStack {
         if (texture.startsWith("ey")) {
             return texture;
         } else if (CommonPatterns.HEXADECIMAL.matcher(texture).matches()) {
-            String value = "{\"textures\":{\"SKIN\":{\"url\":\"http://textures.minecraft.net/texture/" + texture + "\"}}}";
+            String value =
+                "{\"textures\":{\"SKIN\":{\"url\":\"http://textures.minecraft.net/texture/" + texture + "\"}}}";
             return Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8));
         } else {
-            throw new IllegalArgumentException("The provided texture for Item \"" + id + "\" does not seem to be a valid texture String!");
+            throw new IllegalArgumentException(
+                "The provided texture for Item \"" + id + "\" does not seem to be a valid texture String!");
         }
     }
 
     @Override
-    public @Nonnull SlimefunItemStack clone() {
-        return new SlimefunItemStack(id, delegate.clone());
+    public ItemStack clone() {
+        return new SlimefunItemStack(id, super.clone());
     }
 
     @Override
     public String toString() {
-        return "SlimefunItemStack (" + id + (delegate.getAmount() > 1 ? (" x " + delegate.getAmount()) : "") + ')';
+        return "SlimefunItemStack (" + id + (getAmount() > 1 ? (" x " + getAmount()) : "") + ')';
     }
 
     /**
@@ -334,242 +351,6 @@ public class SlimefunItemStack {
      * @return underlying ItemStack used
      */
     public @Nonnull ItemStack item() {
-        return delegate.clone();
-    }
-
-    public Material getType() {
-        return this.delegate.getType();
-    }
-
-    public ItemStack withType(Material type) {
-        return this.delegate.withType(type);
-    }
-
-    public int getAmount() {
-        return this.delegate.getAmount();
-    }
-
-    /** @deprecated */
-    @Deprecated
-    public MaterialData getData() {
-        return this.delegate.getData();
-    }
-
-    /** @deprecated */
-    @Deprecated
-    public void setData(MaterialData data) {
-        this.delegate.setData(data);
-    }
-
-    /** @deprecated */
-    @Deprecated
-    public void setDurability(short durability) {
-        this.delegate.setDurability(durability);
-    }
-
-    /** @deprecated */
-    @Deprecated
-    public short getDurability() {
-        return this.delegate.getDurability();
-    }
-
-    public int getMaxStackSize() {
-        return this.delegate.getMaxStackSize();
-    }
-
-    public boolean isSimilar(ItemStack stack) {
-        return this.delegate.isSimilar(stack);
-    }
-
-    public boolean containsEnchantment(Enchantment ench) {
-        return this.delegate.containsEnchantment(ench);
-    }
-
-    public int getEnchantmentLevel(Enchantment ench) {
-        return this.delegate.getEnchantmentLevel(ench);
-    }
-
-    public Map<Enchantment, Integer> getEnchantments() {
-        return this.delegate.getEnchantments();
-    }
-
-    public void addEnchantments(Map<Enchantment, Integer> enchantments) {
-        this.delegate.addEnchantments(enchantments);
-    }
-
-    public void addEnchantment(Enchantment ench, int level) {
-        this.delegate.addEnchantment(ench, level);
-    }
-
-    public void addUnsafeEnchantments(Map<Enchantment, Integer> enchantments) {
-        this.delegate.addUnsafeEnchantments(enchantments);
-    }
-
-    public void addUnsafeEnchantment(Enchantment ench, int level) {
-        this.delegate.addUnsafeEnchantment(ench, level);
-    }
-
-    public int removeEnchantment(Enchantment ench) {
-        return this.delegate.removeEnchantment(ench);
-    }
-
-    public void removeEnchantments() {
-        this.delegate.removeEnchantments();
-    }
-
-    public Map<String, Object> serialize() {
-        return this.delegate.serialize();
-    }
-
-    public boolean editMeta(Consumer<? super ItemMeta> consumer) {
-        return this.delegate.editMeta(consumer);
-    }
-
-    public <M extends ItemMeta> boolean editMeta(Class<M> metaClass, Consumer<? super M> consumer) {
-        return this.delegate.editMeta(metaClass, consumer);
-    }
-
-    public ItemMeta getItemMeta() {
-        return this.delegate.getItemMeta();
-    }
-
-    public boolean hasItemMeta() {
-        return this.delegate.hasItemMeta();
-    }
-
-    /** @deprecated */
-    @Deprecated
-    public String getTranslationKey() {
-        return this.delegate.getTranslationKey();
-    }
-
-    public ItemStack enchantWithLevels(int levels, boolean allowTreasure, Random random) {
-        return this.delegate.enchantWithLevels(levels, allowTreasure, random);
-    }
-
-    public ItemStack enchantWithLevels(int levels, RegistryKeySet<Enchantment> keySet, Random random) {
-        return this.delegate.enchantWithLevels(levels, keySet, random);
-    }
-
-    public HoverEvent<HoverEvent.ShowItem> asHoverEvent(UnaryOperator<HoverEvent.ShowItem> op) {
-        return this.delegate.asHoverEvent(op);
-    }
-
-    public Component displayName() {
-        return this.delegate.displayName();
-    }
-
-    public ItemStack ensureServerConversions() {
-        return this.delegate.ensureServerConversions();
-    }
-
-    public byte[] serializeAsBytes() {
-        return this.delegate.serializeAsBytes();
-    }
-
-    /** @deprecated */
-    public String getI18NDisplayName() {
-        return this.delegate.getI18NDisplayName();
-    }
-
-    /** @deprecated */
-    public int getMaxItemUseDuration() {
-        return this.delegate.getMaxItemUseDuration();
-    }
-
-    public int getMaxItemUseDuration(LivingEntity entity) {
-        return this.delegate.getMaxItemUseDuration(entity);
-    }
-
-    public ItemStack asOne() {
-        return this.delegate.asOne();
-    }
-
-    public ItemStack asQuantity(int qty) {
-        return this.delegate.asQuantity(qty);
-    }
-
-    public ItemStack add() {
-        return this.delegate.add();
-    }
-
-    public ItemStack add(int qty) {
-        return this.delegate.add(qty);
-    }
-
-    public ItemStack subtract() {
-        return this.delegate.subtract();
-    }
-
-    public ItemStack subtract(int qty) {
-        return this.delegate.subtract(qty);
-    }
-
-    @Deprecated
-    public List<String> getLore() {
-        return this.delegate.getLore();
-    }
-
-    public List<Component> lore() {
-        return this.delegate.lore();
-    }
-
-    @Deprecated
-    public void setLore(List<String> lore) {
-        this.delegate.setLore(lore);
-    }
-
-    public void lore(List<? extends Component> lore) {
-        this.delegate.lore(lore);
-    }
-
-    public void addItemFlags(ItemFlag... itemFlags) {
-        this.delegate.addItemFlags(itemFlags);
-    }
-
-    public void removeItemFlags(ItemFlag... itemFlags) {
-        this.delegate.removeItemFlags(itemFlags);
-    }
-
-    public Set<ItemFlag> getItemFlags() {
-        return this.delegate.getItemFlags();
-    }
-
-    public boolean hasItemFlag(ItemFlag flag) {
-        return this.delegate.hasItemFlag(flag);
-    }
-
-    public String translationKey() {
-        return this.delegate.translationKey();
-    }
-
-    /** @deprecated */
-    @Deprecated
-    public ItemRarity getRarity() {
-        return this.delegate.getRarity();
-    }
-
-    public boolean isRepairableBy(ItemStack repairMaterial) {
-        return this.delegate.isRepairableBy(repairMaterial);
-    }
-
-    public boolean canRepair(ItemStack toBeRepaired) {
-        return this.delegate.canRepair(toBeRepaired);
-    }
-
-    public ItemStack damage(int amount, LivingEntity livingEntity) {
-        return this.delegate.damage(amount, livingEntity);
-    }
-
-    public boolean isEmpty() {
-        return this.delegate.isEmpty();
-    }
-
-    public List<Component> computeTooltipLines(TooltipContext tooltipContext, Player player) {
-        return this.delegate.computeTooltipLines(tooltipContext, player);
-    }
-
-    public HoverEvent<HoverEvent.ShowItem> asHoverEvent() {
-        return this.delegate.asHoverEvent();
+        return this.clone();
     }
 }

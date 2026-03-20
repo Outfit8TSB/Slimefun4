@@ -1,6 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.utils.biomes;
 
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -23,6 +22,7 @@ import io.github.bakedlibs.dough.common.CommonPatterns;
 import io.github.thebusybiscuit.slimefun4.api.exceptions.BiomeMapException;
 import io.github.thebusybiscuit.slimefun4.utils.JsonUtils;
 import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
+import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedBiome;
 
 /**
  * The {@link BiomeMapParser} allows you to parse json data into a {@link BiomeMap}.
@@ -64,7 +64,8 @@ public class BiomeMapParser<T> {
     @ParametersAreNonnullByDefault
     public BiomeMapParser(NamespacedKey key, BiomeDataConverter<T> valueConverter) {
         Validate.notNull(key, "The key shall not be null.");
-        Validate.notNull(valueConverter, "You must provide a Function to convert raw json values to your desired data type.");
+        Validate.notNull(
+                valueConverter, "You must provide a Function to convert raw json values to your desired data type.");
 
         this.key = key;
         this.valueConverter = valueConverter;
@@ -121,7 +122,9 @@ public class BiomeMapParser<T> {
             if (element instanceof JsonObject) {
                 readEntry(element.getAsJsonObject());
             } else {
-                throw new BiomeMapException(key, "Unexpected array element: " + element.getClass().getSimpleName() + " - " + element.toString());
+                throw new BiomeMapException(
+                        key,
+                        "Unexpected array element: " + element.getClass().getSimpleName() + " - " + element.toString());
             }
         }
     }
@@ -170,7 +173,7 @@ public class BiomeMapParser<T> {
                     String formattedValue = CommonPatterns.COLON.split(value)[1].toUpperCase(Locale.ROOT);
 
                     try {
-                        Biome biome = Biome.valueOf(formattedValue);
+                        Biome biome = VersionedBiome.valueOf(formattedValue);
                         biomes.add(biome);
                     } catch (IllegalArgumentException x) {
                         // Lenient Parsers will ignore unknown biomes
@@ -185,7 +188,9 @@ public class BiomeMapParser<T> {
                     throw new BiomeMapException(key, "Could not recognize value '" + value + "'");
                 }
             } else {
-                throw new BiomeMapException(key, "Unexpected array element: " + element.getClass().getSimpleName() + " - " + element.toString());
+                throw new BiomeMapException(
+                        key,
+                        "Unexpected array element: " + element.getClass().getSimpleName() + " - " + element.toString());
             }
         }
 
@@ -206,5 +211,4 @@ public class BiomeMapParser<T> {
         biomeMap.putAll(map);
         return biomeMap;
     }
-
 }

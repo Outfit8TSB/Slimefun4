@@ -1,16 +1,14 @@
 package io.github.thebusybiscuit.slimefun4.implementation.listeners;
 
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 
 final class GrapplingHookEntity {
 
@@ -50,4 +48,7 @@ final class GrapplingHookEntity {
         }
     }
 
+    public Entity getLeashTarget() {
+        return leashTarget;
+    }
 }

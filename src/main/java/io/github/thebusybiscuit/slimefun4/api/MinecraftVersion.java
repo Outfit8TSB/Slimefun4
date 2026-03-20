@@ -9,6 +9,8 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.papermc.lib.PaperLib;
 
 /**
+ * TODO: Clean up this method
+ *
  * This enum holds all versions of Minecraft that we currently support.
  *
  * @author TheBusyBiscuit
@@ -47,7 +49,7 @@ public enum MinecraftVersion {
      * This constant represents Minecraft (Java Edition) Version 1.20
      * ("The Trails &amp; Tales Update")
      */
-    MINECRAFT_1_20(20, 0, 4, "1.20.x"),
+    MINECRAFT_1_20(20, "1.20.x"),
 
     /**
      * This constant represents Minecraft (Java Edition) Version 1.20.5
@@ -59,7 +61,7 @@ public enum MinecraftVersion {
      * This constant represents Minecraft (Java Edition) Version 1.21
      * ("Tricky Trials")
      */
-    MINECRAFT_1_21(21, 0, "1.21.x"),
+    MINECRAFT_1_21(21, "1.21.x"),
 
     /**
      * This constant represents an exceptional state in which we were unable
@@ -114,28 +116,6 @@ public enum MinecraftVersion {
         this.majorVersion = majorVersion;
         this.minorVersion = minor;
         this.maxMinorVersion = -1;
-        this.virtual = false;
-    }
-
-    /**
-     * This constructs a new {@link MinecraftVersion} with the given name.
-     * This constructor forces the {@link MinecraftVersion} to be real.
-     * It must be a real version of Minecraft.
-     *
-     * @param majorVersion
-     *            The major (minor in semver, major in MC land) version of minecraft as an {@link Integer}
-     * @param minor
-     *           The minor (patch in semver, minor in MC land) version of minecraft as an {@link Integer}
-     * @param maxMinorVersion
-     *           The maximum minor (patch) version of minecraft this version represents
-     * @param name
-     *            The display name of this {@link MinecraftVersion}
-     */
-    MinecraftVersion(int majorVersion, int minor, int maxMinorVersion, @Nonnull String name) {
-        this.name = name;
-        this.majorVersion = majorVersion;
-        this.minorVersion = minor;
-        this.maxMinorVersion = maxMinorVersion;
         this.virtual = false;
     }
 
@@ -221,6 +201,34 @@ public enum MinecraftVersion {
                 && (this.maxMinorVersion == -1 || patchVersion <= this.maxMinorVersion);
     }
 
+    // This method was taken from Gugu Project, it should be merged with the one above in the future
+    // However, I'm not sure whether its needed at all, so it also should be checked
+    /*
+        public boolean isMinecraftVersion(int minecraftVersion, int patchVersion) {
+        if (isVirtual()) {
+            return false;
+        }
+
+        if (this.majorVersion != minecraftVersion) {
+            return false;
+        }
+        // the virtual ones are at the last of array, so it will not cause indexOutOfRange
+        MinecraftVersion nextVersion = values()[this.ordinal() + 1];
+        // checking patchVersion, if next Version is not a virtual version and it is in the same majorVersion as this,
+        // then we should ensure patchVersion is lower than nextVersion
+        return patchVersion >= this.minorVersion
+                && (nextVersion.isVirtual()
+                        || nextVersion.majorVersion != this.majorVersion
+                        || nextVersion.minorVersion > patchVersion);
+
+        //        if (this.majorVersion == 20) {
+        //            return this.minorVersion == -1 ? patchVersion < 5 : patchVersion >= this.minorVersion;
+        //        } else {
+        //            return this.minorVersion == -1 || patchVersion >= this.minorVersion;
+        //        }
+    }
+     */
+
     /**
      * This method checks whether this {@link MinecraftVersion} is newer or equal to
      * the given {@link MinecraftVersion},
@@ -257,6 +265,15 @@ public enum MinecraftVersion {
         return this.ordinal() >= version.ordinal();
     }
 
+    public boolean isAtLeast(int majorVersion, int minorVersion) {
+        if (this == UNKNOWN) {
+            return false;
+        }
+
+        return this.majorVersion > majorVersion
+                || (this.majorVersion == majorVersion && this.minorVersion >= minorVersion);
+    }
+
     /**
      * This checks whether this {@link MinecraftVersion} is older than the specified {@link MinecraftVersion}.
      *
@@ -268,14 +285,22 @@ public enum MinecraftVersion {
      * @return Whether this {@link MinecraftVersion} is older than the given one
      */
     public boolean isBefore(@Nonnull MinecraftVersion version) {
-        Validate.notNull(version, "A Minecraft version cannot be null!");
-
-        if (this == UNKNOWN) {
-            return true;
-        }
-
-        return version.ordinal() > this.ordinal();
+        return !isAtLeast(version);
+        //        Validate.notNull(version, "A Minecraft version cannot be null!");
+        //
+        //        if (this == UNKNOWN) {
+        //            return true;
+        //        }
+        //
+        //        return version.ordinal() > this.ordinal();
     }
+
+    // From Gugu Project, why is this even needed?
+    /*
+    public boolean isBefore(int majorVersion, int minorVersion) {
+        return !isAtLeast(majorVersion, minorVersion);
+    }
+     */
 
     /**
      * Checks whether this {@link MinecraftVersion} is older than the specified minecraft and patch versions
@@ -296,5 +321,4 @@ public enum MinecraftVersion {
 
         return this.minorVersion == -1 ? patchVersion > 0 : this.minorVersion < patchVersion;
     }
-
 }

@@ -1,20 +1,18 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.rotations.NotDiagonallyRotatable;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
-
-public class CoalGenerator extends AGenerator {
+public class CoalGenerator extends AGenerator implements NotDiagonallyRotatable {
 
     @ParametersAreNonnullByDefault
     public CoalGenerator(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -87,5 +85,4 @@ public class CoalGenerator extends AGenerator {
     public ItemStack getProgressBar() {
         return new ItemStack(Material.FLINT_AND_STEEL);
     }
-
 }

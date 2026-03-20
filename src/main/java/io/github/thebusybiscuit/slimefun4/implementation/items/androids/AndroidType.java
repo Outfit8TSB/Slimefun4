@@ -4,11 +4,9 @@ import javax.annotation.Nonnull;
 
 /**
  * This enum holds all the different types a {@link ProgrammableAndroid} can represent.
- * 
- * @author TheBusyBiscuit
- * 
- * @see ProgrammableAndroid
  *
+ * @author TheBusyBiscuit
+ * @see ProgrammableAndroid
  */
 public enum AndroidType {
 
@@ -29,7 +27,7 @@ public enum AndroidType {
     FARMER,
 
     /**
-     * The Advanced Farmer is an extension of the {@link FarmerAndroid},
+     * The AdvancedFarmerAndroid is an extension of the {@link FarmerAndroid},
      * it can also harvest plants from ExoticGarden.
      */
     ADVANCED_FARMER,
@@ -60,5 +58,4 @@ public enum AndroidType {
     boolean isType(@Nonnull AndroidType type) {
         return type == NONE || type == this || (type == NON_FIGHTER && this != FIGHTER);
     }
-
 }

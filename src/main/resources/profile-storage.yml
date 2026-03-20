@@ -1,0 +1,69 @@
+#########################################################################
+# Database type, optional values include SQLITE, MYSQL, POSTGRESQL
+# Note: When switching database types, we will not automatically migrate your data for you :)
+# Note: When using MYSQL across servers, please be sure to set allow-open-when-owner-offline in config.yml to false
+#      to prevent players from opening the same backpack on different servers and duplicating items.
+storageType: SQLITE
+
+# Use Base64 encoding for data fields
+base64EncodeVal: true
+#########################################################################
+
+#########################################################################
+# Number of database read/write threads
+# When using MYSQL, it is recommended that max connections = read + write threads, and read threads should be greater than write threads.
+# Note: More threads do not always mean better performance; too many can actually cause performance degradation. Please allocate an appropriate number.
+
+# Number of read threads
+readExecutorThread: 7
+# Number of write threads
+writeExecutorThread: 3
+#########################################################################
+
+#########################################################################
+# Sqlite configuration
+sqlite:
+  maxConnection: 5
+#########################################################################
+
+#########################################################################
+# MySQL configuration
+mysql:
+  # Database connection address
+  host: "127.0.0.1"
+  # Database connection port
+  port: 3306
+  # Database name
+  database: ""
+  # Table prefix
+  tablePrefix: ""
+  # Connection username
+  user: ""
+  # Connection user password
+  password: ""
+  # Whether to use encrypted connection
+  useSSL: false
+  # Maximum connections
+  maxConnection: 10
+#########################################################################
+
+#########################################################################
+# PostgreSQL configuration
+postgresql:
+  # Database connection address
+  host: "127.0.0.1"
+  # Database connection port
+  port: 3306
+  # Database name
+  database: ""
+  # Table prefix
+  tablePrefix: ""
+  # Connection username
+  user: ""
+  # Connection user password
+  password: ""
+  # Whether to use encrypted connection
+  useSSL: false
+  # Maximum connections
+  maxConnection: 10
+#########################################################################

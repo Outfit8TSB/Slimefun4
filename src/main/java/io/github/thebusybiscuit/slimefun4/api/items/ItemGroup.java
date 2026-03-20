@@ -1,15 +1,20 @@
 package io.github.thebusybiscuit.slimefun4.api.items;
 
+import io.github.bakedlibs.dough.items.ItemStackFactory;
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.items.groups.LockedItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.groups.SeasonalItemGroup;
+import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedItemFlag;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Keyed;
@@ -18,14 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import io.github.bakedlibs.dough.items.CustomItemStack;
-import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.api.items.groups.LockedItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.groups.SeasonalItemGroup;
-import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedItemFlag;
 
 /**
  * Represents an item group, which structure
@@ -186,8 +183,11 @@ public class ItemGroup implements Keyed {
             return;
         }
 
-        if (isRegistered() && !isCrossAddonItemGroup() && !item.getAddon().getName().equals(this.addon.getName())) {
-            item.warn("This item does not belong into ItemGroup " + this + " as that group belongs to " + this.addon.getName());
+        if (isRegistered()
+                && !isCrossAddonItemGroup()
+                && !item.getAddon().getName().equals(this.addon.getName())) {
+            item.warn("This item does not belong into ItemGroup " + this + " as that group belongs to "
+                    + this.addon.getName());
         }
 
         items.add(item);
@@ -214,7 +214,7 @@ public class ItemGroup implements Keyed {
      * @return A localized display item for this {@link ItemGroup}
      */
     public @Nonnull ItemStack getItem(@Nonnull Player p) {
-        return CustomItemStack.create(item, meta -> {
+        return ItemStackFactory.create(item, meta -> {
             String name = Slimefun.getLocalization().getItemGroupName(p, getKey());
 
             if (name == null) {
@@ -227,7 +227,10 @@ public class ItemGroup implements Keyed {
                 meta.setDisplayName(ChatColor.YELLOW + name);
             }
 
-            meta.setLore(Arrays.asList("", ChatColor.GRAY + "\u21E8 " + ChatColor.GREEN + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-itemgroup")));
+            meta.setLore(Arrays.asList(
+                    "",
+                    ChatColor.GRAY + "\u21E8 " + ChatColor.GREEN
+                            + Slimefun.getLocalization().getMessage(p, "guide.tooltips.open-itemgroup")));
         });
     }
 
@@ -384,5 +387,4 @@ public class ItemGroup implements Keyed {
     public boolean isHidden(@Nonnull Player p) {
         return !isVisible(p);
     }
-
 }

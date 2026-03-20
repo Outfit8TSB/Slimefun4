@@ -6,26 +6,23 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 
 /**
  * This class is used to speed up parsing of a {@link JsonObject} that is stored at
  * a given {@link Location}.
- * 
+ * <p>
  * This simply utilises a {@link HashMap} to cache the data and then provides the same getters
  * as a normal {@link Config}.
- * 
- * @author creator3
- * 
- * @see BlockStorage
  *
+ * @author creator3
+ * @see BlockStorage
  */
 public class BlockInfoConfig extends Config {
 
@@ -48,7 +45,13 @@ public class BlockInfoConfig extends Config {
     @Override
     public void setValue(String path, Object value) {
         if (value != null && !(value instanceof String)) {
-            throw new UnsupportedOperationException("Can't set \"" + path + "\" to \"" + value + "\" (type: " + value.getClass().getSimpleName() + ") because BlockInfoConfig only supports Strings");
+            throw new UnsupportedOperationException("Can't set \""
+                    + path
+                    + "\" to \""
+                    + value
+                    + "\" (type: "
+                    + value.getClass().getSimpleName()
+                    + ") because BlockInfoConfig only supports Strings");
         }
 
         if (value == null) {
@@ -117,5 +120,4 @@ public class BlockInfoConfig extends Config {
     public String toJSON() {
         return new GsonBuilder().create().toJson(data);
     }
-
 }

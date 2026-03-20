@@ -94,5 +94,4 @@ public class SubItemGroup extends ItemGroup {
             parentItemGroup.register(addon);
         }
     }
-
 }

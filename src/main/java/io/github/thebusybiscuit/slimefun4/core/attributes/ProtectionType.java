@@ -8,9 +8,7 @@ import org.bukkit.entity.Bee;
  *
  * @author Linox
  * @author Seggan
- *
  * @see ProtectiveArmor
- *
  */
 public enum ProtectionType {
 
@@ -28,5 +26,4 @@ public enum ProtectionType {
      * This damage type represents damage caused by flying into a wall with an elytra
      */
     FLYING_INTO_WALL;
-
 }

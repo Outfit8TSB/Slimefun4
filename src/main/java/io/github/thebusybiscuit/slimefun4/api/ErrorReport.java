@@ -1,5 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.api;
 
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.papermc.lib.PaperLib;
 import java.io.File;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -13,21 +17,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.IntStream;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
+import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
-
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.papermc.lib.PaperLib;
-
-import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 /**
  * This class represents an {@link ErrorReport}.
@@ -86,32 +81,59 @@ public class ErrorReport<T extends Throwable> {
     @ParametersAreNonnullByDefault
     public ErrorReport(T throwable, Location l, SlimefunItem item) {
         this(throwable, item.getAddon(), stream -> {
-            stream.println("Block Info:");
-            stream.println("  World: " + l.getWorld().getName());
+            stream.println("blockinfo:");
+            stream.println("  world: " + l.getWorld().getName());
             stream.println("  X: " + l.getBlockX());
             stream.println("  Y: " + l.getBlockY());
             stream.println("  Z: " + l.getBlockZ());
-            stream.println("  Material: " + l.getBlock().getType());
-            stream.println("  Block Data: " + l.getBlock().getBlockData().getClass().getName());
-            stream.println("  State: " + l.getBlock().getState().getClass().getName());
+            stream.println("  blocktype: " + l.getBlock().getType());
+            stream.println("  blockdata: " + l.getBlock().getBlockData().getClass().getName());
+            stream.println("  state: " + l.getBlock().getState().getClass().getName());
             stream.println();
 
             if (item.getBlockTicker() != null) {
-                stream.println("Ticker-Info:");
-                stream.println("  Type: " + (item.getBlockTicker().isSynchronized() ? "Synchronized" : "Asynchronous"));
+                stream.println("Ticker info:");
+                stream.println("  type: " + (item.getBlockTicker().isSynchronized() ? "synchronize" : "async"));
                 stream.println();
             }
 
             if (item instanceof EnergyNetProvider) {
-                stream.println("Ticker-Info:");
-                stream.println("  Type: Indirect (Energy Network)");
+                stream.println("Ticker info:");
+                stream.println("  type: indirect (managed by the energy network)");
                 stream.println();
             }
 
-            stream.println("Slimefun Data:");
+            stream.println("Slimefun data:");
             stream.println("  ID: " + item.getId());
-            stream.println("  Inventory: " + BlockStorage.getStorage(l.getWorld()).hasInventory(l));
-            stream.println("  Data: " + BlockStorage.getBlockInfoAsJson(l));
+            var blockData =
+                    Slimefun.getDatabaseManager().getBlockDataController().getBlockData(l);
+
+            if (blockData == null) {
+                Slimefun.runSync(() -> Slimefun.getBlockDataService()
+                        .getUniversalDataUUID(l.getBlock())
+                        .ifPresentOrElse(
+                                uuid -> {
+                                    var universalData = Slimefun.getDatabaseManager()
+                                            .getBlockDataController()
+                                            .getUniversalBlockDataFromCache(uuid);
+                                    if (universalData != null) {
+                                        stream.println("  Data load status: " + universalData.isDataLoaded());
+                                        stream.println("  Inventory: " + (universalData.getMenu() != null));
+                                        stream.println("  Data: ");
+                                        universalData
+                                                .getAllData()
+                                                .forEach((k, v) -> stream.println("    " + k + ": " + v));
+                                    } else {
+                                        stream.println("This block has no data.");
+                                    }
+                                },
+                                () -> stream.println("This block has no data.")));
+            } else {
+                stream.println("  Data load status: " + blockData.isDataLoaded());
+                stream.println("  Inventory: " + (blockData.getBlockMenu() != null));
+                stream.println("  Data: ");
+                blockData.getAllData().forEach((k, v) -> stream.println("    " + k + ": " + v));
+            }
             stream.println();
         });
     }
@@ -129,7 +151,8 @@ public class ErrorReport<T extends Throwable> {
         this(throwable, item.getAddon(), stream -> {
             stream.println("SlimefunItem:");
             stream.println("  ID: " + item.getId());
-            stream.println("  Plugin: " + (item.getAddon() == null ? "Unknown" : item.getAddon().getName()));
+            stream.println("  Plugin: "
+                    + (item.getAddon() == null ? "Unknown" : item.getAddon().getName()));
             stream.println();
         });
     }
@@ -211,15 +234,23 @@ public class ErrorReport<T extends Throwable> {
             addon.getLogger().log(Level.WARNING, "");
             addon.getLogger().log(Level.WARNING, "An Error occurred! It has been saved as: ");
             addon.getLogger().log(Level.WARNING, "/plugins/Slimefun/error-reports/{0}", file.getName());
-            addon.getLogger().log(Level.WARNING, "Please put this file on https://pastebin.com/ and report this to the developer(s).");
+            addon.getLogger()
+                    .log(
+                            Level.WARNING,
+                            "Please put this file on https://pastebin.com/ and report this to the developer(s).");
 
             if (addon.getBugTrackerURL() != null) {
                 addon.getLogger().log(Level.WARNING, "Bug Tracker: {0}", addon.getBugTrackerURL());
             }
-
+            addon.getLogger().log(Level.WARNING, "Please DO NOT send screenshots of these logs to the developer(s).");
             addon.getLogger().log(Level.WARNING, "");
         } catch (Exception x) {
-            addon.getLogger().log(Level.SEVERE, x, () -> "An Error occurred while saving an Error-Report for Slimefun " + Slimefun.getVersion());
+            addon.getLogger()
+                    .log(
+                            Level.SEVERE,
+                            x,
+                            () -> "An Error occurred while saving an Error-Report for Slimefun "
+                                    + Slimefun.getVersion());
         }
     }
 
@@ -228,16 +259,22 @@ public class ErrorReport<T extends Throwable> {
 
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             if (Bukkit.getPluginManager().isPluginEnabled(plugin)) {
-                plugins.add("  + " + plugin.getName() + ' ' + plugin.getDescription().getVersion());
+                plugins.add("  + " + plugin.getName() + ' '
+                        + plugin.getDescription().getVersion());
 
-                if (plugin.getDescription().getDepend().contains(dependency) || plugin.getDescription().getSoftDepend().contains(dependency)) {
-                    addons.add("  + " + plugin.getName() + ' ' + plugin.getDescription().getVersion());
+                if (plugin.getDescription().getDepend().contains(dependency)
+                        || plugin.getDescription().getSoftDepend().contains(dependency)) {
+                    addons.add("  + " + plugin.getName() + ' '
+                            + plugin.getDescription().getVersion());
                 }
             } else {
-                plugins.add("  - " + plugin.getName() + ' ' + plugin.getDescription().getVersion());
+                plugins.add("  - " + plugin.getName() + ' '
+                        + plugin.getDescription().getVersion());
 
-                if (plugin.getDescription().getDepend().contains(dependency) || plugin.getDescription().getSoftDepend().contains(dependency)) {
-                    addons.add("  - " + plugin.getName() + ' ' + plugin.getDescription().getVersion());
+                if (plugin.getDescription().getDepend().contains(dependency)
+                        || plugin.getDescription().getSoftDepend().contains(dependency)) {
+                    addons.add("  - " + plugin.getName() + ' '
+                            + plugin.getDescription().getVersion());
                 }
             }
         }
@@ -248,7 +285,8 @@ public class ErrorReport<T extends Throwable> {
         File newFile = new File(path + ".err");
 
         if (newFile.exists()) {
-            IntStream stream = IntStream.iterate(1, i -> i + 1).filter(i -> !new File(path + " (" + i + ").err").exists());
+            IntStream stream =
+                    IntStream.iterate(1, i -> i + 1).filter(i -> !new File(path + " (" + i + ").err").exists());
             int id = stream.findFirst().getAsInt();
 
             newFile = new File(path + " (" + id + ").err");
@@ -267,12 +305,12 @@ public class ErrorReport<T extends Throwable> {
      * @param runnable
      *            The code to execute
      */
-    public static void tryCatch(@Nonnull Function<Exception, ErrorReport<Exception>> function, @Nonnull Runnable runnable) {
+    public static void tryCatch(
+            @Nonnull Function<Exception, ErrorReport<Exception>> function, @Nonnull Runnable runnable) {
         try {
             runnable.run();
         } catch (Exception x) {
             function.apply(x);
         }
     }
-
 }

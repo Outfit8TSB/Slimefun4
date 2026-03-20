@@ -1,21 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.core.networks.energy;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.LongConsumer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.thebusybiscuit.slimefun4.api.ErrorReport;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.network.Network;
@@ -26,17 +12,27 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
-
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.LongConsumer;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 /**
  * The {@link EnergyNet} is an implementation of {@link Network} that deals with
  * electrical energy being sent from and to nodes.
- * 
+ *
  * @author meiamsome
  * @author TheBusyBiscuit
- * 
+ *
  * @see Network
  * @see EnergyNetComponent
  * @see EnergyNetProvider
@@ -59,7 +55,7 @@ public class EnergyNet extends Network implements HologramOwner {
     public int getRange() {
         return RANGE;
     }
-    
+
     /**
      * This creates an immutable {@link Map} of {@link EnergyNetProvider}s within this {@link EnergyNet} instance.
      *
@@ -68,7 +64,7 @@ public class EnergyNet extends Network implements HologramOwner {
     public @Nonnull Map<Location, EnergyNetProvider> getGenerators() {
         return Collections.unmodifiableMap(generators);
     }
-    
+
     /**
      * This creates an immutable {@link Map} of {@link EnergyNetComponentType#CAPACITOR} {@link EnergyNetComponent}s within this {@link EnergyNet} instance.
      *
@@ -77,7 +73,7 @@ public class EnergyNet extends Network implements HologramOwner {
     public @Nonnull Map<Location, EnergyNetComponent> getCapacitors() {
         return Collections.unmodifiableMap(capacitors);
     }
-    
+
     /**
      * This creates an immutable {@link Map} of {@link EnergyNetComponentType#CONSUMER} {@link EnergyNetComponent}s within this {@link EnergyNet} instance.
      *
@@ -104,10 +100,8 @@ public class EnergyNet extends Network implements HologramOwner {
             return null;
         } else {
             return switch (component.getEnergyComponentType()) {
-                case CONNECTOR,
-                    CAPACITOR -> NetworkComponent.CONNECTOR;
-                case CONSUMER,
-                    GENERATOR -> NetworkComponent.TERMINUS;
+                case CONNECTOR, CAPACITOR -> NetworkComponent.CONNECTOR;
+                case CONSUMER, GENERATOR -> NetworkComponent.TERMINUS;
                 default -> null;
             };
         }
@@ -134,7 +128,8 @@ public class EnergyNet extends Network implements HologramOwner {
                     if (component instanceof EnergyNetProvider provider) {
                         generators.put(l, provider);
                     } else if (component instanceof SlimefunItem item) {
-                        item.warn("This Item is marked as a GENERATOR but does not implement the interface EnergyNetProvider!");
+                        item.warn("This Item is marked as a GENERATOR but does not implement the interface"
+                                + " EnergyNetProvider!");
                     }
                     break;
                 default:
@@ -143,80 +138,116 @@ public class EnergyNet extends Network implements HologramOwner {
         }
     }
 
-    public void tick(@Nonnull Block b) {
+    public void tick(@Nonnull Block b, SlimefunBlockData blockData) {
         AtomicLong timestamp = new AtomicLong(Slimefun.getProfiler().newEntry());
+        try {
+            if (!regulator.equals(b.getLocation())) {
+                updateHologram(b, "&4Another regulator detected nearby", blockData::isPendingRemove);
 
-        if (!regulator.equals(b.getLocation())) {
-            updateHologram(b, "&4Multiple Energy Regulators connected");
-            Slimefun.getProfiler().closeEntry(b.getLocation(), SlimefunItems.ENERGY_REGULATOR.getItem(), timestamp.get());
-            return;
-        }
+                return;
+            }
 
-        super.tick();
+            super.tick();
 
-        if (connectorNodes.isEmpty() && terminusNodes.isEmpty()) {
-            updateHologram(b, "&4No Energy Network found");
-        } else {
-            int generatorsSupply = tickAllGenerators(timestamp::getAndAdd);
-            int capacitorsSupply = tickAllCapacitors();
-            int supply = NumberUtils.flowSafeAddition(generatorsSupply, capacitorsSupply);
-            int remainingEnergy = supply;
-            int demand = 0;
+            if (connectorNodes.isEmpty() && terminusNodes.isEmpty()) {
+                updateHologram(b, "&4No energy network found", blockData::isPendingRemove);
+            } else {
+                long generatorsSupply = tickAllGenerators(timestamp::getAndAdd);
+                long capacitorsSupply = tickAllCapacitors();
+                long supply = NumberUtils.flowSafeAddition(generatorsSupply, capacitorsSupply);
+                long remainingEnergy = supply;
+                long demand = 0;
 
-            for (Map.Entry<Location, EnergyNetComponent> entry : consumers.entrySet()) {
-                Location loc = entry.getKey();
-                EnergyNetComponent component = entry.getValue();
-                int capacity = component.getCapacity();
-                int charge = component.getCharge(loc);
+                for (Map.Entry<Location, EnergyNetComponent> entry : consumers.entrySet()) {
+                    Location loc = entry.getKey();
 
-                if (charge < capacity) {
-                    int availableSpace = capacity - charge;
-                    demand = NumberUtils.flowSafeAddition(demand, availableSpace);
+                    var data = StorageCacheUtils.getDataContainer(loc);
+                    if (data == null || data.isPendingRemove()) {
+                        continue;
+                    }
 
-                    if (remainingEnergy > 0) {
-                        if (remainingEnergy > availableSpace) {
-                            component.setCharge(loc, capacity);
-                            remainingEnergy -= availableSpace;
-                        } else {
-                            component.setCharge(loc, charge + remainingEnergy);
-                            remainingEnergy = 0;
+                    EnergyNetComponent component = entry.getValue();
+                    if (!((SlimefunItem) component).getId().equals(data.getSfId())) {
+                        var newItem = SlimefunItem.getById(data.getSfId());
+                        if (!(newItem instanceof EnergyNetComponent newComponent)
+                                || newComponent.getEnergyComponentType() != EnergyNetComponentType.CONSUMER) {
+                            continue;
+                        }
+                        consumers.put(loc, newComponent);
+                        component = newComponent;
+                    }
+
+                    if (!data.isDataLoaded()) {
+                        StorageCacheUtils.requestLoad(data);
+                        continue;
+                    }
+
+                    long capacity = component.getCapacityLong();
+                    long charge = component.getChargeLong(loc);
+
+                    if (charge < capacity) {
+                        long availableSpace = capacity - charge;
+                        demand = NumberUtils.flowSafeAddition(demand, availableSpace);
+
+                        if (remainingEnergy > 0) {
+                            if (remainingEnergy > availableSpace) {
+                                component.setCharge(loc, capacity);
+                                remainingEnergy -= availableSpace;
+                            } else {
+                                long curCharge = NumberUtils.flowSafeAddition(charge, remainingEnergy);
+                                component.setCharge(loc, (long) curCharge);
+
+                                remainingEnergy = 0;
+                            }
                         }
                     }
                 }
+                storeRemainingEnergy(remainingEnergy);
+                updateHologram(blockData, supply, demand);
             }
-
-            storeRemainingEnergy(remainingEnergy);
-            updateHologram(b, supply, demand);
+        } finally {
+            // We have subtracted the timings from Generators, so they do not show up twice.
+            Slimefun.getProfiler()
+                    .closeEntry(b.getLocation(), SlimefunItems.ENERGY_REGULATOR.getItem(), timestamp.get());
         }
-
-        // We have subtracted the timings from Generators, so they do not show up twice.
-        Slimefun.getProfiler().closeEntry(b.getLocation(), SlimefunItems.ENERGY_REGULATOR.getItem(), timestamp.get());
     }
 
-    private void storeRemainingEnergy(int remainingEnergy) {
+    private void storeRemainingEnergy(long remainingEnergy) {
         for (Map.Entry<Location, EnergyNetComponent> entry : capacitors.entrySet()) {
             Location loc = entry.getKey();
+
+            var data = StorageCacheUtils.getDataContainer(loc);
+            if (data == null || data.isPendingRemove() || !data.isDataLoaded()) {
+                continue;
+            }
+
             EnergyNetComponent component = entry.getValue();
 
             if (remainingEnergy > 0) {
-                int capacity = component.getCapacity();
+                long capacity = component.getCapacityLong();
 
                 if (remainingEnergy > capacity) {
-                    component.setCharge(loc, capacity);
+                    component.setCharge(loc, (long) capacity);
                     remainingEnergy -= capacity;
                 } else {
-                    component.setCharge(loc, remainingEnergy);
+                    component.setCharge(loc, (long) remainingEnergy);
                     remainingEnergy = 0;
                 }
             } else {
-                component.setCharge(loc, 0);
+                component.setCharge(loc, 0L);
             }
         }
 
         for (Map.Entry<Location, EnergyNetProvider> entry : generators.entrySet()) {
             Location loc = entry.getKey();
+
+            var data = StorageCacheUtils.getDataContainer(loc);
+            if (data == null || data.isPendingRemove() || !data.isDataLoaded()) {
+                continue;
+            }
+
             EnergyNetProvider component = entry.getValue();
-            int capacity = component.getCapacity();
+            long capacity = component.getCapacityLong();
 
             if (remainingEnergy > 0) {
                 if (remainingEnergy > capacity) {
@@ -227,14 +258,14 @@ public class EnergyNet extends Network implements HologramOwner {
                     remainingEnergy = 0;
                 }
             } else {
-                component.setCharge(loc, 0);
+                component.setCharge(loc, 0L);
             }
         }
     }
 
-    private int tickAllGenerators(@Nonnull LongConsumer timings) {
+    private long tickAllGenerators(@Nonnull LongConsumer timings) {
         Set<Location> explodedBlocks = new HashSet<>();
-        int supply = 0;
+        long supply = 0;
 
         for (Map.Entry<Location, EnergyNetProvider> entry : generators.entrySet()) {
             long timestamp = Slimefun.getProfiler().newEntry();
@@ -243,16 +274,34 @@ public class EnergyNet extends Network implements HologramOwner {
             SlimefunItem item = (SlimefunItem) provider;
 
             try {
-                Config data = BlockStorage.getLocationInfo(loc);
-                int energy = provider.getGeneratedOutput(loc, data);
+                var data = StorageCacheUtils.getDataContainer(loc);
+                if (data == null || data.isPendingRemove()) {
+                    continue;
+                }
+
+                if (!item.getId().equals(data.getSfId())) {
+                    var newItem = SlimefunItem.getById(data.getSfId());
+                    if (!(newItem instanceof EnergyNetProvider newProvider)) {
+                        continue;
+                    }
+                    generators.put(loc, newProvider);
+                    provider = newProvider;
+                }
+
+                if (!data.isDataLoaded()) {
+                    StorageCacheUtils.requestLoad(data);
+                    continue;
+                }
+
+                long energy = provider.getGeneratedOutputLong(loc, data);
 
                 if (provider.isChargeable()) {
-                    energy = NumberUtils.flowSafeAddition(energy, provider.getCharge(loc, data));
+                    energy = NumberUtils.flowSafeAddition(energy, (long) provider.getChargeLong(loc));
                 }
 
                 if (provider.willExplode(loc, data)) {
                     explodedBlocks.add(loc);
-                    BlockStorage.clearBlockInfo(loc);
+                    Slimefun.getDatabaseManager().getBlockDataController().removeBlock(loc);
 
                     Slimefun.runSync(() -> {
                         loc.getBlock().setType(Material.LAVA);
@@ -278,29 +327,30 @@ public class EnergyNet extends Network implements HologramOwner {
         return supply;
     }
 
-    private int tickAllCapacitors() {
-        int supply = 0;
+    private long tickAllCapacitors() {
+        long supply = 0;
 
         for (Map.Entry<Location, EnergyNetComponent> entry : capacitors.entrySet()) {
-            supply = NumberUtils.flowSafeAddition(supply, entry.getValue().getCharge(entry.getKey()));
+            supply = NumberUtils.flowSafeAddition(supply, entry.getValue().getChargeLong(entry.getKey()));
         }
 
         return supply;
     }
 
-    private void updateHologram(@Nonnull Block b, double supply, double demand) {
+    private void updateHologram(@Nonnull SlimefunBlockData data, double supply, double demand) {
         if (demand > supply) {
             String netLoss = NumberUtils.getCompactDouble(demand - supply);
-            updateHologram(b, "&4&l- &c" + netLoss + " &7J &e\u26A1");
+            updateHologram(
+                    data.getLocation().getBlock(), "&4&l- &c" + netLoss + " &7J &e\u26A1", data::isPendingRemove);
         } else {
             String netGain = NumberUtils.getCompactDouble(supply - demand);
-            updateHologram(b, "&2&l+ &a" + netGain + " &7J &e\u26A1");
+            updateHologram(
+                    data.getLocation().getBlock(), "&2&l+ &a" + netGain + " &7J &e\u26A1", data::isPendingRemove);
         }
     }
 
-    @Nullable
-    private static EnergyNetComponent getComponent(@Nonnull Location l) {
-        SlimefunItem item = BlockStorage.check(l);
+    @Nullable private static EnergyNetComponent getComponent(@Nonnull Location l) {
+        SlimefunItem item = StorageCacheUtils.getSlimefunItem(l);
 
         if (item instanceof EnergyNetComponent component) {
             return component;
@@ -318,18 +368,19 @@ public class EnergyNet extends Network implements HologramOwner {
      *
      * @return The {@link EnergyNet} at that {@link Location}, or {@code null}
      */
-    @Nullable
-    public static EnergyNet getNetworkFromLocation(@Nonnull Location l) {
-        return Slimefun.getNetworkManager().getNetworkFromLocation(l, EnergyNet.class).orElse(null);
+    @Nullable public static EnergyNet getNetworkFromLocation(@Nonnull Location l) {
+        return Slimefun.getNetworkManager()
+                .getNetworkFromLocation(l, EnergyNet.class)
+                .orElse(null);
     }
 
     /**
      * This attempts to get an {@link EnergyNet} from a given {@link Location}.
      * If no suitable {@link EnergyNet} could be found, a new one will be created.
-     * 
+     *
      * @param l
      *            The target {@link Location}
-     * 
+     *
      * @return The {@link EnergyNet} at that {@link Location}, or a new one
      */
     @Nonnull

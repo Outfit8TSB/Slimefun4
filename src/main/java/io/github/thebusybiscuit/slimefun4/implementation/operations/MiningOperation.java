@@ -1,16 +1,15 @@
 package io.github.thebusybiscuit.slimefun4.implementation.operations;
 
+import io.github.thebusybiscuit.slimefun4.core.machines.MachineOperation;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.core.machines.MachineOperation;
-
 /**
  * This {@link MachineOperation} represents an operation
  * with no inputs, only a result.
- * 
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -23,7 +22,9 @@ public class MiningOperation implements MachineOperation {
 
     public MiningOperation(@Nonnull ItemStack result, int totalTicks) {
         Validate.notNull(result, "The result cannot be null");
-        Validate.isTrue(totalTicks >= 0, "The amount of total ticks must be a positive integer or zero, received: " + totalTicks);
+        Validate.isTrue(
+                totalTicks >= 0,
+                "The amount of total ticks must be a positive integer or zero, received: " + totalTicks);
 
         this.result = result;
         this.totalTicks = totalTicks;
@@ -41,7 +42,8 @@ public class MiningOperation implements MachineOperation {
      * 
      * @return The result of this operation
      */
-    public @Nonnull ItemStack getResult() {
+    @Nonnull
+    public ItemStack getResult() {
         return result;
     }
 
@@ -54,5 +56,4 @@ public class MiningOperation implements MachineOperation {
     public int getTotalTicks() {
         return totalTicks;
     }
-
 }

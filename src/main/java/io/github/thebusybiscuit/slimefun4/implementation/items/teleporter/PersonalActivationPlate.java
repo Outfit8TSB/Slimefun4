@@ -1,33 +1,31 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.teleporter;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
-
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-
 /**
  * The {@link PersonalActivationPlate} is a teleporter activation plate
  * to which only the {@link Player} who placed it down has access.
- * 
+ *
  * @author TheBusyBiscuit
- * 
+ *
  * @see SharedActivationPlate
  *
  */
 public class PersonalActivationPlate extends AbstractTeleporterPlate {
 
     @ParametersAreNonnullByDefault
-    public PersonalActivationPlate(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    public PersonalActivationPlate(
+            ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
         addItemHandler(onPlace());
@@ -39,7 +37,10 @@ public class PersonalActivationPlate extends AbstractTeleporterPlate {
 
             @Override
             public void onPlayerPlace(BlockPlaceEvent e) {
-                BlockStorage.addBlockInfo(e.getBlock(), "owner", e.getPlayer().getUniqueId().toString());
+                StorageCacheUtils.setData(
+                        e.getBlock().getLocation(),
+                        "owner",
+                        e.getPlayer().getUniqueId().toString());
             }
         };
     }
@@ -47,6 +48,11 @@ public class PersonalActivationPlate extends AbstractTeleporterPlate {
     @Override
     @ParametersAreNonnullByDefault
     public boolean hasAccess(Player p, Block b) {
-        return BlockStorage.getLocationInfo(b.getLocation(), "owner").equals(p.getUniqueId().toString());
+        return p.getUniqueId().toString().equals(StorageCacheUtils.getData(b.getLocation(), "owner"));
+    }
+
+    @Override
+    public boolean loadDataByDefault() {
+        return true;
     }
 }

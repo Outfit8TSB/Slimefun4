@@ -1,6 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.tasks.armor;
 
 import io.github.bakedlibs.dough.common.ChatColors;
+import io.github.thebusybiscuit.slimefun4.api.events.AsyncPlayerRadiationLevelUpdateEvent;
 import io.github.thebusybiscuit.slimefun4.api.events.RadiationDamageEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
@@ -60,15 +61,19 @@ public class RadiationTask extends AbstractArmorTask {
                 }
             }
             int exposureLevelBefore = RadiationUtils.getExposure(p);
-
-            if (exposureTotal > 0) {
+            int deltaLevel = exposureTotal > 0 ? exposureTotal : (exposureLevelBefore > 0 ? -1 : 0);
+            AsyncPlayerRadiationLevelUpdateEvent updateEvent =
+                    new AsyncPlayerRadiationLevelUpdateEvent(p, exposureLevelBefore, deltaLevel, false);
+            Bukkit.getPluginManager().callEvent(updateEvent);
+            deltaLevel = updateEvent.getDeltaLevel();
+            if (deltaLevel > 0) {
                 if (exposureLevelBefore == 0) {
                     Slimefun.getLocalization().sendMessage(p, "messages.radiation");
                 }
 
-                RadiationUtils.addExposure(p, exposureTotal);
-            } else if (exposureLevelBefore > 0) {
-                RadiationUtils.removeExposure(p, 1);
+                RadiationUtils.addExposure(p, deltaLevel);
+            } else if (exposureLevelBefore > 0 && deltaLevel < 0) {
+                RadiationUtils.removeExposure(p, -deltaLevel);
             }
 
             int exposureLevelAfter = RadiationUtils.getExposure(p);
@@ -97,7 +102,17 @@ public class RadiationTask extends AbstractArmorTask {
                 p.spigot().sendMessage(ChatMessageType.ACTION_BAR, components);
             }
         } else {
-            RadiationUtils.removeExposure(p, 1);
+            int exposureLevelBefore = RadiationUtils.getExposure(p);
+            int deltaLevel = -1;
+            AsyncPlayerRadiationLevelUpdateEvent updateEvent =
+                    new AsyncPlayerRadiationLevelUpdateEvent(p, exposureLevelBefore, deltaLevel, true);
+            Bukkit.getPluginManager().callEvent(updateEvent);
+            deltaLevel = updateEvent.getDeltaLevel();
+            if (deltaLevel > 0) {
+                RadiationUtils.addExposure(p, deltaLevel);
+            } else if (deltaLevel < 0) {
+                RadiationUtils.removeExposure(p, -deltaLevel);
+            }
         }
     }
 

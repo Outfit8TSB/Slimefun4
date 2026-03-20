@@ -30,5 +30,4 @@ public class ColoredFireworkStar {
                 .andMetaConsumer(FireworkEffectMeta.class, meta -> meta.setEffect(effect))
                 .create();
     }
-
 }

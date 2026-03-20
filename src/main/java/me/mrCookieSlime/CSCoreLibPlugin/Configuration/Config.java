@@ -13,13 +13,22 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
  * An old remnant of CS-CoreLib.
  * This will be removed once we updated everything.
  * Don't look at the code, it will be gone soon, don't worry.
- * Only used by the legacy {@link BlockStorage} system.
+ *
+ * @deprecated Only used by the legacy {@link BlockStorage} system.
  */
+@Deprecated(forRemoval = true)
 public class Config {
 
     private final File file;
     private FileConfiguration config;
-
+    private static final FileConfiguration BLANK_CONFIGURATION = new YamlConfiguration();
+    /**
+     * internal constructor used for Wrapper
+     */
+    protected Config() {
+        file = new File("");
+        config = BLANK_CONFIGURATION;
+    }
     /**
      * Creates a new Config Object for the specified File
      *
@@ -96,7 +105,7 @@ public class Config {
 
     /**
      * Saves the Config Object to a File
-     * 
+     *
      * @param file
      *            The File you are saving this Config to
      */

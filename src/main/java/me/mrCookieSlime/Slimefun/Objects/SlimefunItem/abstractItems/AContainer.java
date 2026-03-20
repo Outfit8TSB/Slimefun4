@@ -8,16 +8,19 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import org.apache.commons.lang.Validate;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+
 import io.github.bakedlibs.dough.inventory.InvUtils;
-import io.github.bakedlibs.dough.items.CustomItemStack;
+import io.github.bakedlibs.dough.items.ItemStackFactory;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
@@ -35,21 +38,35 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.interfaces.InventoryBlock;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 
 // TODO: Replace this with "AbstractContainer" and "AbstractElectricalMachine" classes.
-public abstract class AContainer extends SlimefunItem implements InventoryBlock, EnergyNetComponent, MachineProcessHolder<CraftingOperation> {
+public abstract class AContainer extends SlimefunItem
+        implements InventoryBlock, EnergyNetComponent, MachineProcessHolder<CraftingOperation> {
 
+    /**
+     * The border slots for the menu layout.
+     */
     private static final int[] BORDER = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 13, 31, 36, 37, 38, 39, 40, 41, 42, 43, 44 };
+
+    /**
+     * The input border slots for the menu layout.
+     */
     private static final int[] BORDER_IN = { 9, 10, 11, 12, 18, 21, 27, 28, 29, 30 };
+
+    /**
+     * The output border slots for the menu layout.
+     */
     private static final int[] BORDER_OUT = { 14, 15, 16, 17, 23, 26, 32, 33, 34, 35 };
 
+    /**
+     * The list of registered machine recipes.
+     */
     protected final List<MachineRecipe> recipes = new ArrayList<>();
+
     private final MachineProcessor<CraftingOperation> processor = new MachineProcessor<>(this);
 
     private int energyConsumedPerTick = -1;
@@ -72,7 +89,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
 
             @Override
             public void onBlockBreak(Block b) {
-                BlockMenu inv = BlockStorage.getInventory(b);
+                BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
 
                 if (inv != null) {
                     inv.dropItems(b.getLocation(), getInputSlots());
@@ -81,12 +98,16 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
 
                 processor.endOperation(b);
             }
-
         };
     }
 
     @ParametersAreNonnullByDefault
-    protected AContainer(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
+    protected AContainer(
+            ItemGroup itemGroup,
+            SlimefunItemStack item,
+            RecipeType recipeType,
+            ItemStack[] recipe,
+            ItemStack recipeOutput) {
         this(itemGroup, item, recipeType, recipe);
         this.recipeOutput = recipeOutput;
     }
@@ -109,7 +130,8 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
             preset.addItem(i, ChestMenuUtils.getOutputSlotTexture(), ChestMenuUtils.getEmptyClickHandler());
         }
 
-        preset.addItem(22, CustomItemStack.create(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(
+                22, ItemStackFactory.create(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
 
         for (int i : getOutputSlots()) {
             preset.addMenuClickHandler(i, ChestMenuUtils.getDefaultOutputHandler());
@@ -216,7 +238,9 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
     public final AContainer setEnergyConsumption(int energyConsumption) {
         Validate.isTrue(energyConsumption > 0, "The energy consumption must be greater than zero!");
         Validate.isTrue(energyCapacity > 0, "You must specify the capacity before you can set the consumption amount.");
-        Validate.isTrue(energyConsumption <= energyCapacity, "The energy consumption cannot be higher than the capacity (" + energyCapacity + ')');
+        Validate.isTrue(
+                energyConsumption <= energyCapacity,
+                "The energy consumption cannot be higher than the capacity (" + energyCapacity + ')');
 
         this.energyConsumedPerTick = energyConsumption;
         return this;
@@ -233,7 +257,9 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
 
         if (getEnergyConsumption() <= 0) {
             warn("The energy consumption has not been configured correctly. The Item was disabled.");
-            warn("Make sure to call '" + getClass().getSimpleName() + "#setEnergyConsumption(...)' before registering!");
+            warn("Make sure to call '"
+                    + getClass().getSimpleName()
+                    + "#setEnergyConsumption(...)' before registering!");
         }
 
         if (getSpeed() <= 0) {
@@ -244,9 +270,6 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
         if (getCapacity() > 0 && getEnergyConsumption() > 0 && getSpeed() > 0) {
             super.register(addon);
         }
-
-        // Fixes #3429 - Initialize Item Settings before recipes
-        registerDefaultRecipes();
     }
 
     /**
@@ -339,7 +362,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
         addItemHandler(new BlockTicker() {
 
             @Override
-            public void tick(Block b, SlimefunItem sf, Config data) {
+            public void tick(Block b, SlimefunItem sf, SlimefunBlockData data) {
                 AContainer.this.tick(b);
             }
 
@@ -351,7 +374,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
     }
 
     protected void tick(Block b) {
-        BlockMenu inv = BlockStorage.getInventory(b);
+        BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
         CraftingOperation currentOperation = processor.getOperation(b);
 
         if (currentOperation != null) {
@@ -361,7 +384,7 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
                     processor.updateProgressBar(inv, 22, currentOperation);
                     currentOperation.addProgress(1);
                 } else {
-                    inv.replaceExistingItem(22, CustomItemStack.create(Material.BLACK_STAINED_GLASS_PANE, " "));
+                    inv.replaceExistingItem(22, ItemStackFactory.create(Material.BLACK_STAINED_GLASS_PANE, " "));
 
                     for (ItemStack output : currentOperation.getResults()) {
                         inv.pushItem(output.clone(), getOutputSlots());
@@ -394,13 +417,13 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
         Validate.notNull(l, "Can't attempt to take charge from a null location!");
 
         if (isChargeable()) {
-            int charge = getCharge(l);
+            long charge = getChargeLong(l);
 
             if (charge < getEnergyConsumption()) {
                 return false;
             }
 
-            setCharge(l, charge - getEnergyConsumption());
+            setCharge(l, (long) charge - getEnergyConsumption());
             return true;
         } else {
             return true;
@@ -446,5 +469,24 @@ public abstract class AContainer extends SlimefunItem implements InventoryBlock,
         }
 
         return null;
+    }
+
+    @Override
+    public void enable() {
+        super.enable();
+        registerDefaultRecipes();
+    }
+
+    @Override
+    public void disable() {
+        super.disable();
+        recipes.clear();
+    }
+
+    @Override
+    public void postRegister() {
+        if (getState() == ItemState.ENABLED) {
+            registerDefaultRecipes();
+        }
     }
 }

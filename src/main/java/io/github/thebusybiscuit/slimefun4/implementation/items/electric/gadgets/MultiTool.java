@@ -36,6 +36,7 @@ import io.github.thebusybiscuit.slimefun4.utils.compatibility.VersionedEntityTyp
 public class MultiTool extends SlimefunItem implements Rechargeable {
 
     private static final float COST = 0.3F;
+    private static final float SPECIAL_COST = 20F;
 
     private final List<MultiToolMode> modes = new ArrayList<>();
     private final float capacity;
@@ -45,11 +46,17 @@ public class MultiTool extends SlimefunItem implements Rechargeable {
     private static final Pattern REGEX = Pattern.compile(ChatColors.color("(&c&o)?" + LORE_PREFIX) + "(.+)");
 
     @ParametersAreNonnullByDefault
-    public MultiTool(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, float capacity, String... items) {
+    public MultiTool(
+            ItemGroup itemGroup,
+            SlimefunItemStack item,
+            RecipeType recipeType,
+            ItemStack[] recipe,
+            float capacity,
+            List<String> items) {
         super(itemGroup, item, recipeType, recipe);
 
-        for (int i = 0; i < items.length; i++) {
-            modes.add(new MultiToolMode(this, i, items[i]));
+        for (int i = 0; i < items.size(); i++) {
+            modes.add(new MultiToolMode(this, i, items.get(i)));
         }
 
         this.capacity = capacity;
@@ -82,21 +89,47 @@ public class MultiTool extends SlimefunItem implements Rechargeable {
             ItemMeta meta = item.getItemMeta();
             e.cancel();
 
-            int index = PersistentDataAPI.getInt(meta, key, 0);
+            // Remove old multitool mode ID used by Gugu Project's Slimefun build
+            // We use a NamespacedKey called "multitool_mode" instead.
+            final NamespacedKey legacyKey = new NamespacedKey(Slimefun.instance(), "MULTI_TOOL_MODE");
+            if (PersistentDataAPI.hasInt(meta, key)) PersistentDataAPI.remove(meta, legacyKey);
+
+            // Remove old integer multitool mode used by official Slimefun builds
+            // Our new ID is a string instead
+            if (PersistentDataAPI.hasInt(meta, key)) PersistentDataAPI.remove(meta, key);
+
+            int index = 0;
+            for (int i = 0; i < modes.size(); i++) {
+                if (modes.get(i).getItemId().equals(PersistentDataAPI.getString(meta, key))) index = i;
+            }
+
             SlimefunItem sfItem = modes.get(index).getItem();
 
             if (!p.isSneaking()) {
-                if (sfItem != null && removeItemCharge(item, COST)) {
-                    sfItem.callItemHandler(ItemUseHandler.class, handler -> handler.onRightClick(e));
+                if (sfItem != null) {
+                    // Elemental Staff - Storm should take the special energy cost
+                    boolean isElementalStaffStorm = sfItem.getId().equals("STAFF_ELEMENTAL_STORM");
+                    float cost = isElementalStaffStorm ? SPECIAL_COST : COST;
+
+                    if (removeItemCharge(item, cost)) {
+                        sfItem.callItemHandler(ItemUseHandler.class, handler -> handler.onRightClick(e));
+                    }
                 }
             } else {
                 index = nextIndex(index);
 
                 SlimefunItem selectedItem = modes.get(index).getItem();
                 String itemName = selectedItem != null ? selectedItem.getItemName() : "Unknown";
-                Slimefun.getLocalization().sendMessage(p, "messages.multi-tool.mode-change", true, msg -> msg.replace("%device%", "Multi Tool").replace("%mode%", ChatColor.stripColor(itemName)));
+                Slimefun.getLocalization().sendMessage(
+                        p,
+                        "messages.multi-tool.mode-change",
+                        true,
+                        msg -> msg
+                                .replace("%device%", "Multi Tool")
+                                .replace("%mode%", ChatColor.stripColor(itemName))
+                );
 
-                PersistentDataAPI.setInt(meta, key, index);
+                PersistentDataAPI.setString(meta, key, modes.get(index).getItemId());
 
                 List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
 
@@ -136,11 +169,11 @@ public class MultiTool extends SlimefunItem implements Rechargeable {
             // Fixes #2217 - Prevent them from being used to shear entities
             EntityType type = e.getRightClicked().getType();
             if (type == VersionedEntityType.MOOSHROOM
-                || type == VersionedEntityType.SNOW_GOLEM
-                || type == EntityType.SHEEP
-            ) {
+                    || type == VersionedEntityType.SNOW_GOLEM
+                    || type == EntityType.SHEEP) {
                 Slimefun.getLocalization().sendMessage(e.getPlayer(), "messages.multi-tool.not-shears");
                 e.setCancelled(true);
+                    e.setCancelled(true);
             }
         };
     }
@@ -153,5 +186,4 @@ public class MultiTool extends SlimefunItem implements Rechargeable {
         addItemHandler(getToolUseHandler());
         addItemHandler(getEntityInteractionHandler());
     }
-
 }
