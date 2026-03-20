@@ -258,6 +258,14 @@
                         <formatAnnotations />
                     </java>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -303,48 +311,49 @@
                 <configuration>
                     <outputDirectory>${project.basedir}/javadocs</outputDirectory>
 
-                    <doctitle>Slimefun4 - Javadocs</doctitle>
-                    <windowtitle>Slimefun4 - Javadocs</windowtitle>
+                    <doctitle>Slimefun United - Javadocs</doctitle>
+                    <windowtitle>Slimefun United - Javadocs</windowtitle>
+                    <failOnError>false</failOnError>
                     <detectOfflineLinks>false</detectOfflineLinks>
                     <additionalJOption>-html5</additionalJOption>
 
                     <!-- We can group packages together in our Javadocs -->
                     <groups>
                         <group>
-                            <title>Slimefun4 - API</title>
+                            <title>Slimefun - API</title>
                             <packages>io.github.thebusybiscuit.slimefun4.api*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Core packages</title>
+                            <title>Slimefun - Core packages</title>
                             <packages>io.github.thebusybiscuit.slimefun4.core*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Implementations</title>
+                            <title>Slimefun - Implementations</title>
                             <packages>io.github.thebusybiscuit.slimefun4.implementation*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Integrations with other
+                            <title>Slimefun - Integrations with other
                                 plugins</title>
                             <packages>io.github.thebusybiscuit.slimefun4.integrations*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Common utility packages</title>
+                            <title>Slimefun - Common utility packages</title>
                             <packages>io.github.thebusybiscuit.slimefun4.utils*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Items</title>
+                            <title>Slimefun - Items</title>
                             <packages>io.github.thebusybiscuit.slimefun4.implementation.items*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Multiblocks</title>
+                            <title>Slimefun - Multiblocks</title>
                             <packages>io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Electrical Machines</title>
+                            <title>Slimefun - Electrical Machines</title>
                             <packages>io.github.thebusybiscuit.slimefun4.implementation.items.electric*</packages>
                         </group>
                         <group>
-                            <title>Slimefun4 - Old packages</title>
+                            <title>Slimefun - Old packages</title>
                             <packages>me.mrCookieSlime.Slimefun*</packages>
                         </group>
                         <group>
